@@ -1,0 +1,58 @@
+syntax = "proto2";
+
+package com.yrw.im.proto.generate;
+option java_outer_classname = "Chat";
+
+message ChatMsg {
+    required int32 version = 1;
+    //协议版本号。第一版本：1，以此类推。
+
+    required DestType targetType = 2;
+    //接收者类型。
+
+    required int64 fromId = 3;
+    //发送者userId
+
+    required int64 destId = 4;
+    //接收者userId
+
+    required int64 createTime = 5;
+    //发送时间
+
+    required MsgType msgType = 6;
+    //消息类型
+
+    required bytes msgBody = 7;
+    //消息体，json，格式由消息类型决定
+
+    required string token = 8;
+
+    enum DestType {
+        SINGLE = 0;
+        GROUP = 1;
+    }
+
+    enum MsgType {
+        TEXT = 0;
+        FILE = 1;
+    }
+}
+
+message TextBody {
+    required string text = 1;
+    //文字内容
+}
+
+message FileBody {
+    required string fileId = 1;
+    //媒体文件上传到得到的KEY，用于生成下载URL。
+
+    required int32 media_crc32 = 2;
+    //文件的 CRC32 校验码。
+
+    required int32 fSize = 3;
+    //文件大小（字节数）
+
+    required string fName = 4;
+    //文件名字
+}

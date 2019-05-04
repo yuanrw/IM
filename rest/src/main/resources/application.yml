@@ -1,0 +1,20 @@
+server.port: ${server.port}
+
+spring:
+  datasource:
+    url: ${spring.datasource.url}
+    password: ${spring.datasource.password}
+    username: ${spring.datasource.username}
+    driver-class-name: ${spring.datasource.driver-class-name}
+  application:
+    name: IM
+
+  profiles:
+    active: ${spring.profiles.active}
+
+  redis:
+    host: ${spring.redis.host}
+    password: ${spring.redis.password}
+
+#build:
+#  timestamp: ${build.timestamp}

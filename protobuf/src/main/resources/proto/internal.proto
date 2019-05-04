@@ -1,0 +1,37 @@
+syntax = "proto2";
+
+package com.yrw.im.proto.generate;
+option java_outer_classname = "Internal";
+
+message InternalMsg {
+    required int32 version = 1;
+    //协议版本号。第一版本：1，以此类推。
+
+    required Module from = 2;
+    //发送模块
+
+    required Module dest = 3;
+    //接收模块
+
+    required int64 createTime = 4;
+    //发送时间
+
+    required InternalMsgType msgType = 5;
+    //消息类型
+
+    optional string msgBody = 6;
+    //消息体
+
+    enum Module {
+        CONNECTOR = 0;
+        TRANSFER = 1;
+        OFFLINE = 2;
+        CLIENT = 3;
+    }
+
+    enum InternalMsgType {
+        GREET = 0;
+        ACK = 1;
+        USER_STATUS = 2;
+    }
+}
