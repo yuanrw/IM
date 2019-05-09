@@ -31,7 +31,6 @@ message InternalMsg {
 
     enum InternalMsgType {
         GREET = 0;
-        ACK = 1;
-        USER_STATUS = 2;
+        USER_STATUS = 1;
     }
 }

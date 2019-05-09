@@ -1,4 +1,4 @@
-package com.yim.im.client.service;
+package com.yrw.im.common.rest;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

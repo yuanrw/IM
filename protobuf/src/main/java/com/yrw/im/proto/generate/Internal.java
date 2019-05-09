@@ -374,13 +374,9 @@ public final class Internal {
        */
       GREET(0),
       /**
-       * <code>ACK = 1;</code>
+       * <code>USER_STATUS = 1;</code>
        */
-      ACK(1),
-      /**
-       * <code>USER_STATUS = 2;</code>
-       */
-      USER_STATUS(2),
+      USER_STATUS(1),
       ;
 
       /**
@@ -388,13 +384,9 @@ public final class Internal {
        */
       public static final int GREET_VALUE = 0;
       /**
-       * <code>ACK = 1;</code>
+       * <code>USER_STATUS = 1;</code>
        */
-      public static final int ACK_VALUE = 1;
-      /**
-       * <code>USER_STATUS = 2;</code>
-       */
-      public static final int USER_STATUS_VALUE = 2;
+      public static final int USER_STATUS_VALUE = 1;
 
 
       public final int getNumber() {
@@ -412,8 +404,7 @@ public final class Internal {
       public static InternalMsgType forNumber(int value) {
         switch (value) {
           case 0: return GREET;
-          case 1: return ACK;
-          case 2: return USER_STATUS;
+          case 1: return USER_STATUS;
           default: return null;
         }
       }
@@ -1534,7 +1525,7 @@ public final class Internal {
   static {
     java.lang.String[] descriptorData = {
       "\n\016internal.proto\022\031com.yrw.im.proto.gener" +
-      "ate\"\376\002\n\013InternalMsg\022\017\n\007version\030\001 \002(\005\022;\n\004" +
+      "ate\"\365\002\n\013InternalMsg\022\017\n\007version\030\001 \002(\005\022;\n\004" +
       "from\030\002 \002(\0162-.com.yrw.im.proto.generate.I" +
       "nternalMsg.Module\022;\n\004dest\030\003 \002(\0162-.com.yr" +
       "w.im.proto.generate.InternalMsg.Module\022\022" +
@@ -1542,8 +1533,8 @@ public final class Internal {
       "m.yrw.im.proto.generate.InternalMsg.Inte" +
       "rnalMsgType\022\017\n\007msgBody\030\006 \001(\t\">\n\006Module\022\r" +
       "\n\tCONNECTOR\020\000\022\014\n\010TRANSFER\020\001\022\013\n\007OFFLINE\020\002" +
-      "\022\n\n\006CLIENT\020\003\"6\n\017InternalMsgType\022\t\n\005GREET" +
-      "\020\000\022\007\n\003ACK\020\001\022\017\n\013USER_STATUS\020\002B\nB\010Internal"
+      "\022\n\n\006CLIENT\020\003\"-\n\017InternalMsgType\022\t\n\005GREET" +
+      "\020\000\022\017\n\013USER_STATUS\020\001B\nB\010Internal"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

@@ -7,25 +7,28 @@ message ChatMsg {
     required int32 version = 1;
     //协议版本号。第一版本：1，以此类推。
 
-    required DestType targetType = 2;
+    required int64 id = 2;
+    //消息id
+
+    required DestType targetType = 3;
     //接收者类型。
 
-    required int64 fromId = 3;
+    required int64 fromId = 4;
     //发送者userId
 
-    required int64 destId = 4;
+    required int64 destId = 5;
     //接收者userId
 
-    required int64 createTime = 5;
+    required int64 createTime = 6;
     //发送时间
 
-    required MsgType msgType = 6;
+    required MsgType msgType = 7;
     //消息类型
 
-    required bytes msgBody = 7;
+    required bytes msgBody = 8;
     //消息体，json，格式由消息类型决定
 
-    required string token = 8;
+    required string token = 9;
 
     enum DestType {
         SINGLE = 0;
@@ -33,8 +36,9 @@ message ChatMsg {
     }
 
     enum MsgType {
-        TEXT = 0;
-        FILE = 1;
+        ACK = 0;
+        TEXT = 1;
+        FILE = 2;
     }
 }
 

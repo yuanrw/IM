@@ -1,4 +1,4 @@
-package com.yim.im.client.service;
+package com.yrw.im.common.rest;
 
 import com.yim.im.client.domain.UserReq;
 import com.yrw.im.common.domain.Relation;
