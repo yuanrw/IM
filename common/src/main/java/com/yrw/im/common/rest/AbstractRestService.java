@@ -2,15 +2,10 @@ package com.yrw.im.common.rest;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yim.im.client.domain.UserReq;
-import com.yrw.im.common.domain.Relation;
 import com.yrw.im.common.domain.ResultWrapper;
-import com.yrw.im.common.domain.UserInfo;
 import com.yrw.im.common.exception.ImException;
-import io.netty.util.CharsetUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Response;
@@ -18,7 +13,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Date: 2019-04-21
@@ -26,13 +20,12 @@ import java.util.List;
  *
  * @author yrw
  */
-public class RestService {
+public abstract class AbstractRestService<R> {
+    private Logger logger = LoggerFactory.getLogger(AbstractRestService.class);
 
-    private Logger logger = LoggerFactory.getLogger(RestService.class);
+    protected R restClient;
 
-    private RestClient restClient;
-
-    public RestService() {
+    public AbstractRestService(Class<R> clazz) {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -46,28 +39,11 @@ public class RestService {
             .addConverterFactory(JacksonConverterFactory.create(objectMapper))
             .build();
 
-        this.restClient = retrofit.create(RestClient.class);
-    }
-
-    public UserInfo login(String username, String password) {
-        return doRequest(() ->
-            restClient.login(new UserReq(username, pwdSha256(password))).execute());
-    }
-
-    public Void logout(String token) {
-        return doRequest(() -> restClient.logout(token).execute());
-    }
-
-    public List<Relation> friends(Long userId, String token) {
-        return doRequest(() -> restClient.friends(userId, token).execute());
-    }
-
-    private String pwdSha256(String password) {
-        return DigestUtils.sha256Hex(password.getBytes(CharsetUtil.UTF_8));
+        this.restClient = retrofit.create(clazz);
     }
 
     @FunctionalInterface
-    private interface RestFunction<T> {
+    protected interface RestFunction<T> {
         /**
          * 执行一个http请求
          *
@@ -77,7 +53,7 @@ public class RestService {
         Response<ResultWrapper<T>> doRequest() throws IOException;
     }
 
-    private <T> T doRequest(RestFunction<T> function) {
+    protected <T> T doRequest(RestFunction<T> function) {
         try {
             Response<ResultWrapper<T>> response = function.doRequest();
             if (!response.isSuccessful()) {

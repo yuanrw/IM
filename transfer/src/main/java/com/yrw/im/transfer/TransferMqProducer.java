@@ -1,8 +1,14 @@
 package com.yrw.im.transfer;
 
-import org.apache.rocketmq.client.exception.MQClientException;
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
-import org.apache.rocketmq.client.producer.MQProducer;
+import com.rabbitmq.client.BuiltinExchangeType;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Date: 2019-05-06
@@ -10,21 +16,28 @@ import org.apache.rocketmq.client.producer.MQProducer;
  *
  * @author yrw
  */
-public class RocketMqProducer {
+public class TransferMqProducer {
+    private static Logger logger = LoggerFactory.getLogger(TransferMqProducer.class);
 
-    private static MQProducer mqProducer;
+    private static Channel channel;
 
-    public static void startProducer() throws MQClientException {
-        DefaultMQProducer producer = new DefaultMQProducer("im");
-        producer.setNamesrvAddr("localhost:9876");
+    public static void startProducer(String host, int port, String exchange, String queue, String routingKey) throws IOException, TimeoutException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(host);
+        factory.setPort(port);
 
-        producer.start();
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
 
-        producer.setRetryTimesWhenSendAsyncFailed(3);
-        mqProducer = producer;
+        channel.exchangeDeclare(exchange, BuiltinExchangeType.DIRECT, true, false, null);
+        channel.queueDeclare(queue, true, false, false, null);
+        channel.queueBind(queue, exchange, routingKey);
+
+        TransferMqProducer.channel = channel;
+        logger.info("[transfer] producer start success");
     }
 
-    public static MQProducer getMqProducer() {
-        return mqProducer;
+    public static Channel getChannel() {
+        return channel;
     }
 }

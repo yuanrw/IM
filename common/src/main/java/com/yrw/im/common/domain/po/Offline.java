@@ -1,6 +1,4 @@
-package com.yrw.im.common.domain;
-
-import java.util.Date;
+package com.yrw.im.common.domain.po;
 
 /**
  * Date: 2019-05-05
@@ -10,26 +8,26 @@ import java.util.Date;
  */
 public class Offline extends DbModel {
 
-    private Long conversationId;
+    private Long fromUserId;
+
+    private Long toUserId;
 
     private String content;
 
-    private Date gmtMsgCreate;
-
-    public Date getGmtMsgCreate() {
-        return gmtMsgCreate;
+    public Long getFromUserId() {
+        return fromUserId;
     }
 
-    public void setGmtMsgCreate(Date gmtMsgCreate) {
-        this.gmtMsgCreate = gmtMsgCreate;
+    public void setFromUserId(Long fromUserId) {
+        this.fromUserId = fromUserId;
     }
 
-    public Long getConversationId() {
-        return conversationId;
+    public Long getToUserId() {
+        return toUserId;
     }
 
-    public void setConversationId(Long conversationId) {
-        this.conversationId = conversationId;
+    public void setToUserId(Long toUserId) {
+        this.toUserId = toUserId;
     }
 
     public String getContent() {

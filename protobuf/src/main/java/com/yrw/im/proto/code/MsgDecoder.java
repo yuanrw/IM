@@ -66,9 +66,4 @@ public class MsgDecoder extends ByteToMessageDecoder {
 
         logger.info("[IM msg decoder]received message: content length {}, msgTypeCode: {}", length, code);
     }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("[msg decoder], has error", cause);
-    }
 }

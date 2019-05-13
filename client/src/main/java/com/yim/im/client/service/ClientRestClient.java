@@ -1,7 +1,7 @@
-package com.yrw.im.common.rest;
+package com.yim.im.client.service;
 
 import com.yim.im.client.domain.UserReq;
-import com.yrw.im.common.domain.Relation;
+import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.domain.UserInfo;
 import retrofit2.Call;
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author yrw
  */
-public interface RestClient {
+public interface ClientRestClient {
 
     @Headers("Content-Type: application/json")
     @POST("/user/register")
@@ -30,4 +30,9 @@ public interface RestClient {
 
     @GET("/relation/{id}")
     Call<ResultWrapper<List<Relation>>> friends(@Path("id") Long userId, @Header("token") String token);
+
+    @GET("/relation")
+    Call<ResultWrapper<Relation>> relation(
+        @Query("userId1") Long userId1, @Query("userId2") Long userId2,
+        @Header("token") String token);
 }

@@ -21,6 +21,7 @@ public class TransferServerHandler extends SimpleChannelInboundHandler<Message> 
     private Logger logger = LoggerFactory.getLogger(TransferServerHandler.class);
 
     private ConnectorMsgService connectorMsgService;
+    private static ChannelHandlerContext ctx;
 
     @Inject
     public TransferServerHandler(ConnectorMsgService connectorMsgService) {
@@ -28,7 +29,13 @@ public class TransferServerHandler extends SimpleChannelInboundHandler<Message> 
     }
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        TransferServerHandler.ctx = ctx;
+    }
+
+    @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
+        logger.info("[Transfer] get msg: ");
         if (msg instanceof Chat.ChatMsg) {
             connectorMsgService.doChat((Chat.ChatMsg) msg);
         } else if (msg instanceof Internal.InternalMsg) {
@@ -45,5 +52,9 @@ public class TransferServerHandler extends SimpleChannelInboundHandler<Message> 
                         new ObjectMapper().writeValueAsString(msg));
             }
         }
+    }
+
+    public static ChannelHandlerContext getCtx() {
+        return ctx;
     }
 }

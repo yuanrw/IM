@@ -1,7 +1,7 @@
 package com.yrw.im.repository.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yrw.im.common.domain.Relation;
+import com.yrw.im.common.domain.po.Relation;
 
 /**
  * Date: 2019-02-11

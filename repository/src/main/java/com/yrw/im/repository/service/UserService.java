@@ -1,7 +1,7 @@
 package com.yrw.im.repository.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.yrw.im.common.domain.User;
+import com.yrw.im.common.domain.po.User;
 
 /**
  * Date: 2019-04-07

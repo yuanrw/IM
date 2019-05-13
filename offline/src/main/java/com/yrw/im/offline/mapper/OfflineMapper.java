@@ -1,7 +1,7 @@
-package com.yrw.im.repository.mapper;
+package com.yrw.im.offline.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yrw.im.common.domain.Offline;
+import com.yrw.im.common.domain.po.Offline;
 
 /**
  * Date: 2019-05-05

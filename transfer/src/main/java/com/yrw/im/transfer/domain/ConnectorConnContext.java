@@ -2,6 +2,7 @@ package com.yrw.im.transfer.domain;
 
 import com.google.inject.Singleton;
 import com.yrw.im.common.domain.conn.MemoryConnContext;
+import com.yrw.im.common.exception.ImException;
 import io.netty.channel.ChannelHandlerContext;
 import redis.clients.jedis.Jedis;
 
@@ -55,6 +56,10 @@ public class ConnectorConnContext extends MemoryConnContext<ConnectorConn> {
     }
 
     public void addUser(Long userId, ChannelHandlerContext ctx) {
+        boolean online = userIdToNetId.containsKey(userId) || jedis.hget(USER_CONN_STATUS_KEY, String.valueOf(userId)) != null;
+        if (online) {
+            throw new ImException("repeat.login");
+        }
         Serializable netId = getConn(ctx).getNetId();
         userIdToNetId.put(userId, netId);
         //更新数据库

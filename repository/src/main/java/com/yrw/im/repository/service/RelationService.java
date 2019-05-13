@@ -1,7 +1,7 @@
 package com.yrw.im.repository.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.yrw.im.common.domain.Relation;
+import com.yrw.im.common.domain.po.Relation;
 
 import java.util.List;
 
@@ -20,4 +20,13 @@ public interface RelationService extends IService<Relation> {
      * @return
      */
     List<Relation> friends(Long id);
+
+    /**
+     * 添加关系
+     *
+     * @param userId1
+     * @param userId2
+     * @return
+     */
+    boolean addRelation(Long userId1, Long userId2);
 }

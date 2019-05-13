@@ -55,9 +55,4 @@ public class TransferServer {
             }
         });
     }
-
-    public static void main(String[] args) {
-        int port = 9082;
-        TransferServer.startTransferServer(port);
-    }
 }

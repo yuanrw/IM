@@ -1,4 +1,4 @@
-package com.yrw.im.common.domain;
+package com.yrw.im.common.domain.po;
 
 /**
  * Date: 2019-02-09
@@ -11,8 +11,6 @@ public class Relation extends DbModel {
     private Long userId1;
 
     private Long userId2;
-
-    private Long conversationId;
 
     private String encryptKey;
 
@@ -30,14 +28,6 @@ public class Relation extends DbModel {
 
     public void setUserId2(Long userId2) {
         this.userId2 = userId2;
-    }
-
-    public Long getConversationId() {
-        return conversationId;
-    }
-
-    public void setConversationId(Long conversationId) {
-        this.conversationId = conversationId;
     }
 
     public String getEncryptKey() {

@@ -20,7 +20,6 @@ public class MsgEncoder extends MessageToByteEncoder<Message> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
-
         try {
             byte[] bytes = msg.toByteArray();
             int code = MsgTypeEnum.getByClass(msg.getClass()).getCode();
@@ -36,10 +35,5 @@ public class MsgEncoder extends MessageToByteEncoder<Message> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("[msg encoder], has error", cause);
     }
 }

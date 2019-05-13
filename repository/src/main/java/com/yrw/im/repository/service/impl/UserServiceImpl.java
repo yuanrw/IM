@@ -2,7 +2,7 @@ package com.yrw.im.repository.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.yrw.im.common.domain.User;
+import com.yrw.im.common.domain.po.User;
 import com.yrw.im.common.exception.ImException;
 import com.yrw.im.repository.mapper.UserMapper;
 import com.yrw.im.repository.service.UserService;

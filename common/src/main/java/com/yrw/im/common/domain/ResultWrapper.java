@@ -38,11 +38,15 @@ public class ResultWrapper<T> {
     }
 
 
-    public static ResultWrapper fail(String message) {
-        ResultWrapper resultWrapper = new ResultWrapper();
+    public static ResultWrapper<String> fail(String message) {
+        ResultWrapper<String> resultWrapper = new ResultWrapper();
         resultWrapper.setStatus(500);
         resultWrapper.setMsg(message);
         return resultWrapper;
+    }
+
+    public static ResultWrapper<String> wrapBol(boolean success) {
+        return success ? success() : fail("operation failed, please try again!");
     }
 
     public Integer getStatus() {

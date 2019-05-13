@@ -7,4 +7,14 @@ package com.yrw.im.common.util;
  * @author yrw
  */
 public class IdWorker {
+
+    private static SnowFlake snowFlake;
+
+    static {
+        snowFlake = new SnowFlake(1, 1);
+    }
+
+    public static Long genId(){
+        return snowFlake.nextId();
+    }
 }

@@ -1,7 +1,7 @@
 package com.yim.im.client.service;
 
 import com.yim.im.client.domain.UserReq;
-import com.yrw.im.common.domain.Relation;
+import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.domain.UserInfo;
 import com.yrw.im.common.rest.AbstractRestService;
 import io.netty.util.CharsetUtil;
@@ -15,9 +15,9 @@ import java.util.List;
  *
  * @author yrw
  */
-public class RestService extends AbstractRestService<ClientRestClient> {
+public class ClientRestService extends AbstractRestService<ClientRestClient> {
 
-    public RestService() {
+    public ClientRestService() {
         super(ClientRestClient.class);
     }
 
@@ -32,6 +32,10 @@ public class RestService extends AbstractRestService<ClientRestClient> {
 
     public List<Relation> friends(Long userId, String token) {
         return doRequest(() -> restClient.friends(userId, token).execute());
+    }
+
+    public Relation relation(Long userId1, Long userId2, String token) {
+        return doRequest(() -> restClient.relation(userId1, userId2, token).execute());
     }
 
     private String pwdSha256(String password) {

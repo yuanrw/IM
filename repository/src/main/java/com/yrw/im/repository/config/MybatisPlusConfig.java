@@ -2,7 +2,7 @@ package com.yrw.im.repository.config;
 
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
-import com.yrw.im.common.domain.DbModel;
+import com.yrw.im.common.domain.po.DbModel;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

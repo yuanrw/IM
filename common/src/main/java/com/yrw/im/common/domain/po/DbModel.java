@@ -1,4 +1,4 @@
-package com.yrw.im.common.domain;
+package com.yrw.im.common.domain.po;
 
 import java.util.Date;
 

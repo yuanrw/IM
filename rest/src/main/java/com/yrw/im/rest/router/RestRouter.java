@@ -17,7 +17,6 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
  *
  * @author yrw
  */
-
 @Configuration
 public class RestRouter {
 
@@ -35,6 +34,10 @@ public class RestRouter {
     public RouterFunction<ServerResponse> relationRoutes(RelationHandler relationHandler) {
         return RouterFunctions
             .route(GET("/relation/{id}").and(accept(APPLICATION_JSON)),
-                relationHandler::listFriends);
+                relationHandler::listFriends)
+            .andRoute(GET("/relation").and(accept(APPLICATION_JSON)),
+                relationHandler::getRelation)
+            .andRoute(POST("/relation").and(contentType(APPLICATION_JSON)).and(accept(APPLICATION_JSON)),
+                relationHandler::addRelation);
     }
 }

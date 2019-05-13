@@ -1,7 +1,8 @@
 package com.yrw.im.rest.handler;
 
-import com.yrw.im.common.domain.Relation;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.yrw.im.common.domain.ResultWrapper;
+import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.repository.service.RelationService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -37,5 +38,27 @@ public class RelationHandler {
 
         return relationFlux.collect(Collectors.toList()).map(ResultWrapper::success)
             .flatMap(res -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(res)));
+    }
+
+    public Mono<ServerResponse> getRelation(ServerRequest request) {
+        String u1 = request.queryParam("userId1").orElseThrow();
+        String u2 = request.queryParam("userId2").orElseThrow();
+
+        Long userId1 = Long.parseLong(u1);
+        Long userId2 = Long.parseLong(u2);
+
+        Mono<Relation> relationMono = Mono.fromCallable(() -> relationService.getOne(new LambdaQueryWrapper<Relation>()
+            .eq(Relation::getUserId1, Math.min(userId1, userId2))
+            .eq(Relation::getUserId2, Math.max(userId1, userId2))));
+
+        return relationMono.map(ResultWrapper::success)
+            .flatMap(r -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(r)));
+    }
+
+    public Mono<ServerResponse> addRelation(ServerRequest request) {
+        return request.bodyToMono(Relation.class)
+            .flatMap(r -> Mono.fromCallable(() -> relationService.addRelation(r.getUserId1(), r.getUserId2())))
+            .map(ResultWrapper::wrapBol)
+            .flatMap(r -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(r)));
     }
 }

@@ -3,9 +3,9 @@ package com.yim.im.client.handler;
 import com.google.inject.Inject;
 import com.google.protobuf.Message;
 import com.yim.im.client.service.ChatService;
-import com.yim.im.client.service.RestService;
-import com.yrw.im.common.domain.Relation;
+import com.yim.im.client.service.ClientRestService;
 import com.yrw.im.common.domain.UserInfo;
+import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.exception.ImException;
 import com.yrw.im.proto.generate.Chat;
 import io.netty.channel.ChannelHandlerContext;
@@ -28,26 +28,27 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
     private Logger logger = LoggerFactory.getLogger(ClientHandler.class);
 
     private ChatService chatService;
-    private RestService restService;
+    private ClientRestService clientRestService;
+    private static ChannelHandlerContext ctx;
 
     @Inject
-    public ClientHandler(ChatService chatService, RestService restService) {
+    public ClientHandler(ChatService chatService, ClientRestService clientRestService) {
         this.chatService = chatService;
-        this.restService = restService;
+        this.clientRestService = clientRestService;
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        //登录换取token
-        UserInfo user = restService.login("yuanrw", "123abc");
+        ClientHandler.ctx = ctx;
 
-        chatService.setCtx(ctx);
+        //登录换取token
+        UserInfo user = clientRestService.login("yuanrw", "123abc");
 
         //向connector发送greet消息
-        chatService.greet(user.getUserId(), ctx);
+        chatService.greet(user.getUserId());
 
         //获取好友列表
-        List<Relation> friends = restService.friends(user.getUserId(), user.getToken());
+        List<Relation> friends = clientRestService.friends(user.getUserId(), user.getToken());
 
         //随机选择好友发送消息
         if (friends.size() > 0) {
@@ -71,5 +72,9 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
 
     private Long getFriend(Relation relation, Long userId) {
         return !relation.getUserId1().equals(userId) ? relation.getUserId1() : relation.getUserId2();
+    }
+
+    public static ChannelHandlerContext getCtx() {
+        return ctx;
     }
 }

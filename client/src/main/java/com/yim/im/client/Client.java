@@ -3,6 +3,8 @@ package com.yim.im.client;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.yim.im.client.handler.ClientHandler;
+import com.yim.im.client.handler.code.AesDecoder;
+import com.yim.im.client.handler.code.AesEncoder;
 import com.yrw.im.proto.code.MsgDecoder;
 import com.yrw.im.proto.code.MsgEncoder;
 import io.netty.bootstrap.Bootstrap;
@@ -35,8 +37,14 @@ public class Client {
                 @Override
                 protected void initChannel(NioSocketChannel ch) throws Exception {
                     ChannelPipeline p = ch.pipeline();
-                    p.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
+
+                    //out
                     p.addLast("MsgEncoder", new MsgEncoder());
+                    p.addLast("AesEncoder", injector.getInstance(AesEncoder.class));
+
+                    //in
+                    p.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
+                    p.addLast("AesDecoder", injector.getInstance(AesDecoder.class));
                     p.addLast("ClientHandler", injector.getInstance(ClientHandler.class));
                 }
             }).connect("127.0.0.1", 9081)
