@@ -1,8 +1,8 @@
 package com.yim.im.client.service;
 
 import com.yim.im.client.domain.UserReq;
-import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.domain.UserInfo;
+import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.rest.AbstractRestService;
 import io.netty.util.CharsetUtil;
 import org.apache.commons.codec.digest.DigestUtils;

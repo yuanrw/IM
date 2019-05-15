@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
 public class Client {
     private static Logger logger = LoggerFactory.getLogger(Client.class);
 
-    private static Injector injector = Guice.createInjector();
+    public static Injector injector = Guice.createInjector();
 
-    public static void client() {
+    public static void start() {
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
         b.group(group)
@@ -58,6 +58,6 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        Client.client();
+        Client.start();
     }
 }

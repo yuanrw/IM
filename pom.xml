@@ -15,8 +15,7 @@
         <module>protobuf</module>
         <module>transfer</module>
         <module>common</module>
-        <module>repository</module>
-        <module>offline</module>
+        <module>client-samples</module>
     </modules>
 
     <properties>
@@ -188,11 +187,39 @@
                         </excludes>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <configuration>
+                        <outputDirectory>
+                            ${project.build.directory}/${project.artifactId}/lib
+                        </outputDirectory>
+                        <excludeTransitive>false</excludeTransitive>
+                        <stripVersion>false</stripVersion>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>copy-dependencies</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-dependencies</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>
+                                    ${project.build.directory}/${project.artifactId}/lib
+                                </outputDirectory>
+                                <excludeTransitive>false</excludeTransitive>
+                                <stripVersion>false</stripVersion>
+                                <overWriteReleases>false</overWriteReleases>
+                                <overWriteSnapshots>false</overWriteSnapshots>
+                                <overWriteIfNewer>true</overWriteIfNewer>
+                                <excludeScope>provided</excludeScope>
+                                <includeScope>runtime</includeScope>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
-        <filters>
-            <filter>../prop/prop.properties</filter>
-        </filters>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

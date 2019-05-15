@@ -1,9 +1,9 @@
 package com.yim.im.client.service;
 
 import com.yim.im.client.domain.UserReq;
-import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.domain.UserInfo;
+import com.yrw.im.common.domain.po.Relation;
 import retrofit2.Call;
 import retrofit2.http.*;
 

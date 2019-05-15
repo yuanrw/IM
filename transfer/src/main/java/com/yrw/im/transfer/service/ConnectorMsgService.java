@@ -5,16 +5,15 @@ import com.google.inject.Inject;
 import com.rabbitmq.client.MessageProperties;
 import com.yrw.im.common.domain.UserStatus;
 import com.yrw.im.common.domain.conn.Conn;
+import com.yrw.im.common.domain.constant.MqConstant;
 import com.yrw.im.proto.constant.UserStatusEnum;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
 import com.yrw.im.transfer.TransferMqProducer;
-import com.yrw.im.transfer.TransferStarter;
 import com.yrw.im.transfer.domain.ConnectorConn;
 import com.yrw.im.transfer.domain.ConnectorConnContext;
+import com.yrw.im.transfer.handler.TransferConnectorHandler;
 import io.netty.channel.ChannelHandlerContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -25,7 +24,6 @@ import java.io.IOException;
  * @author yrw
  */
 public class ConnectorMsgService {
-    private static final Logger logger = LoggerFactory.getLogger(ConnectorMsgService.class);
 
     private ConnectorConnContext connContext;
     private ObjectMapper objectMapper;
@@ -46,10 +44,8 @@ public class ConnectorMsgService {
         }
     }
 
-    public void doGreet(Internal.InternalMsg msg, ChannelHandlerContext ctx) {
-        String netId = msg.getMsgBody();
-        ctx.channel().attr(Conn.NET_ID).set(netId);
-
+    public void doGreet(ChannelHandlerContext ctx) {
+        ctx.channel().attr(Conn.NET_ID).set(ctx.channel().id().asLongText());
         ConnectorConn conn = new ConnectorConn(ctx);
         connContext.addConn(conn);
     }
@@ -59,6 +55,7 @@ public class ConnectorMsgService {
         switch (UserStatusEnum.getStatus(userStatus.getStatus())) {
             case ONLINE:
                 connContext.addUser(userStatus.getUserId(), ctx);
+                TransferConnectorHandler.getCtx().flush();
                 break;
             case OFFLINE:
                 connContext.removeUser(userStatus.getUserId(), ctx);
@@ -69,7 +66,7 @@ public class ConnectorMsgService {
 
     public void doOffline(Chat.ChatMsg chatMsg) throws IOException {
         TransferMqProducer.getChannel().basicPublish(
-            TransferStarter.exchange, TransferStarter.routingKey,
+            MqConstant.EXCHANGE, MqConstant.ROUTING_KEY,
             MessageProperties.PERSISTENT_TEXT_PLAIN, chatMsg.toByteArray());
     }
 }

@@ -1,11 +1,6 @@
 package com.yim.im.client.handler;
 
-import com.google.inject.Inject;
 import com.google.protobuf.Message;
-import com.yim.im.client.service.ChatService;
-import com.yim.im.client.service.ClientRestService;
-import com.yrw.im.common.domain.UserInfo;
-import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.exception.ImException;
 import com.yrw.im.proto.generate.Chat;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,9 +9,6 @@ import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Random;
-
 /**
  * Date: 2019-04-15
  * Time: 16:42
@@ -24,38 +16,13 @@ import java.util.Random;
  * @author yrw
  */
 public class ClientHandler extends SimpleChannelInboundHandler<Message> {
-
     private Logger logger = LoggerFactory.getLogger(ClientHandler.class);
 
-    private ChatService chatService;
-    private ClientRestService clientRestService;
     private static ChannelHandlerContext ctx;
-
-    @Inject
-    public ClientHandler(ChatService chatService, ClientRestService clientRestService) {
-        this.chatService = chatService;
-        this.clientRestService = clientRestService;
-    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ClientHandler.ctx = ctx;
-
-        //登录换取token
-        UserInfo user = clientRestService.login("yuanrw", "123abc");
-
-        //向connector发送greet消息
-        chatService.greet(user.getUserId());
-
-        //获取好友列表
-        List<Relation> friends = clientRestService.friends(user.getUserId(), user.getToken());
-
-        //随机选择好友发送消息
-        if (friends.size() > 0) {
-            int index = new Random().nextInt(friends.size());
-            Long randomFriend = getFriend(friends.get(index), user.getUserId());
-            chatService.text(user.getUserId(), randomFriend, "hello", user.getToken());
-        }
     }
 
     @Override
@@ -65,13 +32,9 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error("[client] has error: ", cause);
         throw new ImException("client has error");
-    }
-
-    private Long getFriend(Relation relation, Long userId) {
-        return !relation.getUserId1().equals(userId) ? relation.getUserId1() : relation.getUserId2();
     }
 
     public static ChannelHandlerContext getCtx() {

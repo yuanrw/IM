@@ -25,7 +25,7 @@ public class ConnectorClient {
 
     private static Logger logger = LoggerFactory.getLogger(ConnectorClient.class);
 
-    private static Injector injector = Guice.createInjector();
+    public static Injector injector = Guice.createInjector();
 
     static void startClient(String host, int port) {
         EventLoopGroup group = new NioEventLoopGroup();

@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import com.google.protobuf.ByteString;
 import com.yim.im.client.handler.ClientHandler;
 import com.yrw.im.common.domain.po.Relation;
+import com.yrw.im.common.exception.ImException;
 import com.yrw.im.common.util.Encryptor;
 import com.yrw.im.common.util.IdWorker;
 import com.yrw.im.proto.generate.Chat;
-import com.yrw.im.proto.generate.Internal;
 import io.netty.util.CharsetUtil;
 
 /**
@@ -25,23 +25,12 @@ public class ChatService {
         this.clientRestService = clientRestService;
     }
 
-    public void greet(Long userId) {
-
-        Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
-            .setFrom(Internal.InternalMsg.Module.CLIENT)
-            .setDest(Internal.InternalMsg.Module.CONNECTOR)
-            .setCreateTime(System.currentTimeMillis())
-            .setVersion(1)
-            .setMsgType(Internal.InternalMsg.InternalMsgType.GREET)
-            .setMsgBody(String.valueOf(userId))
-            .build();
-
-        ClientHandler.getCtx().writeAndFlush(greet);
-    }
-
     public void text(Long userId, Long toId, String text, String token) {
 
         Relation relation = clientRestService.relation(userId, toId, token);
+        if (relation == null) {
+            throw new ImException("friend.not.found");
+        }
         String[] keys = relation.getEncryptKey().split("\\|");
 
         byte[] content = Encryptor.encrypt(keys[0], keys[1], text.getBytes(CharsetUtil.UTF_8));
