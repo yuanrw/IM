@@ -1,4 +1,4 @@
-package com.yrw.im.proto.parse;
+package com.yrw.im.common.parse;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;

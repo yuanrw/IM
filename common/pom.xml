@@ -45,6 +45,10 @@
             <artifactId>logging-interceptor</artifactId>
             <version>3.12.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.yrw.im</groupId>
+            <artifactId>protobuf</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

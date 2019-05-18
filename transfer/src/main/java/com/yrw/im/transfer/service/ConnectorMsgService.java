@@ -6,13 +6,13 @@ import com.rabbitmq.client.MessageProperties;
 import com.yrw.im.common.domain.UserStatus;
 import com.yrw.im.common.domain.conn.Conn;
 import com.yrw.im.common.domain.constant.MqConstant;
+import com.yrw.im.common.util.IdWorker;
 import com.yrw.im.proto.constant.UserStatusEnum;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
 import com.yrw.im.transfer.TransferMqProducer;
 import com.yrw.im.transfer.domain.ConnectorConn;
 import com.yrw.im.transfer.domain.ConnectorConnContext;
-import com.yrw.im.transfer.handler.TransferConnectorHandler;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
@@ -55,13 +55,28 @@ public class ConnectorMsgService {
         switch (UserStatusEnum.getStatus(userStatus.getStatus())) {
             case ONLINE:
                 connContext.addUser(userStatus.getUserId(), ctx);
-                TransferConnectorHandler.getCtx().flush();
                 break;
             case OFFLINE:
-                connContext.removeUser(userStatus.getUserId(), ctx);
+                connContext.removeUser(userStatus.getUserId());
                 break;
             default:
         }
+
+        sendAckToConnector(msg.getId(), ctx);
+    }
+
+    private void sendAckToConnector(Long id, ChannelHandlerContext ctx) {
+        Internal.InternalMsg ack = Internal.InternalMsg.newBuilder()
+            .setId(IdWorker.genId())
+            .setVersion(1)
+            .setFrom(Internal.InternalMsg.Module.TRANSFER)
+            .setDest(Internal.InternalMsg.Module.CONNECTOR)
+            .setCreateTime(System.currentTimeMillis())
+            .setMsgType(Internal.InternalMsg.InternalMsgType.ACK)
+            .setMsgBody(id + "")
+            .build();
+
+        ctx.writeAndFlush(ack);
     }
 
     public void doOffline(Chat.ChatMsg chatMsg) throws IOException {

@@ -1,15 +1,15 @@
 package com.yrw.im.common.domain;
 
 import com.google.protobuf.Message;
-import com.yrw.im.common.Son;
 import com.yrw.im.common.exception.ImException;
 import com.yrw.im.proto.generate.Internal;
+import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * Date: 2019-05-18
@@ -17,57 +17,56 @@ import java.util.function.Consumer;
  *
  * @author yrw
  */
-public class MessageParser {
-    private Logger logger = LoggerFactory.getLogger(MessageParser.class);
+public abstract class AbstractMessageParser {
+    private Logger logger = LoggerFactory.getLogger(AbstractMessageParser.class);
 
-    private Map<Class<? extends Message>, Consumer<? extends Message>> parserMap;
+    private Map<Class<? extends Message>, BiConsumer<? extends Message, ChannelHandlerContext>> parserMap;
 
-    public MessageParser() {
+    protected AbstractMessageParser() {
         this.parserMap = new HashMap<>();
+        registerParsers();
     }
 
-    public MessageParser checkFrom(Message message, Internal.InternalMsg.Module module) {
+    public static void checkFrom(Message message, Internal.InternalMsg.Module module) {
         if (message instanceof Internal.InternalMsg) {
             Internal.InternalMsg m = (Internal.InternalMsg) message;
             if (m.getFrom() != module) {
                 throw new ImException("from unknown");
             }
         }
-        return this;
     }
 
-    public MessageParser checkDest(Message message, Internal.InternalMsg.Module module) {
+    public static void checkDest(Message message, Internal.InternalMsg.Module module) {
         if (message instanceof Internal.InternalMsg) {
             Internal.InternalMsg m = (Internal.InternalMsg) message;
             if (m.getDest() != module) {
                 throw new ImException("dest not me");
             }
         }
-        return this;
     }
 
-    public <T extends Message> void register(Class<T> clazz, Consumer<T> consumer) {
+    /**
+     * 注册msg处理方法
+     */
+    public abstract void registerParsers();
+
+    protected <T extends Message> void register(Class<T> clazz, BiConsumer<T, ChannelHandlerContext> consumer) {
         parserMap.put(clazz, consumer);
     }
 
     @SuppressWarnings("unchecked")
-    public MessageParser parse(Message message) {
-        Consumer consumer = parserMap.get(message.getClass());
-        consumer.accept(message.getClass().cast(message));
+    public AbstractMessageParser parse(Message msg, ChannelHandlerContext ctx) {
+        BiConsumer consumer = parserMap.get(msg.getClass());
+        if (consumer == null) {
+            logger.warn("[message parser] unexpected msg: {}", msg.toString());
+            return this;
+        }
+        doParse(consumer, msg.getClass(), msg, ctx);
         return this;
     }
 
-    public static void main(String[] args) {
-        Son so = new Son();
-        MessageParser.test(so);
-    }
-
-    public static void test(Fa fa) {
-        System.out.println(fa.getClass());
-        test1(fa.getClass().cast(fa));
-    }
-
-    public static void test1(Son son) {
-        System.out.println(son);
+    private <T extends Message> void doParse(BiConsumer<T, ChannelHandlerContext> consumer, Class<T> clazz, Message msg, ChannelHandlerContext ctx) {
+        T m = clazz.cast(msg);
+        consumer.accept(m, ctx);
     }
 }

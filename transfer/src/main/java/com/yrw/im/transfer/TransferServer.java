@@ -2,8 +2,8 @@ package com.yrw.im.transfer;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.yrw.im.proto.code.MsgDecoder;
-import com.yrw.im.proto.code.MsgEncoder;
+import com.yrw.im.common.code.MsgDecoder;
+import com.yrw.im.common.code.MsgEncoder;
 import com.yrw.im.transfer.handler.TransferConnectorHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFutureListener;

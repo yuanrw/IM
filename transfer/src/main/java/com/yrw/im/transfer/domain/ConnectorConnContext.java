@@ -64,9 +64,10 @@ public class ConnectorConnContext extends MemoryConnContext<ConnectorConn> {
         userIdToNetId.put(userId, netId);
         //更新数据库
         jedis.hset(USER_CONN_STATUS_KEY, String.valueOf(userId), (String) netId);
+        jedis.expire(USER_CONN_STATUS_KEY, 60 * 1000);
     }
 
-    public void removeUser(Long userId, ChannelHandlerContext ctx) {
+    public void removeUser(Long userId) {
         userIdToNetId.remove(userId);
         //更新数据库
         jedis.hdel(USER_CONN_STATUS_KEY, String.valueOf(userId));

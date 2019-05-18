@@ -2,8 +2,8 @@ package com.yrw.im.common.code;
 
 import com.google.inject.Inject;
 import com.google.protobuf.Message;
+import com.yrw.im.common.parse.ParseService;
 import com.yrw.im.proto.constant.MsgTypeEnum;
-import com.yrw.im.proto.parse.ParseService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;

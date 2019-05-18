@@ -1,7 +1,11 @@
 package com.yrw.im.gateway.connector.handler;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.protobuf.Message;
+import com.yrw.im.common.domain.AbstractMessageParser;
+import com.yrw.im.common.domain.ResponseCollector;
+import com.yrw.im.common.util.IdWorker;
 import com.yrw.im.gateway.connector.service.MsgService;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
@@ -10,6 +14,12 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static com.yrw.im.common.domain.AbstractMessageParser.checkDest;
+import static com.yrw.im.common.domain.AbstractMessageParser.checkFrom;
+
 /**
  * 将消息发送给transfer
  * Date: 2019-02-12
@@ -17,15 +27,19 @@ import org.slf4j.LoggerFactory;
  *
  * @author yrw
  */
+@Singleton
 public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Message> {
     private Logger logger = LoggerFactory.getLogger(ConnectorTransferHandler.class);
 
     private static ChannelHandlerContext ctx;
 
+    private FromTransferParser fromTransferParser;
     private MsgService msgService;
+    private AtomicReference<ResponseCollector<Internal.InternalMsg>> userStatusMsgCollector = new AtomicReference<>();
 
     @Inject
     public ConnectorTransferHandler(MsgService msgService) {
+        this.fromTransferParser = new FromTransferParser();
         this.msgService = msgService;
     }
 
@@ -35,6 +49,7 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
         ConnectorTransferHandler.ctx = ctx;
 
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
+            .setId(IdWorker.genId())
             .setVersion(1)
             .setMsgType(Internal.InternalMsg.InternalMsgType.GREET)
             .setFrom(Internal.InternalMsg.Module.CONNECTOR)
@@ -47,14 +62,55 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
-        if (msg instanceof Chat.ChatMsg) {
-            msgService.doChat((Chat.ChatMsg) msg);
-        } else {
-            logger.warn("[connector] receive unexpected msg from transfer");
-        }
+        logger.debug("[connector] get msg: {}", msg.toString());
+
+        checkFrom(msg, Internal.InternalMsg.Module.TRANSFER);
+        checkDest(msg, Internal.InternalMsg.Module.CONNECTOR);
+
+        fromTransferParser.parse(msg, ctx);
     }
 
     public static ChannelHandlerContext getCtx() {
         return ctx;
+    }
+
+    public ResponseCollector<Internal.InternalMsg> createUserStatusMsgCollector(Duration timeout) {
+        ResponseCollector<Internal.InternalMsg> collector = new ResponseCollector<>(timeout);
+        boolean success = userStatusMsgCollector.compareAndSet(null, collector);
+        if (!success) {
+            ResponseCollector<Internal.InternalMsg> previousCollector = this.userStatusMsgCollector.get();
+            if (previousCollector == null) {
+                return createUserStatusMsgCollector(timeout);
+            }
+
+            throw new IllegalStateException("Still waiting for init response from server");
+        }
+        return collector;
+    }
+
+
+    class FromTransferParser extends AbstractMessageParser {
+
+        @Override
+        public void registerParsers() {
+            register(Chat.ChatMsg.class, (m, ctx) -> msgService.doChat((m)));
+            register(Internal.InternalMsg.class, (m, ctx) -> {
+                if (m.getMsgType() == Internal.InternalMsg.InternalMsgType.ACK) {
+                    userStatusSyncDone(m);
+                } else {
+                    logger.warn("[connector] receive unexpected msg: {}", m.toString());
+                }
+            });
+        }
+
+        private void userStatusSyncDone(Internal.InternalMsg msg) {
+            ResponseCollector<Internal.InternalMsg> collector = userStatusMsgCollector.get();
+            if (collector != null) {
+                userStatusMsgCollector.set(null);
+                collector.getFuture().complete(msg);
+            } else {
+                logger.error("Unexpected response received: {}", msg);
+            }
+        }
     }
 }

@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>com.yrw.im</groupId>
-            <artifactId>protobuf</artifactId>
+            <artifactId>common</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

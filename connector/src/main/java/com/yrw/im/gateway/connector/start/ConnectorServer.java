@@ -2,9 +2,9 @@ package com.yrw.im.gateway.connector.start;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.yrw.im.common.code.MsgDecoder;
+import com.yrw.im.common.code.MsgEncoder;
 import com.yrw.im.gateway.connector.handler.ConnectorClientHandler;
-import com.yrw.im.proto.code.MsgDecoder;
-import com.yrw.im.proto.code.MsgEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;

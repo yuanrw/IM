@@ -2,11 +2,14 @@ package com.yim.im.client;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.yim.im.client.handler.ClientHandler;
+import com.yim.im.client.api.ChatApi;
+import com.yim.im.client.api.ClientMsgListener;
+import com.yim.im.client.api.UserApi;
+import com.yim.im.client.handler.ClientConnectorHandler;
 import com.yim.im.client.handler.code.AesDecoder;
 import com.yim.im.client.handler.code.AesEncoder;
-import com.yrw.im.proto.code.MsgDecoder;
-import com.yrw.im.proto.code.MsgEncoder;
+import com.yrw.im.common.code.MsgDecoder;
+import com.yrw.im.common.code.MsgEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
@@ -28,7 +31,20 @@ public class Client {
 
     public static Injector injector = Guice.createInjector();
 
-    public static void start() {
+    private String connectorHost;
+    private Integer connectorPort;
+    private ClientMsgListener clientMsgListener;
+
+    public Client() {
+    }
+
+    public Client start() {
+        assert connectorHost != null;
+        assert connectorPort != null;
+        assert clientMsgListener != null;
+
+        ClientConnectorHandler.setClientMsgListener(clientMsgListener);
+
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
         b.group(group)
@@ -45,9 +61,9 @@ public class Client {
                     //in
                     p.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
                     p.addLast("AesDecoder", injector.getInstance(AesDecoder.class));
-                    p.addLast("ClientHandler", injector.getInstance(ClientHandler.class));
+                    p.addLast("ClientConnectorHandler", injector.getInstance(ClientConnectorHandler.class));
                 }
-            }).connect("127.0.0.1", 9081)
+            }).connect(connectorHost, connectorPort)
             .addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
                     logger.info("Client connect connector successfully...");
@@ -55,9 +71,26 @@ public class Client {
                     logger.error("Client connect connector failed!");
                 }
             });
+        return this;
     }
 
-    public static void main(String[] args) {
-        Client.start();
+    public Client setConnectorHost(String connectorHost) {
+        this.connectorHost = connectorHost;
+        return this;
+    }
+
+    public Client setConnectorPort(Integer connectorPort) {
+        this.connectorPort = connectorPort;
+        return this;
+    }
+
+    public Client setClientMsgListener(ClientMsgListener clientMsgListener) {
+        this.clientMsgListener = clientMsgListener;
+        return this;
+    }
+
+    public <T> T getApi(Class<T> clazz) {
+        assert clazz == UserApi.class || clazz == ChatApi.class;
+        return injector.getInstance(clazz);
     }
 }

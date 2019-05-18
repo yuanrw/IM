@@ -2,7 +2,6 @@ package com.yrw.im.client.samples;
 
 import com.yim.im.client.Client;
 import com.yim.im.client.api.ChatApi;
-import com.yim.im.client.api.ImClientApi;
 import com.yim.im.client.api.UserApi;
 import com.yrw.im.common.domain.UserInfo;
 import com.yrw.im.common.domain.po.Relation;
@@ -18,9 +17,14 @@ import java.util.List;
 public class ClientApplication {
 
     public static void main(String[] args) {
-        Client.start();
-        UserApi userApi = ImClientApi.getApi(UserApi.class);
-        ChatApi chatApi = ImClientApi.getApi(ChatApi.class);
+        Client client = new Client()
+            .setConnectorHost("127.0.0.1")
+            .setConnectorPort(9081)
+            .setClientMsgListener(chatMsg -> System.out.println(chatMsg.getMsgBody()))
+            .start();
+
+        UserApi userApi = client.getApi(UserApi.class);
+        ChatApi chatApi = client.getApi(ChatApi.class);
         //登录换取token
         UserInfo user = userApi.login("yuanrw", "123abc");
 
@@ -29,7 +33,7 @@ public class ClientApplication {
         Relation relation = friends.get(0);
 
         //发送消息
-        chatApi.text(user.getUserId(),  user.getUserId(), "hello", user.getToken());
+        chatApi.text(user.getUserId(), user.getUserId(), "hello", user.getToken());
     }
 
     private static Long getFriend(Relation relation, Long userId) {

@@ -2,7 +2,7 @@ package com.yim.im.client.service;
 
 import com.google.inject.Inject;
 import com.google.protobuf.ByteString;
-import com.yim.im.client.handler.ClientHandler;
+import com.yim.im.client.handler.ClientConnectorHandler;
 import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.exception.ImException;
 import com.yrw.im.common.util.Encryptor;
@@ -47,7 +47,7 @@ public class ChatService {
             .setMsgBody(ByteString.copyFrom(content))
             .build();
 
-        ClientHandler.getCtx().writeAndFlush(chat);
+        ClientConnectorHandler.getCtx().writeAndFlush(chat);
     }
 
     public void file(Long userId, Long toId, byte[] bytes) {
@@ -56,6 +56,7 @@ public class ChatService {
 
     public void ack(Long userId, Long fromId, Long id) {
         Chat.ChatMsg ack = Chat.ChatMsg.newBuilder()
+            .setId(IdWorker.genId())
             .setVersion(1)
             .setFromId(userId)
             .setDestId(fromId)
@@ -63,6 +64,6 @@ public class ChatService {
             .setMsgBody(ByteString.copyFromUtf8(String.valueOf(id)))
             .build();
 
-        ClientHandler.getCtx().writeAndFlush(ack);
+        ClientConnectorHandler.getCtx().writeAndFlush(ack);
     }
 }
