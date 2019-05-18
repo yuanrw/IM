@@ -1,4 +1,4 @@
-package com.yrw.im.proto.code;
+package com.yrw.im.common.code;
 
 import com.google.inject.Inject;
 import com.google.protobuf.Message;

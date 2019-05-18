@@ -399,31 +399,23 @@ public final class Chat {
     public enum MsgType
         implements com.google.protobuf.ProtocolMessageEnum {
       /**
-       * <code>ACK = 0;</code>
+       * <code>TEXT = 0;</code>
        */
-      ACK(0),
+      TEXT(0),
       /**
-       * <code>TEXT = 1;</code>
+       * <code>FILE = 1;</code>
        */
-      TEXT(1),
-      /**
-       * <code>FILE = 2;</code>
-       */
-      FILE(2),
+      FILE(1),
       ;
 
       /**
-       * <code>ACK = 0;</code>
+       * <code>TEXT = 0;</code>
        */
-      public static final int ACK_VALUE = 0;
+      public static final int TEXT_VALUE = 0;
       /**
-       * <code>TEXT = 1;</code>
+       * <code>FILE = 1;</code>
        */
-      public static final int TEXT_VALUE = 1;
-      /**
-       * <code>FILE = 2;</code>
-       */
-      public static final int FILE_VALUE = 2;
+      public static final int FILE_VALUE = 1;
 
 
       public final int getNumber() {
@@ -440,9 +432,8 @@ public final class Chat {
 
       public static MsgType forNumber(int value) {
         switch (value) {
-          case 0: return ACK;
-          case 1: return TEXT;
-          case 2: return FILE;
+          case 0: return TEXT;
+          case 1: return FILE;
           default: return null;
         }
       }
@@ -655,7 +646,7 @@ public final class Chat {
     public com.yrw.im.proto.generate.Chat.ChatMsg.MsgType getMsgType() {
       @SuppressWarnings("deprecation")
       com.yrw.im.proto.generate.Chat.ChatMsg.MsgType result = com.yrw.im.proto.generate.Chat.ChatMsg.MsgType.valueOf(msgType_);
-      return result == null ? com.yrw.im.proto.generate.Chat.ChatMsg.MsgType.ACK : result;
+      return result == null ? com.yrw.im.proto.generate.Chat.ChatMsg.MsgType.TEXT : result;
     }
 
     public static final int MSGBODY_FIELD_NUMBER = 8;
@@ -1617,7 +1608,7 @@ public final class Chat {
       public com.yrw.im.proto.generate.Chat.ChatMsg.MsgType getMsgType() {
         @SuppressWarnings("deprecation")
         com.yrw.im.proto.generate.Chat.ChatMsg.MsgType result = com.yrw.im.proto.generate.Chat.ChatMsg.MsgType.valueOf(msgType_);
-        return result == null ? com.yrw.im.proto.generate.Chat.ChatMsg.MsgType.ACK : result;
+        return result == null ? com.yrw.im.proto.generate.Chat.ChatMsg.MsgType.TEXT : result;
       }
       /**
        * <pre>
@@ -3597,17 +3588,17 @@ public final class Chat {
   static {
     java.lang.String[] descriptorData = {
       "\n\nchat.proto\022\031com.yrw.im.proto.generate\"" +
-      "\303\002\n\007ChatMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002id\030\002 \002(\003" +
+      "\272\002\n\007ChatMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002id\030\002 \002(\003" +
       "\022?\n\ntargetType\030\003 \002(\0162+.com.yrw.im.proto." +
       "generate.ChatMsg.DestType\022\016\n\006fromId\030\004 \002(" +
       "\003\022\016\n\006destId\030\005 \002(\003\022\022\n\ncreateTime\030\006 \002(\003\022;\n" +
       "\007msgType\030\007 \002(\0162*.com.yrw.im.proto.genera" +
       "te.ChatMsg.MsgType\022\017\n\007msgBody\030\010 \002(\014\022\r\n\005t" +
       "oken\030\t \002(\t\"!\n\010DestType\022\n\n\006SINGLE\020\000\022\t\n\005GR" +
-      "OUP\020\001\"&\n\007MsgType\022\007\n\003ACK\020\000\022\010\n\004TEXT\020\001\022\010\n\004F" +
-      "ILE\020\002\"\030\n\010TextBody\022\014\n\004text\030\001 \002(\t\"M\n\010FileB" +
-      "ody\022\016\n\006fileId\030\001 \002(\t\022\023\n\013media_crc32\030\002 \002(\005" +
-      "\022\r\n\005fSize\030\003 \002(\005\022\r\n\005fName\030\004 \002(\tB\006B\004Chat"
+      "OUP\020\001\"\035\n\007MsgType\022\010\n\004TEXT\020\000\022\010\n\004FILE\020\001\"\030\n\010" +
+      "TextBody\022\014\n\004text\030\001 \002(\t\"M\n\010FileBody\022\016\n\006fi" +
+      "leId\030\001 \002(\t\022\023\n\013media_crc32\030\002 \002(\005\022\r\n\005fSize" +
+      "\030\003 \002(\005\022\r\n\005fName\030\004 \002(\tB\006B\004Chat"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

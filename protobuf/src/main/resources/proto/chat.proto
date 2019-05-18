@@ -36,9 +36,8 @@ message ChatMsg {
     }
 
     enum MsgType {
-        ACK = 0;
-        TEXT = 1;
-        FILE = 2;
+        TEXT = 0;
+        FILE = 1;
     }
 }
 

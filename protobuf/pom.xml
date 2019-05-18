@@ -28,10 +28,6 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.yrw.im</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

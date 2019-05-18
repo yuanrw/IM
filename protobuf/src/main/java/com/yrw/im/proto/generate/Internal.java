@@ -37,10 +37,27 @@ public final class Internal {
 
     /**
      * <pre>
+     *消息id
+     * </pre>
+     *
+     * <code>required int64 id = 2;</code>
+     */
+    boolean hasId();
+    /**
+     * <pre>
+     *消息id
+     * </pre>
+     *
+     * <code>required int64 id = 2;</code>
+     */
+    long getId();
+
+    /**
+     * <pre>
      *发送模块
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 2;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 3;</code>
      */
     boolean hasFrom();
     /**
@@ -48,7 +65,7 @@ public final class Internal {
      *发送模块
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 2;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 3;</code>
      */
     com.yrw.im.proto.generate.Internal.InternalMsg.Module getFrom();
 
@@ -57,7 +74,7 @@ public final class Internal {
      *接收模块
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 3;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 4;</code>
      */
     boolean hasDest();
     /**
@@ -65,7 +82,7 @@ public final class Internal {
      *接收模块
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 3;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 4;</code>
      */
     com.yrw.im.proto.generate.Internal.InternalMsg.Module getDest();
 
@@ -74,7 +91,7 @@ public final class Internal {
      *发送时间
      * </pre>
      *
-     * <code>required int64 createTime = 4;</code>
+     * <code>required int64 createTime = 5;</code>
      */
     boolean hasCreateTime();
     /**
@@ -82,7 +99,7 @@ public final class Internal {
      *发送时间
      * </pre>
      *
-     * <code>required int64 createTime = 4;</code>
+     * <code>required int64 createTime = 5;</code>
      */
     long getCreateTime();
 
@@ -91,7 +108,7 @@ public final class Internal {
      *消息类型
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 5;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 6;</code>
      */
     boolean hasMsgType();
     /**
@@ -99,7 +116,7 @@ public final class Internal {
      *消息类型
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 5;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 6;</code>
      */
     com.yrw.im.proto.generate.Internal.InternalMsg.InternalMsgType getMsgType();
 
@@ -108,7 +125,7 @@ public final class Internal {
      *消息体
      * </pre>
      *
-     * <code>optional string msgBody = 6;</code>
+     * <code>optional string msgBody = 7;</code>
      */
     boolean hasMsgBody();
     /**
@@ -116,7 +133,7 @@ public final class Internal {
      *消息体
      * </pre>
      *
-     * <code>optional string msgBody = 6;</code>
+     * <code>optional string msgBody = 7;</code>
      */
     java.lang.String getMsgBody();
     /**
@@ -124,7 +141,7 @@ public final class Internal {
      *消息体
      * </pre>
      *
-     * <code>optional string msgBody = 6;</code>
+     * <code>optional string msgBody = 7;</code>
      */
     com.google.protobuf.ByteString
         getMsgBodyBytes();
@@ -178,15 +195,8 @@ public final class Internal {
               break;
             }
             case 16: {
-              int rawValue = input.readEnum();
-                @SuppressWarnings("deprecation")
-              com.yrw.im.proto.generate.Internal.InternalMsg.Module value = com.yrw.im.proto.generate.Internal.InternalMsg.Module.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(2, rawValue);
-              } else {
-                bitField0_ |= 0x00000002;
-                from_ = rawValue;
-              }
+              bitField0_ |= 0x00000002;
+              id_ = input.readInt64();
               break;
             }
             case 24: {
@@ -197,30 +207,42 @@ public final class Internal {
                 unknownFields.mergeVarintField(3, rawValue);
               } else {
                 bitField0_ |= 0x00000004;
-                dest_ = rawValue;
+                from_ = rawValue;
               }
               break;
             }
             case 32: {
-              bitField0_ |= 0x00000008;
-              createTime_ = input.readInt64();
+              int rawValue = input.readEnum();
+                @SuppressWarnings("deprecation")
+              com.yrw.im.proto.generate.Internal.InternalMsg.Module value = com.yrw.im.proto.generate.Internal.InternalMsg.Module.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(4, rawValue);
+              } else {
+                bitField0_ |= 0x00000008;
+                dest_ = rawValue;
+              }
               break;
             }
             case 40: {
+              bitField0_ |= 0x00000010;
+              createTime_ = input.readInt64();
+              break;
+            }
+            case 48: {
               int rawValue = input.readEnum();
                 @SuppressWarnings("deprecation")
               com.yrw.im.proto.generate.Internal.InternalMsg.InternalMsgType value = com.yrw.im.proto.generate.Internal.InternalMsg.InternalMsgType.valueOf(rawValue);
               if (value == null) {
-                unknownFields.mergeVarintField(5, rawValue);
+                unknownFields.mergeVarintField(6, rawValue);
               } else {
-                bitField0_ |= 0x00000010;
+                bitField0_ |= 0x00000020;
                 msgType_ = rawValue;
               }
               break;
             }
-            case 50: {
+            case 58: {
               com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000040;
               msgBody_ = bs;
               break;
             }
@@ -378,9 +400,17 @@ public final class Internal {
        */
       USER_STATUS(1),
       /**
-       * <code>OFFLINE_MSG = 2;</code>
+       * <code>ACK = 2;</code>
        */
-      OFFLINE_MSG(2),
+      ACK(2),
+      /**
+       * <code>DELIVERED = 3;</code>
+       */
+      DELIVERED(3),
+      /**
+       * <code>READ = 4;</code>
+       */
+      READ(4),
       ;
 
       /**
@@ -392,9 +422,17 @@ public final class Internal {
        */
       public static final int USER_STATUS_VALUE = 1;
       /**
-       * <code>OFFLINE_MSG = 2;</code>
+       * <code>ACK = 2;</code>
        */
-      public static final int OFFLINE_MSG_VALUE = 2;
+      public static final int ACK_VALUE = 2;
+      /**
+       * <code>DELIVERED = 3;</code>
+       */
+      public static final int DELIVERED_VALUE = 3;
+      /**
+       * <code>READ = 4;</code>
+       */
+      public static final int READ_VALUE = 4;
 
 
       public final int getNumber() {
@@ -413,7 +451,9 @@ public final class Internal {
         switch (value) {
           case 0: return GREET;
           case 1: return USER_STATUS;
-          case 2: return OFFLINE_MSG;
+          case 2: return ACK;
+          case 3: return DELIVERED;
+          case 4: return READ;
           default: return null;
         }
       }
@@ -487,24 +527,47 @@ public final class Internal {
       return version_;
     }
 
-    public static final int FROM_FIELD_NUMBER = 2;
+    public static final int ID_FIELD_NUMBER = 2;
+    private long id_;
+    /**
+     * <pre>
+     *消息id
+     * </pre>
+     *
+     * <code>required int64 id = 2;</code>
+     */
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     *消息id
+     * </pre>
+     *
+     * <code>required int64 id = 2;</code>
+     */
+    public long getId() {
+      return id_;
+    }
+
+    public static final int FROM_FIELD_NUMBER = 3;
     private int from_;
     /**
      * <pre>
      *发送模块
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 2;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 3;</code>
      */
     public boolean hasFrom() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return ((bitField0_ & 0x00000004) != 0);
     }
     /**
      * <pre>
      *发送模块
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 2;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 3;</code>
      */
     public com.yrw.im.proto.generate.Internal.InternalMsg.Module getFrom() {
       @SuppressWarnings("deprecation")
@@ -512,24 +575,24 @@ public final class Internal {
       return result == null ? com.yrw.im.proto.generate.Internal.InternalMsg.Module.CONNECTOR : result;
     }
 
-    public static final int DEST_FIELD_NUMBER = 3;
+    public static final int DEST_FIELD_NUMBER = 4;
     private int dest_;
     /**
      * <pre>
      *接收模块
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 3;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 4;</code>
      */
     public boolean hasDest() {
-      return ((bitField0_ & 0x00000004) != 0);
+      return ((bitField0_ & 0x00000008) != 0);
     }
     /**
      * <pre>
      *接收模块
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 3;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 4;</code>
      */
     public com.yrw.im.proto.generate.Internal.InternalMsg.Module getDest() {
       @SuppressWarnings("deprecation")
@@ -537,47 +600,47 @@ public final class Internal {
       return result == null ? com.yrw.im.proto.generate.Internal.InternalMsg.Module.CONNECTOR : result;
     }
 
-    public static final int CREATETIME_FIELD_NUMBER = 4;
+    public static final int CREATETIME_FIELD_NUMBER = 5;
     private long createTime_;
     /**
      * <pre>
      *发送时间
      * </pre>
      *
-     * <code>required int64 createTime = 4;</code>
+     * <code>required int64 createTime = 5;</code>
      */
     public boolean hasCreateTime() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <pre>
      *发送时间
      * </pre>
      *
-     * <code>required int64 createTime = 4;</code>
+     * <code>required int64 createTime = 5;</code>
      */
     public long getCreateTime() {
       return createTime_;
     }
 
-    public static final int MSGTYPE_FIELD_NUMBER = 5;
+    public static final int MSGTYPE_FIELD_NUMBER = 6;
     private int msgType_;
     /**
      * <pre>
      *消息类型
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 5;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 6;</code>
      */
     public boolean hasMsgType() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <pre>
      *消息类型
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 5;</code>
+     * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 6;</code>
      */
     public com.yrw.im.proto.generate.Internal.InternalMsg.InternalMsgType getMsgType() {
       @SuppressWarnings("deprecation")
@@ -585,24 +648,24 @@ public final class Internal {
       return result == null ? com.yrw.im.proto.generate.Internal.InternalMsg.InternalMsgType.GREET : result;
     }
 
-    public static final int MSGBODY_FIELD_NUMBER = 6;
+    public static final int MSGBODY_FIELD_NUMBER = 7;
     private volatile java.lang.Object msgBody_;
     /**
      * <pre>
      *消息体
      * </pre>
      *
-     * <code>optional string msgBody = 6;</code>
+     * <code>optional string msgBody = 7;</code>
      */
     public boolean hasMsgBody() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <pre>
      *消息体
      * </pre>
      *
-     * <code>optional string msgBody = 6;</code>
+     * <code>optional string msgBody = 7;</code>
      */
     public java.lang.String getMsgBody() {
       java.lang.Object ref = msgBody_;
@@ -623,7 +686,7 @@ public final class Internal {
      *消息体
      * </pre>
      *
-     * <code>optional string msgBody = 6;</code>
+     * <code>optional string msgBody = 7;</code>
      */
     public com.google.protobuf.ByteString
         getMsgBodyBytes() {
@@ -647,6 +710,10 @@ public final class Internal {
       if (isInitialized == 0) return false;
 
       if (!hasVersion()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasId()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -677,19 +744,22 @@ public final class Internal {
         output.writeInt32(1, version_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeEnum(2, from_);
+        output.writeInt64(2, id_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        output.writeEnum(3, dest_);
+        output.writeEnum(3, from_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
-        output.writeInt64(4, createTime_);
+        output.writeEnum(4, dest_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
-        output.writeEnum(5, msgType_);
+        output.writeInt64(5, createTime_);
       }
       if (((bitField0_ & 0x00000020) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, msgBody_);
+        output.writeEnum(6, msgType_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, msgBody_);
       }
       unknownFields.writeTo(output);
     }
@@ -706,22 +776,26 @@ public final class Internal {
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, from_);
+          .computeInt64Size(2, id_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(3, dest_);
+          .computeEnumSize(3, from_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, createTime_);
+          .computeEnumSize(4, dest_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(5, msgType_);
+          .computeInt64Size(5, createTime_);
       }
       if (((bitField0_ & 0x00000020) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, msgBody_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(6, msgType_);
+      }
+      if (((bitField0_ & 0x00000040) != 0)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, msgBody_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -742,6 +816,11 @@ public final class Internal {
       if (hasVersion()) {
         if (getVersion()
             != other.getVersion()) return false;
+      }
+      if (hasId() != other.hasId()) return false;
+      if (hasId()) {
+        if (getId()
+            != other.getId()) return false;
       }
       if (hasFrom() != other.hasFrom()) return false;
       if (hasFrom()) {
@@ -779,6 +858,11 @@ public final class Internal {
       if (hasVersion()) {
         hash = (37 * hash) + VERSION_FIELD_NUMBER;
         hash = (53 * hash) + getVersion();
+      }
+      if (hasId()) {
+        hash = (37 * hash) + ID_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getId());
       }
       if (hasFrom()) {
         hash = (37 * hash) + FROM_FIELD_NUMBER;
@@ -936,16 +1020,18 @@ public final class Internal {
         super.clear();
         version_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
-        from_ = 0;
+        id_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
-        dest_ = 0;
+        from_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
-        createTime_ = 0L;
+        dest_ = 0;
         bitField0_ = (bitField0_ & ~0x00000008);
-        msgType_ = 0;
+        createTime_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000010);
-        msgBody_ = "";
+        msgType_ = 0;
         bitField0_ = (bitField0_ & ~0x00000020);
+        msgBody_ = "";
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
 
@@ -979,23 +1065,27 @@ public final class Internal {
           to_bitField0_ |= 0x00000001;
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.id_ = id_;
           to_bitField0_ |= 0x00000002;
         }
-        result.from_ = from_;
         if (((from_bitField0_ & 0x00000004) != 0)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.dest_ = dest_;
+        result.from_ = from_;
         if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.createTime_ = createTime_;
           to_bitField0_ |= 0x00000008;
         }
+        result.dest_ = dest_;
         if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.createTime_ = createTime_;
           to_bitField0_ |= 0x00000010;
         }
-        result.msgType_ = msgType_;
         if (((from_bitField0_ & 0x00000020) != 0)) {
           to_bitField0_ |= 0x00000020;
+        }
+        result.msgType_ = msgType_;
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          to_bitField0_ |= 0x00000040;
         }
         result.msgBody_ = msgBody_;
         result.bitField0_ = to_bitField0_;
@@ -1050,6 +1140,9 @@ public final class Internal {
         if (other.hasVersion()) {
           setVersion(other.getVersion());
         }
+        if (other.hasId()) {
+          setId(other.getId());
+        }
         if (other.hasFrom()) {
           setFrom(other.getFrom());
         }
@@ -1063,7 +1156,7 @@ public final class Internal {
           setMsgType(other.getMsgType());
         }
         if (other.hasMsgBody()) {
-          bitField0_ |= 0x00000020;
+          bitField0_ |= 0x00000040;
           msgBody_ = other.msgBody_;
           onChanged();
         }
@@ -1075,6 +1168,9 @@ public final class Internal {
       @java.lang.Override
       public final boolean isInitialized() {
         if (!hasVersion()) {
+          return false;
+        }
+        if (!hasId()) {
           return false;
         }
         if (!hasFrom()) {
@@ -1160,23 +1256,71 @@ public final class Internal {
         return this;
       }
 
+      private long id_ ;
+      /**
+       * <pre>
+       *消息id
+       * </pre>
+       *
+       * <code>required int64 id = 2;</code>
+       */
+      public boolean hasId() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <pre>
+       *消息id
+       * </pre>
+       *
+       * <code>required int64 id = 2;</code>
+       */
+      public long getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       *消息id
+       * </pre>
+       *
+       * <code>required int64 id = 2;</code>
+       */
+      public Builder setId(long value) {
+        bitField0_ |= 0x00000002;
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *消息id
+       * </pre>
+       *
+       * <code>required int64 id = 2;</code>
+       */
+      public Builder clearId() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        id_ = 0L;
+        onChanged();
+        return this;
+      }
+
       private int from_ = 0;
       /**
        * <pre>
        *发送模块
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 2;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 3;</code>
        */
       public boolean hasFrom() {
-        return ((bitField0_ & 0x00000002) != 0);
+        return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <pre>
        *发送模块
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 2;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 3;</code>
        */
       public com.yrw.im.proto.generate.Internal.InternalMsg.Module getFrom() {
         @SuppressWarnings("deprecation")
@@ -1188,13 +1332,13 @@ public final class Internal {
        *发送模块
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 2;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 3;</code>
        */
       public Builder setFrom(com.yrw.im.proto.generate.Internal.InternalMsg.Module value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000004;
         from_ = value.getNumber();
         onChanged();
         return this;
@@ -1204,10 +1348,10 @@ public final class Internal {
        *发送模块
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 2;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module from = 3;</code>
        */
       public Builder clearFrom() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         from_ = 0;
         onChanged();
         return this;
@@ -1219,17 +1363,17 @@ public final class Internal {
        *接收模块
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 3;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 4;</code>
        */
       public boolean hasDest() {
-        return ((bitField0_ & 0x00000004) != 0);
+        return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <pre>
        *接收模块
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 3;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 4;</code>
        */
       public com.yrw.im.proto.generate.Internal.InternalMsg.Module getDest() {
         @SuppressWarnings("deprecation")
@@ -1241,13 +1385,13 @@ public final class Internal {
        *接收模块
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 3;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 4;</code>
        */
       public Builder setDest(com.yrw.im.proto.generate.Internal.InternalMsg.Module value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         dest_ = value.getNumber();
         onChanged();
         return this;
@@ -1257,10 +1401,10 @@ public final class Internal {
        *接收模块
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 3;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.Module dest = 4;</code>
        */
       public Builder clearDest() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000008);
         dest_ = 0;
         onChanged();
         return this;
@@ -1272,17 +1416,17 @@ public final class Internal {
        *发送时间
        * </pre>
        *
-       * <code>required int64 createTime = 4;</code>
+       * <code>required int64 createTime = 5;</code>
        */
       public boolean hasCreateTime() {
-        return ((bitField0_ & 0x00000008) != 0);
+        return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <pre>
        *发送时间
        * </pre>
        *
-       * <code>required int64 createTime = 4;</code>
+       * <code>required int64 createTime = 5;</code>
        */
       public long getCreateTime() {
         return createTime_;
@@ -1292,10 +1436,10 @@ public final class Internal {
        *发送时间
        * </pre>
        *
-       * <code>required int64 createTime = 4;</code>
+       * <code>required int64 createTime = 5;</code>
        */
       public Builder setCreateTime(long value) {
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         createTime_ = value;
         onChanged();
         return this;
@@ -1305,10 +1449,10 @@ public final class Internal {
        *发送时间
        * </pre>
        *
-       * <code>required int64 createTime = 4;</code>
+       * <code>required int64 createTime = 5;</code>
        */
       public Builder clearCreateTime() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000010);
         createTime_ = 0L;
         onChanged();
         return this;
@@ -1320,17 +1464,17 @@ public final class Internal {
        *消息类型
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 5;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 6;</code>
        */
       public boolean hasMsgType() {
-        return ((bitField0_ & 0x00000010) != 0);
+        return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <pre>
        *消息类型
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 5;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 6;</code>
        */
       public com.yrw.im.proto.generate.Internal.InternalMsg.InternalMsgType getMsgType() {
         @SuppressWarnings("deprecation")
@@ -1342,13 +1486,13 @@ public final class Internal {
        *消息类型
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 5;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 6;</code>
        */
       public Builder setMsgType(com.yrw.im.proto.generate.Internal.InternalMsg.InternalMsgType value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         msgType_ = value.getNumber();
         onChanged();
         return this;
@@ -1358,10 +1502,10 @@ public final class Internal {
        *消息类型
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 5;</code>
+       * <code>required .com.yrw.im.proto.generate.InternalMsg.InternalMsgType msgType = 6;</code>
        */
       public Builder clearMsgType() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         msgType_ = 0;
         onChanged();
         return this;
@@ -1373,17 +1517,17 @@ public final class Internal {
        *消息体
        * </pre>
        *
-       * <code>optional string msgBody = 6;</code>
+       * <code>optional string msgBody = 7;</code>
        */
       public boolean hasMsgBody() {
-        return ((bitField0_ & 0x00000020) != 0);
+        return ((bitField0_ & 0x00000040) != 0);
       }
       /**
        * <pre>
        *消息体
        * </pre>
        *
-       * <code>optional string msgBody = 6;</code>
+       * <code>optional string msgBody = 7;</code>
        */
       public java.lang.String getMsgBody() {
         java.lang.Object ref = msgBody_;
@@ -1404,7 +1548,7 @@ public final class Internal {
        *消息体
        * </pre>
        *
-       * <code>optional string msgBody = 6;</code>
+       * <code>optional string msgBody = 7;</code>
        */
       public com.google.protobuf.ByteString
           getMsgBodyBytes() {
@@ -1424,14 +1568,14 @@ public final class Internal {
        *消息体
        * </pre>
        *
-       * <code>optional string msgBody = 6;</code>
+       * <code>optional string msgBody = 7;</code>
        */
       public Builder setMsgBody(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  bitField0_ |= 0x00000040;
         msgBody_ = value;
         onChanged();
         return this;
@@ -1441,10 +1585,10 @@ public final class Internal {
        *消息体
        * </pre>
        *
-       * <code>optional string msgBody = 6;</code>
+       * <code>optional string msgBody = 7;</code>
        */
       public Builder clearMsgBody() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000040);
         msgBody_ = getDefaultInstance().getMsgBody();
         onChanged();
         return this;
@@ -1454,14 +1598,14 @@ public final class Internal {
        *消息体
        * </pre>
        *
-       * <code>optional string msgBody = 6;</code>
+       * <code>optional string msgBody = 7;</code>
        */
       public Builder setMsgBodyBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  bitField0_ |= 0x00000040;
         msgBody_ = value;
         onChanged();
         return this;
@@ -1534,17 +1678,17 @@ public final class Internal {
   static {
     java.lang.String[] descriptorData = {
       "\n\016internal.proto\022\031com.yrw.im.proto.gener" +
-      "ate\"\206\003\n\013InternalMsg\022\017\n\007version\030\001 \002(\005\022;\n\004" +
-      "from\030\002 \002(\0162-.com.yrw.im.proto.generate.I" +
-      "nternalMsg.Module\022;\n\004dest\030\003 \002(\0162-.com.yr" +
-      "w.im.proto.generate.InternalMsg.Module\022\022" +
-      "\n\ncreateTime\030\004 \002(\003\022G\n\007msgType\030\005 \002(\01626.co" +
-      "m.yrw.im.proto.generate.InternalMsg.Inte" +
-      "rnalMsgType\022\017\n\007msgBody\030\006 \001(\t\">\n\006Module\022\r" +
-      "\n\tCONNECTOR\020\000\022\014\n\010TRANSFER\020\001\022\013\n\007OFFLINE\020\002" +
-      "\022\n\n\006CLIENT\020\003\">\n\017InternalMsgType\022\t\n\005GREET" +
-      "\020\000\022\017\n\013USER_STATUS\020\001\022\017\n\013OFFLINE_MSG\020\002B\nB\010" +
-      "Internal"
+      "ate\"\243\003\n\013InternalMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002" +
+      "id\030\002 \002(\003\022;\n\004from\030\003 \002(\0162-.com.yrw.im.prot" +
+      "o.generate.InternalMsg.Module\022;\n\004dest\030\004 " +
+      "\002(\0162-.com.yrw.im.proto.generate.Internal" +
+      "Msg.Module\022\022\n\ncreateTime\030\005 \002(\003\022G\n\007msgTyp" +
+      "e\030\006 \002(\01626.com.yrw.im.proto.generate.Inte" +
+      "rnalMsg.InternalMsgType\022\017\n\007msgBody\030\007 \001(\t" +
+      "\">\n\006Module\022\r\n\tCONNECTOR\020\000\022\014\n\010TRANSFER\020\001\022" +
+      "\013\n\007OFFLINE\020\002\022\n\n\006CLIENT\020\003\"O\n\017InternalMsgT" +
+      "ype\022\t\n\005GREET\020\000\022\017\n\013USER_STATUS\020\001\022\007\n\003ACK\020\002" +
+      "\022\r\n\tDELIVERED\020\003\022\010\n\004READ\020\004B\nB\010Internal"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1563,7 +1707,7 @@ public final class Internal {
     internal_static_com_yrw_im_proto_generate_InternalMsg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_yrw_im_proto_generate_InternalMsg_descriptor,
-        new java.lang.String[] { "Version", "From", "Dest", "CreateTime", "MsgType", "MsgBody", });
+        new java.lang.String[] { "Version", "Id", "From", "Dest", "CreateTime", "MsgType", "MsgBody", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

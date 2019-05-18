@@ -7,19 +7,22 @@ message InternalMsg {
     required int32 version = 1;
     //协议版本号。第一版本：1，以此类推。
 
-    required Module from = 2;
+    required int64 id = 2;
+    //消息id
+
+    required Module from = 3;
     //发送模块
 
-    required Module dest = 3;
+    required Module dest = 4;
     //接收模块
 
-    required int64 createTime = 4;
+    required int64 createTime = 5;
     //发送时间
 
-    required InternalMsgType msgType = 5;
+    required InternalMsgType msgType = 6;
     //消息类型
 
-    optional string msgBody = 6;
+    optional string msgBody = 7;
     //消息体
 
     enum Module {
@@ -32,6 +35,8 @@ message InternalMsg {
     enum InternalMsgType {
         GREET = 0;
         USER_STATUS = 1;
-        OFFLINE_MSG = 2;
+        ACK = 2;
+        DELIVERED = 3;
+        READ = 4;
     }
 }
