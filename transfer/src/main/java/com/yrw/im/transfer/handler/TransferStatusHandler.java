@@ -1,11 +1,15 @@
-package com.yim.im.client.handler;
+package com.yrw.im.transfer.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
 import com.google.protobuf.Message;
-import com.yim.im.client.api.ClientMsgListener;
 import com.yrw.im.common.domain.AbstractMessageParser;
 import com.yrw.im.common.domain.ResponseCollector;
-import com.yrw.im.proto.generate.Chat;
+import com.yrw.im.common.domain.UserStatus;
+import com.yrw.im.common.function.ImBiConsumer;
+import com.yrw.im.proto.constant.UserStatusEnum;
 import com.yrw.im.proto.generate.Internal;
+import com.yrw.im.transfer.domain.ConnectorConnContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -18,47 +22,41 @@ import static com.yrw.im.common.domain.AbstractMessageParser.checkDest;
 import static com.yrw.im.common.domain.AbstractMessageParser.checkFrom;
 
 /**
- * Date: 2019-04-15
- * Time: 16:42
+ * Date: 2019-05-19
+ * Time: 23:02
  *
  * @author yrw
  */
-public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message> {
-    private Logger logger = LoggerFactory.getLogger(ClientConnectorHandler.class);
+public class TransferStatusHandler extends SimpleChannelInboundHandler<Message> {
+    private static Logger logger = LoggerFactory.getLogger(TransferStatusHandler.class);
 
     private static AtomicReference<ResponseCollector<Internal.InternalMsg>> respCollector = new AtomicReference<>();
     private static ChannelHandlerContext ctx;
-    private static ClientMsgListener clientMsgListener;
 
-    private FromConnectorParser fromConnectorParser;
+    private ObjectMapper objectMapper;
+    private ConnectorConnContext connectorConnContext;
+    private FromStatusParser fromStatusParser;
 
-    public ClientConnectorHandler() {
-        assert clientMsgListener != null;
-        this.fromConnectorParser = new FromConnectorParser();
+    @Inject
+    public TransferStatusHandler(ConnectorConnContext connectorConnContext) {
+        this.objectMapper = new ObjectMapper();
+        this.connectorConnContext = connectorConnContext;
+        this.fromStatusParser = new FromStatusParser();
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ClientConnectorHandler.ctx = ctx;
+        TransferStatusHandler.ctx = ctx;
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
-        logger.debug("[client] get msg: {}", msg.toString());
+        logger.debug("[status] get msg: {}", msg.toString());
 
-        checkFrom(msg, Internal.InternalMsg.Module.CONNECTOR);
-        checkDest(msg, Internal.InternalMsg.Module.CLIENT);
+        checkFrom(msg, Internal.InternalMsg.Module.STATUS);
+        checkDest(msg, Internal.InternalMsg.Module.TRANSFER);
 
-        fromConnectorParser.parse(msg, ctx);
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.error("[client] has error: ", cause);
-    }
-
-    public static ChannelHandlerContext getCtx() {
-        return ctx;
+        fromStatusParser.parse(msg, ctx);
     }
 
     public static ResponseCollector<Internal.InternalMsg> createCollector(Duration timeout) {
@@ -75,19 +73,28 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
         return collector;
     }
 
-    public static void setClientMsgListener(ClientMsgListener clientMsgListener) {
-        ClientConnectorHandler.clientMsgListener = clientMsgListener;
+    public static ChannelHandlerContext getCtx() {
+        return ctx;
     }
 
-    class FromConnectorParser extends AbstractMessageParser {
+    class FromStatusParser extends AbstractMessageParser {
 
         @Override
         public void registerParsers() {
-            register(Chat.ChatMsg.class, (m, ctx) -> clientMsgListener.read(m));
-            register(Internal.InternalMsg.class, (m, ctx) -> {
-                checkMsgType(m, Internal.InternalMsg.InternalMsgType.ACK);
-                getResp(m);
-            });
+            ImBiConsumer<Internal.InternalMsg, ChannelHandlerContext> parser = (m, c) -> {
+                if (m.getMsgType() == Internal.InternalMsg.InternalMsgType.USER_STATUS) {
+                    UserStatus userStatus = objectMapper.readValue(m.getMsgBody(), UserStatus.class);
+                    if (userStatus.getStatus() == UserStatusEnum.OFFLINE.getCode()) {
+                        connectorConnContext.removeUser(userStatus.getUserId());
+                    }
+                } else if (m.getMsgType() == Internal.InternalMsg.InternalMsgType.RESP) {
+                    getResp(m);
+                } else {
+                    logger.warn("[status]");
+                }
+            };
+
+            register(Internal.InternalMsg.class, parser);
         }
 
         private void getResp(Internal.InternalMsg msg) {

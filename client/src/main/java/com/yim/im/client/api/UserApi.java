@@ -29,13 +29,11 @@ public class UserApi {
 
     private ClientRestService clientRestService;
     private RelationCache relationCache;
-    private ClientConnectorHandler clientConnectorHandler;
 
     @Inject
     public UserApi(ClientRestService clientRestService) {
         this.relationCache = Client.injector.getInstance(RelationCache.class);
         this.clientRestService = clientRestService;
-        this.clientConnectorHandler = Client.injector.getInstance(ClientConnectorHandler.class);
     }
 
     public UserInfo login(String username, String password) {
@@ -56,7 +54,7 @@ public class UserApi {
             .build();
 
 
-        CompletableFuture<Internal.InternalMsg> future = clientConnectorHandler.createInitCollector(Duration.ofSeconds(10)).getFuture()
+        CompletableFuture<Internal.InternalMsg> future = ClientConnectorHandler.createCollector(Duration.ofSeconds(10)).getFuture()
             .whenComplete((m, e) -> {
                 if (!m.getMsgBody().equals(greet.getId() + "")) {
                     throw new ImException("[Client] user connected to server failed, " +

@@ -14,12 +14,12 @@ import com.yrw.im.proto.generate.Chat;
  *
  * @author yrw
  */
-public class MsgService {
+public class ConnectorService {
 
     private ClientConnContext clientConnContext;
 
     @Inject
-    public MsgService() {
+    public ConnectorService() {
         this.clientConnContext = ConnectorClient.injector.getInstance(ClientConnContext.class);
     }
 

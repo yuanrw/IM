@@ -2,6 +2,7 @@ package com.yrw.im.common.domain;
 
 import com.google.protobuf.Message;
 import com.yrw.im.common.exception.ImException;
+import com.yrw.im.common.function.ImBiConsumer;
 import com.yrw.im.proto.generate.Internal;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
@@ -9,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 /**
  * Date: 2019-05-18
@@ -20,7 +20,7 @@ import java.util.function.BiConsumer;
 public abstract class AbstractMessageParser {
     private Logger logger = LoggerFactory.getLogger(AbstractMessageParser.class);
 
-    private Map<Class<? extends Message>, BiConsumer<? extends Message, ChannelHandlerContext>> parserMap;
+    private Map<Class<? extends Message>, ImBiConsumer<? extends Message, ChannelHandlerContext>> parserMap;
 
     protected AbstractMessageParser() {
         this.parserMap = new HashMap<>();
@@ -45,28 +45,37 @@ public abstract class AbstractMessageParser {
         }
     }
 
+    public static void checkMsgType(Internal.InternalMsg msg, Internal.InternalMsg.InternalMsgType internalMsgType) {
+        if (msg.getMsgType() != internalMsgType) {
+            throw new ImException("unexpected msg: " + msg.toString());
+        }
+    }
+
     /**
      * 注册msg处理方法
      */
     public abstract void registerParsers();
 
-    protected <T extends Message> void register(Class<T> clazz, BiConsumer<T, ChannelHandlerContext> consumer) {
+    protected <T extends Message> void register(Class<T> clazz, ImBiConsumer<T, ChannelHandlerContext> consumer) {
         parserMap.put(clazz, consumer);
     }
 
     @SuppressWarnings("unchecked")
-    public AbstractMessageParser parse(Message msg, ChannelHandlerContext ctx) {
-        BiConsumer consumer = parserMap.get(msg.getClass());
+    public void parse(Message msg, ChannelHandlerContext ctx) {
+        ImBiConsumer consumer = parserMap.get(msg.getClass());
         if (consumer == null) {
             logger.warn("[message parser] unexpected msg: {}", msg.toString());
-            return this;
         }
         doParse(consumer, msg.getClass(), msg, ctx);
-        return this;
     }
 
-    private <T extends Message> void doParse(BiConsumer<T, ChannelHandlerContext> consumer, Class<T> clazz, Message msg, ChannelHandlerContext ctx) {
+    private <T extends Message> void doParse(ImBiConsumer<T, ChannelHandlerContext> consumer, Class<T> clazz, Message msg, ChannelHandlerContext ctx) {
         T m = clazz.cast(msg);
-        consumer.accept(m, ctx);
+        try {
+            consumer.accept(m, ctx);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ImException("");
+        }
     }
 }

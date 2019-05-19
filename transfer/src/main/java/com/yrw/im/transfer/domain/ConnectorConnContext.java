@@ -2,14 +2,17 @@ package com.yrw.im.transfer.domain;
 
 import com.google.inject.Singleton;
 import com.yrw.im.common.domain.conn.MemoryConnContext;
-import com.yrw.im.common.exception.ImException;
-import io.netty.channel.ChannelHandlerContext;
-import redis.clients.jedis.Jedis;
+import com.yrw.im.proto.generate.Internal;
+import com.yrw.im.transfer.handler.TransferStatusHandler;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 内存存储transfer和connector的连接
@@ -22,19 +25,16 @@ import java.util.concurrent.ConcurrentMap;
 @Singleton
 public class ConnectorConnContext extends MemoryConnContext<ConnectorConn> {
 
-    private static final String USER_CONN_STATUS_KEY = "IM:USER_CONN_STATUS:USERID:";
-    private Jedis jedis;
     /**
      * 缓存
      */
     private ConcurrentMap<Long, Serializable> userIdToNetId;
 
     public ConnectorConnContext() {
-        this.jedis = new Jedis("127.0.0.1");
         this.userIdToNetId = new ConcurrentHashMap<>();
     }
 
-    public ConnectorConn getConnByUserId(Long userId) {
+    public ConnectorConn getConnByUserId(Long userId) throws ExecutionException, InterruptedException {
         Serializable netId = userIdToNetId.get(userId);
         if (netId == null) {
             return null;
@@ -44,7 +44,7 @@ public class ConnectorConnContext extends MemoryConnContext<ConnectorConn> {
             return connectorConn;
         }
 
-        String netIdStr = jedis.hget(USER_CONN_STATUS_KEY, String.valueOf(userId));
+        String netIdStr = getConnectorFromStatus(userId);
         if (netIdStr != null) {
             netId = Long.parseLong(netIdStr);
             if (connMap.containsKey(netId)) {
@@ -55,36 +55,28 @@ public class ConnectorConnContext extends MemoryConnContext<ConnectorConn> {
         return null;
     }
 
-    public void addUser(Long userId, ChannelHandlerContext ctx) {
-        boolean online = userIdToNetId.containsKey(userId) || jedis.hget(USER_CONN_STATUS_KEY, String.valueOf(userId)) != null;
-        if (online) {
-            throw new ImException("repeat.login");
-        }
-        Serializable netId = getConn(ctx).getNetId();
-        userIdToNetId.put(userId, netId);
-        //更新数据库
-        jedis.hset(USER_CONN_STATUS_KEY, String.valueOf(userId), (String) netId);
-        jedis.expire(USER_CONN_STATUS_KEY, 60 * 1000);
+    private String getConnectorFromStatus(Long userId) throws ExecutionException, InterruptedException {
+        final List<String> connectorId = new ArrayList<>();
+
+        CompletableFuture<Internal.InternalMsg> future = TransferStatusHandler.createCollector(Duration.ofSeconds(10)).getFuture()
+            .whenComplete((m, e) -> connectorId.add(m.getMsgBody()));
+
+        Internal.InternalMsg req = Internal.InternalMsg.newBuilder()
+            .setVersion(1)
+            .setFrom(Internal.InternalMsg.Module.TRANSFER)
+            .setDest(Internal.InternalMsg.Module.STATUS)
+            .setCreateTime(System.currentTimeMillis())
+            .setMsgType(Internal.InternalMsg.InternalMsgType.REQ)
+            .setMsgBody(userId + "")
+            .build();
+        TransferStatusHandler.getCtx().writeAndFlush(req);
+
+        future.get();
+
+        return connectorId.get(0);
     }
 
     public void removeUser(Long userId) {
         userIdToNetId.remove(userId);
-        //更新数据库
-        jedis.hdel(USER_CONN_STATUS_KEY, String.valueOf(userId));
-    }
-
-    /**
-     * connector与transfer断开连接后，需要清除connector信息
-     *
-     * @param netId
-     */
-    public void removeConnector(Long netId) {
-        removeConn(netId);
-
-        for (Map.Entry<Long, Serializable> entry : userIdToNetId.entrySet()) {
-            if (entry.getValue().equals(netId)) {
-                userIdToNetId.remove(entry.getKey());
-            }
-        }
     }
 }

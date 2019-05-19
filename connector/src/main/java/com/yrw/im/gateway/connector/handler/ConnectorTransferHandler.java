@@ -6,7 +6,7 @@ import com.google.protobuf.Message;
 import com.yrw.im.common.domain.AbstractMessageParser;
 import com.yrw.im.common.domain.ResponseCollector;
 import com.yrw.im.common.util.IdWorker;
-import com.yrw.im.gateway.connector.service.MsgService;
+import com.yrw.im.gateway.connector.service.ConnectorService;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,13 +34,13 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
     private static ChannelHandlerContext ctx;
 
     private FromTransferParser fromTransferParser;
-    private MsgService msgService;
+    private ConnectorService connectorService;
     private AtomicReference<ResponseCollector<Internal.InternalMsg>> userStatusMsgCollector = new AtomicReference<>();
 
     @Inject
-    public ConnectorTransferHandler(MsgService msgService) {
+    public ConnectorTransferHandler(ConnectorService connectorService) {
         this.fromTransferParser = new FromTransferParser();
-        this.msgService = msgService;
+        this.connectorService = connectorService;
     }
 
     @Override
@@ -93,13 +93,10 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
 
         @Override
         public void registerParsers() {
-            register(Chat.ChatMsg.class, (m, ctx) -> msgService.doChat((m)));
+            register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChat((m)));
             register(Internal.InternalMsg.class, (m, ctx) -> {
-                if (m.getMsgType() == Internal.InternalMsg.InternalMsgType.ACK) {
-                    userStatusSyncDone(m);
-                } else {
-                    logger.warn("[connector] receive unexpected msg: {}", m.toString());
-                }
+                checkMsgType(m, Internal.InternalMsg.InternalMsgType.ACK);
+                userStatusSyncDone(m);
             });
         }
 

@@ -25,10 +25,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.yrw.im</groupId>
             <artifactId>common</artifactId>
         </dependency>
