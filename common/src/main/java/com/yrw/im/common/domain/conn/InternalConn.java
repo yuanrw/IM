@@ -1,6 +1,5 @@
-package com.yrw.im.transfer.domain;
+package com.yrw.im.common.domain.conn;
 
-import com.yrw.im.common.domain.conn.AbstractConn;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.Serializable;
@@ -11,14 +10,14 @@ import java.io.Serializable;
  *
  * @author yrw
  */
-public class ConnectorConn extends AbstractConn {
+public class InternalConn extends AbstractConn {
 
-    public ConnectorConn(ChannelHandlerContext ctx) {
+    public InternalConn(ChannelHandlerContext ctx) {
         super(ctx);
     }
 
     @Override
     protected Serializable generateNetId(ChannelHandlerContext ctx) {
-        return ctx.channel().attr(ConnectorConn.NET_ID).get();
+        return ctx.channel().attr(InternalConn.NET_ID).get();
     }
 }

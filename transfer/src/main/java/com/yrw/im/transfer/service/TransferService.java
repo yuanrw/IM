@@ -3,10 +3,10 @@ package com.yrw.im.transfer.service;
 import com.google.inject.Inject;
 import com.rabbitmq.client.MessageProperties;
 import com.yrw.im.common.domain.conn.Conn;
+import com.yrw.im.common.domain.conn.InternalConn;
 import com.yrw.im.common.domain.constant.MqConstant;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.transfer.TransferMqProducer;
-import com.yrw.im.transfer.domain.ConnectorConn;
 import com.yrw.im.transfer.domain.ConnectorConnContext;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -29,7 +29,7 @@ public class TransferService {
     }
 
     public void doChat(Chat.ChatMsg msg) throws IOException, ExecutionException, InterruptedException {
-        ConnectorConn conn = connContext.getConnByUserId(msg.getDestId());
+        InternalConn conn = connContext.getConnByUserId(msg.getDestId());
 
         if (conn != null) {
             conn.getCtx().writeAndFlush(msg);
@@ -40,7 +40,7 @@ public class TransferService {
 
     public void doGreet(ChannelHandlerContext ctx) {
         ctx.channel().attr(Conn.NET_ID).set(ctx.channel().id().asLongText());
-        ConnectorConn conn = new ConnectorConn(ctx);
+        InternalConn conn = new InternalConn(ctx);
         connContext.addConn(conn);
     }
 

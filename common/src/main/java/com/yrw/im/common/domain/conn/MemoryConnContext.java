@@ -1,5 +1,6 @@
 package com.yrw.im.common.domain.conn;
 
+import com.google.inject.Singleton;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentMap;
  *
  * @author yrw
  */
+@Singleton
 public class MemoryConnContext<C extends Conn> implements ConnContext<C> {
     private static final Logger logger = LoggerFactory.getLogger(MemoryConnContext.class);
 

@@ -1,6 +1,7 @@
 package com.yrw.im.transfer.domain;
 
 import com.google.inject.Singleton;
+import com.yrw.im.common.domain.conn.InternalConn;
 import com.yrw.im.common.domain.conn.MemoryConnContext;
 import com.yrw.im.proto.generate.Internal;
 import com.yrw.im.transfer.handler.TransferStatusHandler;
@@ -15,15 +16,15 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 
 /**
- * 内存存储transfer和connector的连接
- * redis存储userId和netId的关系
+ * 存储transfer和connector的连接
+ * 以及用户和connector的关系
  * Date: 2019-04-12
  * Time: 18:22
  *
  * @author yrw
  */
 @Singleton
-public class ConnectorConnContext extends MemoryConnContext<ConnectorConn> {
+public class ConnectorConnContext extends MemoryConnContext<InternalConn> {
 
     /**
      * 缓存
@@ -34,12 +35,12 @@ public class ConnectorConnContext extends MemoryConnContext<ConnectorConn> {
         this.userIdToNetId = new ConcurrentHashMap<>();
     }
 
-    public ConnectorConn getConnByUserId(Long userId) throws ExecutionException, InterruptedException {
+    public InternalConn getConnByUserId(Long userId) throws ExecutionException, InterruptedException {
         Serializable netId = userIdToNetId.get(userId);
         if (netId == null) {
             return null;
         }
-        ConnectorConn connectorConn = connMap.get(netId);
+        InternalConn connectorConn = connMap.get(netId);
         if (connectorConn != null) {
             return connectorConn;
         }
