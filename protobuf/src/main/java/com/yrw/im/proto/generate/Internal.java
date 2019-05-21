@@ -292,13 +292,9 @@ public final class Internal {
        */
       TRANSFER(1),
       /**
-       * <code>STATUS = 2;</code>
+       * <code>CLIENT = 2;</code>
        */
-      STATUS(2),
-      /**
-       * <code>CLIENT = 3;</code>
-       */
-      CLIENT(3),
+      CLIENT(2),
       ;
 
       /**
@@ -310,13 +306,9 @@ public final class Internal {
        */
       public static final int TRANSFER_VALUE = 1;
       /**
-       * <code>STATUS = 2;</code>
+       * <code>CLIENT = 2;</code>
        */
-      public static final int STATUS_VALUE = 2;
-      /**
-       * <code>CLIENT = 3;</code>
-       */
-      public static final int CLIENT_VALUE = 3;
+      public static final int CLIENT_VALUE = 2;
 
 
       public final int getNumber() {
@@ -335,8 +327,7 @@ public final class Internal {
         switch (value) {
           case 0: return CONNECTOR;
           case 1: return TRANSFER;
-          case 2: return STATUS;
-          case 3: return CLIENT;
+          case 2: return CLIENT;
           default: return null;
         }
       }
@@ -411,14 +402,6 @@ public final class Internal {
        * <code>READ = 4;</code>
        */
       READ(4),
-      /**
-       * <code>REQ = 5;</code>
-       */
-      REQ(5),
-      /**
-       * <code>RESP = 6;</code>
-       */
-      RESP(6),
       ;
 
       /**
@@ -441,14 +424,6 @@ public final class Internal {
        * <code>READ = 4;</code>
        */
       public static final int READ_VALUE = 4;
-      /**
-       * <code>REQ = 5;</code>
-       */
-      public static final int REQ_VALUE = 5;
-      /**
-       * <code>RESP = 6;</code>
-       */
-      public static final int RESP_VALUE = 6;
 
 
       public final int getNumber() {
@@ -470,8 +445,6 @@ public final class Internal {
           case 2: return ACK;
           case 3: return DELIVERED;
           case 4: return READ;
-          case 5: return REQ;
-          case 6: return RESP;
           default: return null;
         }
       }
@@ -1696,18 +1669,17 @@ public final class Internal {
   static {
     java.lang.String[] descriptorData = {
       "\n\016internal.proto\022\031com.yrw.im.proto.gener" +
-      "ate\"\265\003\n\013InternalMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002" +
+      "ate\"\226\003\n\013InternalMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002" +
       "id\030\002 \002(\003\022;\n\004from\030\003 \002(\0162-.com.yrw.im.prot" +
       "o.generate.InternalMsg.Module\022;\n\004dest\030\004 " +
       "\002(\0162-.com.yrw.im.proto.generate.Internal" +
       "Msg.Module\022\022\n\ncreateTime\030\005 \002(\003\022G\n\007msgTyp" +
       "e\030\006 \002(\01626.com.yrw.im.proto.generate.Inte" +
       "rnalMsg.InternalMsgType\022\017\n\007msgBody\030\007 \001(\t" +
-      "\"=\n\006Module\022\r\n\tCONNECTOR\020\000\022\014\n\010TRANSFER\020\001\022" +
-      "\n\n\006STATUS\020\002\022\n\n\006CLIENT\020\003\"b\n\017InternalMsgTy" +
-      "pe\022\t\n\005GREET\020\000\022\017\n\013USER_STATUS\020\001\022\007\n\003ACK\020\002\022" +
-      "\r\n\tDELIVERED\020\003\022\010\n\004READ\020\004\022\007\n\003REQ\020\005\022\010\n\004RES" +
-      "P\020\006B\nB\010Internal"
+      "\"1\n\006Module\022\r\n\tCONNECTOR\020\000\022\014\n\010TRANSFER\020\001\022" +
+      "\n\n\006CLIENT\020\002\"O\n\017InternalMsgType\022\t\n\005GREET\020" +
+      "\000\022\017\n\013USER_STATUS\020\001\022\007\n\003ACK\020\002\022\r\n\tDELIVERED" +
+      "\020\003\022\010\n\004READ\020\004B\nB\010Internal"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

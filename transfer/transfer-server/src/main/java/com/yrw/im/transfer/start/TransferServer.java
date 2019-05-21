@@ -1,10 +1,10 @@
-package com.yrw.im.gateway.connector.start;
+package com.yrw.im.transfer.start;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.yrw.im.common.code.MsgDecoder;
 import com.yrw.im.common.code.MsgEncoder;
-import com.yrw.im.gateway.connector.handler.ConnectorClientHandler;
+import com.yrw.im.transfer.handler.TransferConnectorHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
@@ -19,17 +19,17 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 
 /**
- * Date: 2019-02-09
- * Time: 23:27
+ * Date: 2019-04-12
+ * Time: 18:16
  *
  * @author yrw
  */
-public class ConnectorServer {
-    private static final Logger logger = LoggerFactory.getLogger(ConnectorServer.class);
+public class TransferServer {
+    private static Logger logger = LoggerFactory.getLogger(TransferServer.class);
 
     private static Injector injector = Guice.createInjector();
 
-    static void start(int port) {
+    public static void startTransferServer(int port) {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
 
@@ -42,16 +42,16 @@ public class ConnectorServer {
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
                     pipeline.addLast("MsgEncoder", new MsgEncoder());
-                    pipeline.addLast("ConnectorClientHandler", injector.getInstance(ConnectorClientHandler.class));
+                    pipeline.addLast("TransferClientHandler", injector.getInstance(TransferConnectorHandler.class));
                 }
             });
 
         bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
                 //TODO: do some init
-                logger.info("[IM connector] start successful, waiting for clients connecting......");
+                logger.info("[IM transfer] start successful, waiting for connectors connecting......");
             } else {
-                logger.error("[IM connector] start failed!");
+                logger.error("[IM transfer] start failed!");
             }
         });
     }

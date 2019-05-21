@@ -28,8 +28,7 @@ message InternalMsg {
     enum Module {
         CONNECTOR = 0;
         TRANSFER = 1;
-        STATUS = 2;
-        CLIENT = 3;
+        CLIENT = 2;
     }
 
     enum InternalMsgType {
@@ -38,7 +37,5 @@ message InternalMsg {
         ACK = 2;
         DELIVERED = 3;
         READ = 4;
-        REQ = 5;
-        RESP = 6;
     }
 }

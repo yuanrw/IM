@@ -10,6 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>transfer</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>transfer-server</module>
+        <module>status</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -31,10 +36,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
         </dependency>
     </dependencies>
 

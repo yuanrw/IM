@@ -27,7 +27,7 @@ public class ConnectorClient {
 
     public static Injector injector = Guice.createInjector();
 
-    static void startClient(String host, int port) {
+    static void start(String host, int port) {
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
         b.group(group)
@@ -38,7 +38,7 @@ public class ConnectorClient {
                     ChannelPipeline p = ch.pipeline();
                     p.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
                     p.addLast("MsgEncoder", new MsgEncoder());
-                    p.addLast("ClientHandler", injector.getInstance(ConnectorTransferHandler.class));
+                    p.addLast("ClientTransferHandler", injector.getInstance(ConnectorTransferHandler.class));
                 }
             }).connect(host, port)
             .addListener((ChannelFutureListener) future -> {

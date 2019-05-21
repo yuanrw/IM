@@ -10,10 +10,10 @@ public class ConnectorStarter {
 
     public static void main(String[] args) {
         int port = 9081;
-        ConnectorServer.startGateServer(port);
+        ConnectorServer.start(port);
 
         String transferHost = "127.0.0.1";
         int transferPort = 9082;
-        ConnectorClient.startClient(transferHost, transferPort);
+        ConnectorClient.start(transferHost, transferPort);
     }
 }
