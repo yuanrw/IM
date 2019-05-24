@@ -2,9 +2,11 @@ package com.yrw.im.client.samples;
 
 import com.yim.im.client.Client;
 import com.yim.im.client.api.ChatApi;
+import com.yim.im.client.api.ClientMsgListener;
 import com.yim.im.client.api.UserApi;
 import com.yrw.im.common.domain.UserInfo;
 import com.yrw.im.common.domain.po.Relation;
+import com.yrw.im.proto.generate.Chat;
 
 import java.util.List;
 
@@ -20,7 +22,22 @@ public class ClientApplication {
         Client client = new Client()
             .setConnectorHost("127.0.0.1")
             .setConnectorPort(9081)
-            .setClientMsgListener(chatMsg -> System.out.println(chatMsg.getMsgBody()))
+            .setClientMsgListener(new ClientMsgListener() {
+                @Override
+                public void active() {
+                    System.out.println("user is online!");
+                }
+
+                @Override
+                public void read(Chat.ChatMsg chatMsg) {
+                    System.out.println("do customer function: " + chatMsg.toString());
+                }
+
+                @Override
+                public void inactive() {
+                    System.out.println("user is offline");
+                }
+            })
             .start();
 
         UserApi userApi = client.getApi(UserApi.class);

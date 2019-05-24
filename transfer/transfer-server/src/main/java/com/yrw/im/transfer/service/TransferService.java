@@ -6,12 +6,12 @@ import com.yrw.im.common.domain.conn.Conn;
 import com.yrw.im.common.domain.conn.InternalConn;
 import com.yrw.im.common.domain.constant.MqConstant;
 import com.yrw.im.proto.generate.Chat;
+import com.yrw.im.proto.generate.Internal;
+import com.yrw.im.status.domain.ConnectorConnContext;
 import com.yrw.im.transfer.start.TransferMqProducer;
-import com.yrw.im.transfer.domain.ConnectorConnContext;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Date: 2019-05-04
@@ -28,7 +28,7 @@ public class TransferService {
         this.connContext = connContext;
     }
 
-    public void doChat(Chat.ChatMsg msg) throws IOException, ExecutionException, InterruptedException {
+    public void doChat(Chat.ChatMsg msg) throws IOException {
         InternalConn conn = connContext.getConnByUserId(msg.getDestId());
 
         if (conn != null) {
@@ -38,8 +38,8 @@ public class TransferService {
         }
     }
 
-    public void doGreet(ChannelHandlerContext ctx) {
-        ctx.channel().attr(Conn.NET_ID).set(ctx.channel().id().asLongText());
+    public void doGreet(Internal.InternalMsg msg, ChannelHandlerContext ctx) {
+        ctx.channel().attr(Conn.NET_ID).set(msg.getMsgBody());
         InternalConn conn = new InternalConn(ctx);
         connContext.addConn(conn);
     }

@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>transfer-server</module>
-        <module>status</module>
+        <module>user-status</module>
     </modules>
 
     <dependencies>
@@ -40,9 +40,6 @@
     </dependencies>
 
     <build>
-        <filters>
-            <filter>../prop/prop.properties</filter>
-        </filters>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

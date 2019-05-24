@@ -10,5 +10,9 @@ import com.yrw.im.proto.generate.Chat;
  */
 public interface ClientMsgListener {
 
+    void active();
+
     void read(Chat.ChatMsg chatMsg);
+
+    void inactive();
 }

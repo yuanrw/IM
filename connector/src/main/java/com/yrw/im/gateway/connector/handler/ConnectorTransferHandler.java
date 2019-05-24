@@ -3,9 +3,11 @@ package com.yrw.im.gateway.connector.handler;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.protobuf.Message;
-import com.yrw.im.common.domain.AbstractMessageParser;
+import com.yrw.im.common.domain.AbstractMsgParser;
+import com.yrw.im.common.domain.InternalMsgParser;
 import com.yrw.im.common.domain.ResponseCollector;
 import com.yrw.im.common.util.IdWorker;
+import com.yrw.im.common.util.SessionIdGenerator;
 import com.yrw.im.gateway.connector.service.ConnectorService;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
@@ -17,8 +19,8 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.yrw.im.common.domain.AbstractMessageParser.checkDest;
-import static com.yrw.im.common.domain.AbstractMessageParser.checkFrom;
+import static com.yrw.im.common.domain.AbstractMsgParser.checkDest;
+import static com.yrw.im.common.domain.AbstractMsgParser.checkFrom;
 
 /**
  * 将消息发送给transfer
@@ -29,8 +31,9 @@ import static com.yrw.im.common.domain.AbstractMessageParser.checkFrom;
  */
 @Singleton
 public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Message> {
-    private Logger logger = LoggerFactory.getLogger(ConnectorTransferHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(ConnectorTransferHandler.class);
 
+    private static String connectorId = SessionIdGenerator.generateId();
     private static ChannelHandlerContext ctx;
 
     private FromTransferParser fromTransferParser;
@@ -52,6 +55,7 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
             .setId(IdWorker.genId())
             .setVersion(1)
             .setMsgType(Internal.InternalMsg.InternalMsgType.GREET)
+            .setMsgBody(connectorId)
             .setFrom(Internal.InternalMsg.Module.CONNECTOR)
             .setDest(Internal.InternalMsg.Module.TRANSFER)
             .setCreateTime(System.currentTimeMillis())
@@ -89,15 +93,18 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
     }
 
 
-    class FromTransferParser extends AbstractMessageParser {
+    class FromTransferParser extends AbstractMsgParser {
 
         @Override
         public void registerParsers() {
+            InternalMsgParser parser = new InternalMsgParser(3);
+            parser.register(Internal.InternalMsg.InternalMsgType.ACK,
+                (m, ctx) -> userStatusSyncDone(m));
+            parser.register(Internal.InternalMsg.InternalMsgType.FORCE_OFFLINE,
+                (m, ctx) -> connectorService.forceOffline(Long.parseLong(m.getMsgBody())));
+
             register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChat((m)));
-            register(Internal.InternalMsg.class, (m, ctx) -> {
-                checkMsgType(m, Internal.InternalMsg.InternalMsgType.ACK);
-                userStatusSyncDone(m);
-            });
+            register(Internal.InternalMsg.class, parser.generateFun());
         }
 
         private void userStatusSyncDone(Internal.InternalMsg msg) {

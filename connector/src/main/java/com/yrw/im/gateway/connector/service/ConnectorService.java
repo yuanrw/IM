@@ -2,6 +2,7 @@ package com.yrw.im.gateway.connector.service;
 
 import com.google.inject.Inject;
 import com.yrw.im.common.domain.conn.Conn;
+import com.yrw.im.gateway.connector.domain.ClientConn;
 import com.yrw.im.gateway.connector.domain.ClientConnContext;
 import com.yrw.im.gateway.connector.handler.ConnectorTransferHandler;
 import com.yrw.im.gateway.connector.start.ConnectorClient;
@@ -33,5 +34,10 @@ public class ConnectorService {
             //不保存历史记录
             conn.getCtx().writeAndFlush(msg);
         }
+    }
+
+    public void forceOffline(Long userId) {
+        ClientConn conn = clientConnContext.getConnByUserId(userId);
+        conn.getCtx().close();
     }
 }

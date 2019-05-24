@@ -16,7 +16,6 @@
         <module>transfer</module>
         <module>common</module>
         <module>client-samples</module>
-        <module>user-status</module>
     </modules>
 
     <properties>

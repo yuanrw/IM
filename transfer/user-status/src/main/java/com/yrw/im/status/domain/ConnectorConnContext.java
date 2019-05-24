@@ -1,9 +1,11 @@
-package com.yrw.im.transfer.domain;
+package com.yrw.im.status.domain;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.yrw.im.common.domain.conn.InternalConn;
 import com.yrw.im.common.domain.conn.MemoryConnContext;
+import com.yrw.im.common.util.IdWorker;
+import com.yrw.im.proto.generate.Internal;
 import com.yrw.im.status.service.UserStatusService;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -26,11 +28,27 @@ public class ConnectorConnContext extends MemoryConnContext<InternalConn> {
     }
 
     public void online(ChannelHandlerContext ctx, Long userId) {
-        userStatusService.online(getConn(ctx).getNetId().toString(), userId);
+        String oldConnectorId = userStatusService.online(getConn(ctx).getNetId().toString(), userId);
+        if (oldConnectorId != null) {
+            InternalConn conn = getConn(oldConnectorId);
+            if (conn != null) {
+                Internal.InternalMsg forceOffline = Internal.InternalMsg.newBuilder()
+                    .setVersion(1)
+                    .setId(IdWorker.genId())
+                    .setCreateTime(System.currentTimeMillis())
+                    .setFrom(Internal.InternalMsg.Module.TRANSFER)
+                    .setDest(Internal.InternalMsg.Module.CONNECTOR)
+                    .setMsgType(Internal.InternalMsg.InternalMsgType.FORCE_OFFLINE)
+                    .setMsgBody(userId + "")
+                    .build();
+
+                conn.getCtx().writeAndFlush(forceOffline);
+            }
+        }
     }
 
-    public void offline(ChannelHandlerContext ctx, Long userId) {
-        userStatusService.offline(getConn(ctx).getNetId().toString(), userId);
+    public void offline(Long userId) {
+        userStatusService.offline(userId);
     }
 
     public InternalConn getConnByUserId(Long userId) {
@@ -40,16 +58,10 @@ public class ConnectorConnContext extends MemoryConnContext<InternalConn> {
             if (conn != null) {
                 return conn;
             } else {
-                //connector宕机过
-                userStatusService.connectorDone(connectorId);
+                //connectorId已过时，而用户还没再次上线
+                userStatusService.offline(userId);
             }
         }
         return null;
-    }
-
-    @Override
-    public void removeConn(ChannelHandlerContext ctx) {
-        userStatusService.connectorDone(getConn(ctx).getNetId().toString());
-        super.removeConn(ctx);
     }
 }

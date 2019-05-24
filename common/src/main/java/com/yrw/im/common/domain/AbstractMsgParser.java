@@ -17,12 +17,12 @@ import java.util.Map;
  *
  * @author yrw
  */
-public abstract class AbstractMessageParser {
-    private Logger logger = LoggerFactory.getLogger(AbstractMessageParser.class);
+public abstract class AbstractMsgParser {
+    private Logger logger = LoggerFactory.getLogger(AbstractMsgParser.class);
 
     private Map<Class<? extends Message>, ImBiConsumer<? extends Message, ChannelHandlerContext>> parserMap;
 
-    protected AbstractMessageParser() {
+    protected AbstractMsgParser() {
         this.parserMap = new HashMap<>();
         registerParsers();
     }
@@ -45,10 +45,6 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    public static void parseInternalMsg(Internal.InternalMsg msg, ChannelHandlerContext ctx, InternalMsgParser parser) {
-        parser.parse(msg, ctx);
-    }
-
     /**
      * 注册msg处理方法
      */
@@ -56,10 +52,6 @@ public abstract class AbstractMessageParser {
 
     protected <T extends Message> void register(Class<T> clazz, ImBiConsumer<T, ChannelHandlerContext> consumer) {
         parserMap.put(clazz, consumer);
-    }
-
-    protected void registerInternal(Internal.InternalMsg.InternalMsgType type, ImBiConsumer<Internal.InternalMsg, ChannelHandlerContext> consumer) {
-
     }
 
     @SuppressWarnings("unchecked")

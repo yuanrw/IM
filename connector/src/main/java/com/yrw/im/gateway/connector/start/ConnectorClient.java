@@ -4,16 +4,18 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.yrw.im.common.code.MsgDecoder;
 import com.yrw.im.common.code.MsgEncoder;
+import com.yrw.im.common.exception.ImException;
 import com.yrw.im.gateway.connector.handler.ConnectorTransferHandler;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Date: 2019-05-02
@@ -30,7 +32,7 @@ public class ConnectorClient {
     static void start(String host, int port) {
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
-        b.group(group)
+        ChannelFuture f = b.group(group)
             .channel(NioSocketChannel.class)
             .handler(new ChannelInitializer<NioSocketChannel>() {
                 @Override
@@ -43,10 +45,16 @@ public class ConnectorClient {
             }).connect(host, port)
             .addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
-                    logger.info("connector connect transfer successfully...");
+                    logger.info("connector connect to transfer successfully...");
                 } else {
-                    logger.error("connector connect transfer failed!");
+                    throw new ImException("connector connect to transfer failed!");
                 }
             });
+
+        try {
+            f.get(10, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new ImException("connector connect to transfer failed!");
+        }
     }
 }

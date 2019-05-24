@@ -5,7 +5,6 @@ import com.google.protobuf.ByteString;
 import com.yim.im.client.handler.ClientConnectorHandler;
 import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.exception.ImException;
-import com.yrw.im.common.util.Encryptor;
 import com.yrw.im.common.util.IdWorker;
 import com.yrw.im.proto.generate.Chat;
 import io.netty.util.CharsetUtil;
@@ -33,8 +32,6 @@ public class ChatService {
         }
         String[] keys = relation.getEncryptKey().split("\\|");
 
-        byte[] content = Encryptor.encrypt(keys[0], keys[1], text.getBytes(CharsetUtil.UTF_8));
-
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
             .setId(IdWorker.genId())
             .setFromId(userId)
@@ -44,7 +41,7 @@ public class ChatService {
             .setMsgType(Chat.ChatMsg.MsgType.TEXT)
             .setVersion(1)
             .setToken(token)
-            .setMsgBody(ByteString.copyFrom(content))
+            .setMsgBody(ByteString.copyFrom(text, CharsetUtil.UTF_8))
             .build();
 
         ClientConnectorHandler.getCtx().writeAndFlush(chat);

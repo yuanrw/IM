@@ -3,20 +3,22 @@ package com.yrw.im.transfer.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.protobuf.Message;
-import com.yrw.im.common.domain.AbstractMessageParser;
+import com.yrw.im.common.domain.AbstractMsgParser;
+import com.yrw.im.common.domain.InternalMsgParser;
 import com.yrw.im.common.domain.UserStatus;
+import com.yrw.im.common.util.IdWorker;
 import com.yrw.im.proto.constant.UserStatusEnum;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
-import com.yrw.im.transfer.domain.ConnectorConnContext;
+import com.yrw.im.status.domain.ConnectorConnContext;
 import com.yrw.im.transfer.service.TransferService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.yrw.im.common.domain.AbstractMessageParser.checkDest;
-import static com.yrw.im.common.domain.AbstractMessageParser.checkFrom;
+import static com.yrw.im.common.domain.AbstractMsgParser.checkDest;
+import static com.yrw.im.common.domain.AbstractMsgParser.checkFrom;
 
 /**
  * Date: 2019-04-12
@@ -52,34 +54,41 @@ public class TransferConnectorHandler extends SimpleChannelInboundHandler<Messag
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        //删除连接并更新用户状态
         connectorConnContext.removeConn(ctx);
     }
 
-    class FromConnectorParser extends AbstractMessageParser {
+    class FromConnectorParser extends AbstractMsgParser {
 
         @Override
         public void registerParsers() {
-            register(Chat.ChatMsg.class, (m, ctx) -> transferService.doChat(m));
-            register(Internal.InternalMsg.class, (m, ctx) -> {
-                switch (m.getMsgType()) {
-                    case GREET:
-                        transferService.doGreet(ctx);
-                        break;
-                    case USER_STATUS:
-                        UserStatus userStatus = objectMapper.readValue(m.getMsgBody(), UserStatus.class);
-                        switch (UserStatusEnum.getStatus(userStatus.getStatus())) {
-                            case ONLINE:
-                                connectorConnContext.online(ctx, userStatus.getUserId());
-                                break;
-                            case OFFLINE:
-                                connectorConnContext.offline(ctx, userStatus.getUserId());
-                                break;
-                            default:
-                        }
-                    default:
-                        logger.warn("[transfer] unexpected msg: {}", m.toString());
+            InternalMsgParser parser = new InternalMsgParser(3);
+            parser.register(Internal.InternalMsg.InternalMsgType.GREET, (m, ctx) -> transferService.doGreet(m, ctx));
+            parser.register(Internal.InternalMsg.InternalMsgType.USER_STATUS, (m, ctx) -> {
+                UserStatus userStatus = objectMapper.readValue(m.getMsgBody(), UserStatus.class);
+                if (UserStatusEnum.getStatus(userStatus.getStatus()) == UserStatusEnum.ONLINE) {
+                    connectorConnContext.online(ctx, userStatus.getUserId());
+                    sendAckToConnector(m.getId(), ctx);
+                } else {
+                    connectorConnContext.offline(userStatus.getUserId());
                 }
             });
+
+            register(Chat.ChatMsg.class, (m, ctx) -> transferService.doChat(m));
+            register(Internal.InternalMsg.class, parser.generateFun());
+        }
+
+        private void sendAckToConnector(Long id, ChannelHandlerContext ctx) {
+            Internal.InternalMsg msg = Internal.InternalMsg.newBuilder()
+                .setVersion(1)
+                .setId(IdWorker.genId())
+                .setFrom(Internal.InternalMsg.Module.TRANSFER)
+                .setDest(Internal.InternalMsg.Module.CONNECTOR)
+                .setCreateTime(System.currentTimeMillis())
+                .setMsgType(Internal.InternalMsg.InternalMsgType.ACK)
+                .setMsgBody(id + "")
+                .build();
+            ctx.writeAndFlush(msg);
         }
     }
 }

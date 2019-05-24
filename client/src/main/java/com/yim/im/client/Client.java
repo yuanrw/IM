@@ -10,15 +10,17 @@ import com.yim.im.client.handler.code.AesDecoder;
 import com.yim.im.client.handler.code.AesEncoder;
 import com.yrw.im.common.code.MsgDecoder;
 import com.yrw.im.common.code.MsgEncoder;
+import com.yrw.im.common.exception.ImException;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Date: 2019-04-15
@@ -47,7 +49,7 @@ public class Client {
 
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
-        b.group(group)
+        ChannelFuture f = b.group(group)
             .channel(NioSocketChannel.class)
             .handler(new ChannelInitializer<NioSocketChannel>() {
                 @Override
@@ -66,11 +68,18 @@ public class Client {
             }).connect(connectorHost, connectorPort)
             .addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
-                    logger.info("Client connect connector successfully...");
+                    logger.info("Client connect to connector successfully...");
                 } else {
-                    logger.error("Client connect connector failed!");
+                    throw new ImException("client connect to connector failed!");
                 }
             });
+
+        try {
+            f.get(10, TimeUnit.SECONDS);
+        } catch (InterruptedException | TimeoutException | ExecutionException e) {
+            throw new ImException("client connect to connector failed!");
+        }
+
         return this;
     }
 

@@ -45,6 +45,6 @@ public class ClientConnContext extends MemoryConnContext<ClientConn> {
         logger.debug("[ClientConn] user: {} is online", userId);
 
         connMap.putIfAbsent(conn.getNetId(), conn);
-        userIdToNetId.putIfAbsent(conn.getUserId(), conn.getNetId());
+        userIdToNetId.put(conn.getUserId(), conn.getNetId());
     }
 }

@@ -13,8 +13,6 @@ import com.yrw.im.gateway.connector.start.ConnectorClient;
 import com.yrw.im.proto.constant.UserStatusEnum;
 import com.yrw.im.proto.generate.Internal;
 import io.netty.channel.ChannelHandlerContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
@@ -27,7 +25,6 @@ import java.util.concurrent.ExecutionException;
  * @author yrw
  */
 public class UserStatusService {
-    private Logger logger = LoggerFactory.getLogger(UserStatusService.class);
 
     private ClientConnContext clientConnContext;
     private ObjectMapper objectMapper;
@@ -86,9 +83,9 @@ public class UserStatusService {
 
     public void userOffline(ChannelHandlerContext ctx) throws JsonProcessingException {
         ClientConn conn = clientConnContext.getConn(ctx);
-
-        //移除连接
-        clientConnContext.removeConn(ctx);
+        if (conn == null) {
+            return;
+        }
 
         //向transfer同步用户状态
         UserStatus userStatus = new UserStatus();
@@ -96,6 +93,9 @@ public class UserStatusService {
         userStatus.setStatus(UserStatusEnum.OFFLINE.getCode());
 
         ConnectorTransferHandler.getCtx().writeAndFlush(statusMsg(userStatus));
+
+        //移除连接
+        clientConnContext.removeConn(ctx);
     }
 
     private Internal.InternalMsg statusMsg(UserStatus userStatus) throws JsonProcessingException {

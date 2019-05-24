@@ -4,12 +4,10 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.yrw.im.common.code.MsgDecoder;
 import com.yrw.im.common.code.MsgEncoder;
+import com.yrw.im.common.exception.ImException;
 import com.yrw.im.transfer.handler.TransferConnectorHandler;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -17,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Date: 2019-04-12
@@ -46,13 +47,19 @@ public class TransferServer {
                 }
             });
 
-        bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
+        ChannelFuture f = bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
                 //TODO: do some init
-                logger.info("[IM transfer] start successful, waiting for connectors connecting......");
+                logger.info("[transfer] start successful, waiting for connectors connecting......");
             } else {
-                logger.error("[IM transfer] start failed!");
+                throw new ImException("[transfer] start failed!");
             }
         });
+
+        try {
+            f.get(10, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new ImException("[transfer] start failed!");
+        }
     }
 }

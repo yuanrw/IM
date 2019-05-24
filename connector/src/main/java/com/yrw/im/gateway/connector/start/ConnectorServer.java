@@ -4,12 +4,10 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.yrw.im.common.code.MsgDecoder;
 import com.yrw.im.common.code.MsgEncoder;
+import com.yrw.im.common.exception.ImException;
 import com.yrw.im.gateway.connector.handler.ConnectorClientHandler;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -17,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Date: 2019-02-09
@@ -46,13 +47,19 @@ public class ConnectorServer {
                 }
             });
 
-        bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
+        ChannelFuture f = bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
                 //TODO: do some init
-                logger.info("[IM connector] start successful, waiting for clients connecting......");
+                logger.info("[connector] start successful, waiting for clients connecting......");
             } else {
-                logger.error("[IM connector] start failed!");
+                throw new ImException("[connector] start failed!");
             }
         });
+
+        try {
+            f.get(10, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new ImException("[connector] start failed!");
+        }
     }
 }

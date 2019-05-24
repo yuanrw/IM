@@ -2,7 +2,8 @@ package com.yrw.im.gateway.connector.handler;
 
 import com.google.inject.Inject;
 import com.google.protobuf.Message;
-import com.yrw.im.common.domain.AbstractMessageParser;
+import com.yrw.im.common.domain.AbstractMsgParser;
+import com.yrw.im.common.domain.InternalMsgParser;
 import com.yrw.im.gateway.connector.domain.ClientConnContext;
 import com.yrw.im.gateway.connector.service.ConnectorService;
 import com.yrw.im.gateway.connector.service.UserStatusService;
@@ -14,8 +15,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.yrw.im.common.domain.AbstractMessageParser.checkDest;
-import static com.yrw.im.common.domain.AbstractMessageParser.checkFrom;
+import static com.yrw.im.common.domain.AbstractMsgParser.checkDest;
+import static com.yrw.im.common.domain.AbstractMsgParser.checkFrom;
 
 /**
  * 处理客户端的消息
@@ -52,6 +53,7 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        //删除连接并更新用户状态
         userStatusService.userOffline(ctx);
         ctx.close();
     }
@@ -63,15 +65,16 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
         ctx.close();
     }
 
-    class FromClientParser extends AbstractMessageParser {
+    class FromClientParser extends AbstractMsgParser {
 
         @Override
         public void registerParsers() {
+            InternalMsgParser parser = new InternalMsgParser(3);
+            parser.register(Internal.InternalMsg.InternalMsgType.GREET,
+                (m, ctx) -> userStatusService.userOnline(m, ctx));
+
             register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChat(m));
-            register(Internal.InternalMsg.class, (m, ctx) -> {
-                checkMsgType(m, Internal.InternalMsg.InternalMsgType.GREET);
-                userStatusService.userOnline(m, ctx);
-            });
+            register(Internal.InternalMsg.class, parser.generateFun());
         }
     }
 }

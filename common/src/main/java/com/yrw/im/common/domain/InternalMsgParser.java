@@ -4,6 +4,7 @@ import com.yrw.im.common.function.ImBiConsumer;
 import com.yrw.im.proto.generate.Internal;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,19 +14,21 @@ import java.util.Optional;
  *
  * @author yrw
  */
-public class InternalMsgParserGenerator {
+public class InternalMsgParser {
 
     private Map<Internal.InternalMsg.InternalMsgType, ImBiConsumer<Internal.InternalMsg, ChannelHandlerContext>> parseMap;
 
-    public void put(Internal.InternalMsg.InternalMsgType type, ImBiConsumer<Internal.InternalMsg, ChannelHandlerContext> consumer) {
+    public InternalMsgParser(int size) {
+        this.parseMap = new HashMap<>(size);
+    }
+
+    public void register(Internal.InternalMsg.InternalMsgType type, ImBiConsumer<Internal.InternalMsg, ChannelHandlerContext> consumer) {
         parseMap.put(type, consumer);
     }
 
-    public ImBiConsumer<Internal.InternalMsg, ChannelHandlerContext> generate() {
-        ImBiConsumer<Internal.InternalMsg, ChannelHandlerContext> function = (m, ctx) -> {
-            Optional.ofNullable(parseMap.get(m))
-                .orElseThrow(() -> new IllegalArgumentException("Invalid internal msg type"));
-        }
+    public ImBiConsumer<Internal.InternalMsg, ChannelHandlerContext> generateFun() {
+        return (m, ctx) -> Optional.ofNullable(parseMap.get(m.getMsgType()))
+            .orElseThrow(() -> new IllegalArgumentException("Invalid internal msg type"))
+            .accept(m, ctx);
     }
-
 }
