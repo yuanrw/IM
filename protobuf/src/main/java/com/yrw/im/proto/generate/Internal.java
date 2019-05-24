@@ -402,6 +402,10 @@ public final class Internal {
        * <code>READ = 4;</code>
        */
       READ(4),
+      /**
+       * <code>FORCE_OFFLINE = 5;</code>
+       */
+      FORCE_OFFLINE(5),
       ;
 
       /**
@@ -424,6 +428,10 @@ public final class Internal {
        * <code>READ = 4;</code>
        */
       public static final int READ_VALUE = 4;
+      /**
+       * <code>FORCE_OFFLINE = 5;</code>
+       */
+      public static final int FORCE_OFFLINE_VALUE = 5;
 
 
       public final int getNumber() {
@@ -445,6 +453,7 @@ public final class Internal {
           case 2: return ACK;
           case 3: return DELIVERED;
           case 4: return READ;
+          case 5: return FORCE_OFFLINE;
           default: return null;
         }
       }
@@ -1669,7 +1678,7 @@ public final class Internal {
   static {
     java.lang.String[] descriptorData = {
       "\n\016internal.proto\022\031com.yrw.im.proto.gener" +
-      "ate\"\226\003\n\013InternalMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002" +
+      "ate\"\251\003\n\013InternalMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002" +
       "id\030\002 \002(\003\022;\n\004from\030\003 \002(\0162-.com.yrw.im.prot" +
       "o.generate.InternalMsg.Module\022;\n\004dest\030\004 " +
       "\002(\0162-.com.yrw.im.proto.generate.Internal" +
@@ -1677,9 +1686,10 @@ public final class Internal {
       "e\030\006 \002(\01626.com.yrw.im.proto.generate.Inte" +
       "rnalMsg.InternalMsgType\022\017\n\007msgBody\030\007 \001(\t" +
       "\"1\n\006Module\022\r\n\tCONNECTOR\020\000\022\014\n\010TRANSFER\020\001\022" +
-      "\n\n\006CLIENT\020\002\"O\n\017InternalMsgType\022\t\n\005GREET\020" +
+      "\n\n\006CLIENT\020\002\"b\n\017InternalMsgType\022\t\n\005GREET\020" +
       "\000\022\017\n\013USER_STATUS\020\001\022\007\n\003ACK\020\002\022\r\n\tDELIVERED" +
-      "\020\003\022\010\n\004READ\020\004B\nB\010Internal"
+      "\020\003\022\010\n\004READ\020\004\022\021\n\rFORCE_OFFLINE\020\005B\nB\010Inter" +
+      "nal"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

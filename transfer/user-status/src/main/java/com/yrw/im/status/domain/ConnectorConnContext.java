@@ -7,10 +7,6 @@ import com.yrw.im.common.domain.conn.MemoryConnContext;
 import com.yrw.im.status.service.UserStatusService;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.Serializable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 /**
  * 存储transfer和connector的连接
  * 以及用户和connector的关系
@@ -22,15 +18,10 @@ import java.util.concurrent.ConcurrentMap;
 @Singleton
 public class ConnectorConnContext extends MemoryConnContext<InternalConn> {
 
-    /**
-     * user与connector连接关系的缓存
-     */
-    private ConcurrentMap<Long, Serializable> userIdToNetId;
     private UserStatusService userStatusService;
 
     @Inject
     public ConnectorConnContext(UserStatusService userStatusService) {
-        this.userIdToNetId = new ConcurrentHashMap<>();
         this.userStatusService = userStatusService;
     }
 
@@ -43,23 +34,14 @@ public class ConnectorConnContext extends MemoryConnContext<InternalConn> {
     }
 
     public InternalConn getConnByUserId(Long userId) {
-        Serializable connectorId = userIdToNetId.get(userId);
+        String connectorId = userStatusService.getConnectorId(userId);
         if (connectorId != null) {
             InternalConn conn = getConn(connectorId);
             if (conn != null) {
                 return conn;
             } else {
-                //connectorId已过时（connector下线过）
-                userIdToNetId.remove(userId);
-            }
-        }
-
-        //从db中获取user连接的connectorId
-        connectorId = userStatusService.getConnector(userId);
-        if (connectorId != null) {
-            if (connMap.containsKey(connectorId)) {
-                userIdToNetId.put(userId, connectorId);
-                return getConn(connectorId);
+                //connector宕机过
+                userStatusService.connectorDone(connectorId);
             }
         }
         return null;
@@ -67,8 +49,7 @@ public class ConnectorConnContext extends MemoryConnContext<InternalConn> {
 
     @Override
     public void removeConn(ChannelHandlerContext ctx) {
-        super.removeConn(ctx);
-
         userStatusService.connectorDone(getConn(ctx).getNetId().toString());
+        super.removeConn(ctx);
     }
 }

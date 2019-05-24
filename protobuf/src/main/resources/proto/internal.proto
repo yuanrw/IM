@@ -37,5 +37,6 @@ message InternalMsg {
         ACK = 2;
         DELIVERED = 3;
         READ = 4;
+        FORCE_OFFLINE = 5;
     }
 }

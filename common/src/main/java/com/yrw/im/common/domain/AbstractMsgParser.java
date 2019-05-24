@@ -45,10 +45,8 @@ public abstract class AbstractMessageParser {
         }
     }
 
-    public static void checkMsgType(Internal.InternalMsg msg, Internal.InternalMsg.InternalMsgType internalMsgType) {
-        if (msg.getMsgType() != internalMsgType) {
-            throw new ImException("unexpected msg: " + msg.toString());
-        }
+    public static void parseInternalMsg(Internal.InternalMsg msg, ChannelHandlerContext ctx, InternalMsgParser parser) {
+        parser.parse(msg, ctx);
     }
 
     /**
@@ -58,6 +56,10 @@ public abstract class AbstractMessageParser {
 
     protected <T extends Message> void register(Class<T> clazz, ImBiConsumer<T, ChannelHandlerContext> consumer) {
         parserMap.put(clazz, consumer);
+    }
+
+    protected void registerInternal(Internal.InternalMsg.InternalMsgType type, ImBiConsumer<Internal.InternalMsg, ChannelHandlerContext> consumer) {
+
     }
 
     @SuppressWarnings("unchecked")
