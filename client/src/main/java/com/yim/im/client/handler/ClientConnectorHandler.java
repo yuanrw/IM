@@ -43,7 +43,7 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ClientConnectorHandler.ctx = ctx;
-        clientMsgListener.active();
+        clientMsgListener.online();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-        clientMsgListener.inactive();
+        clientMsgListener.offline();
     }
 
     @Override

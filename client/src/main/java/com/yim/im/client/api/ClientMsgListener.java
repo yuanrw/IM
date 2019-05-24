@@ -10,9 +10,20 @@ import com.yrw.im.proto.generate.Chat;
  */
 public interface ClientMsgListener {
 
-    void active();
+    /**
+     * 上线成功
+     */
+    void online();
 
+    /**
+     * 获取消息
+     *
+     * @param chatMsg
+     */
     void read(Chat.ChatMsg chatMsg);
 
-    void inactive();
+    /**
+     * 下线
+     */
+    void offline();
 }

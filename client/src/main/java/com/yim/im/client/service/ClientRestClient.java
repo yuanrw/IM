@@ -22,7 +22,7 @@ public interface ClientRestClient {
     Call<ResultWrapper<Long>> register(@Body UserReq user);
 
     @Headers("Content-Type: application/json")
-    @POST("/user/login")
+    @POST("/user/online")
     Call<ResultWrapper<UserInfo>> login(@Body UserReq user);
 
     @POST("/user/logout")

@@ -24,7 +24,7 @@ public class ClientApplication {
             .setConnectorPort(9081)
             .setClientMsgListener(new ClientMsgListener() {
                 @Override
-                public void active() {
+                public void online() {
                     System.out.println("user is online!");
                 }
 
@@ -34,7 +34,7 @@ public class ClientApplication {
                 }
 
                 @Override
-                public void inactive() {
+                public void offline() {
                     System.out.println("user is offline");
                 }
             })
