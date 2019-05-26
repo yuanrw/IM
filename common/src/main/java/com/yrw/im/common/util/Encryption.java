@@ -24,9 +24,8 @@ public class Encryptor {
             IvParameterSpec ivParameterSpec = new IvParameterSpec(initVector.getBytes(StandardCharsets.UTF_8));
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
             return Base64.encodeBase64(cipher.doFinal(value));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ImException("");
+        } catch (Exception e) {
+            throw new ImException("[Encryptor] encrypt msg failed", e);
         }
     }
 
@@ -38,8 +37,7 @@ public class Encryptor {
             cipher.init(Cipher.DECRYPT_MODE, sKeySpec, iv);
             return cipher.doFinal(Base64.decodeBase64(encrypted));
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new ImException("");
+            throw new ImException("[Encryptor] decrypt");
         }
     }
 }
