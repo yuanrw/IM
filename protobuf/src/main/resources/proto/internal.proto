@@ -19,7 +19,7 @@ message InternalMsg {
     required int64 createTime = 5;
     //发送时间
 
-    required InternalMsgType msgType = 6;
+    required MsgType msgType = 6;
     //消息类型
 
     optional string msgBody = 7;
@@ -31,12 +31,10 @@ message InternalMsg {
         CLIENT = 2;
     }
 
-    enum InternalMsgType {
+    enum MsgType {
         GREET = 0;
         USER_STATUS = 1;
         ACK = 2;
-        DELIVERED = 3;
-        READ = 4;
-        FORCE_OFFLINE = 5;
+        FORCE_OFFLINE = 3;
     }
 }

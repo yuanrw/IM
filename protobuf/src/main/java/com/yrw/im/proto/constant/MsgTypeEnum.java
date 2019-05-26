@@ -1,5 +1,6 @@
 package com.yrw.im.proto.constant;
 
+import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
 
@@ -18,10 +19,16 @@ public enum MsgTypeEnum {
      * 聊天消息
      */
     CHAT(0, Chat.ChatMsg.class),
+
     /**
      * 内部消息
      */
-    INTERNAL(1, Internal.InternalMsg.class);
+    INTERNAL(1, Internal.InternalMsg.class),
+
+    /**
+     * ack消息
+     */
+    ACK(2, Ack.AckMsg.class);
 
     int code;
     Class<?> clazz;
