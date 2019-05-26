@@ -26,7 +26,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setSalt(RandomStringUtils.randomAscii(16));
         user.setPwdHash(DigestUtils.sha256Hex(pwdSha + user.getSalt()));
         if (!save(user)) {
-            throw new ImException("user.save.fail");
+            throw new ImException("[rest] save user info failed");
         }
         return user.getId();
     }

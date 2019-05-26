@@ -40,21 +40,21 @@ public class ConnectorClient {
                     ChannelPipeline p = ch.pipeline();
                     p.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
                     p.addLast("MsgEncoder", new MsgEncoder());
-                    p.addLast("ClientTransferHandler", injector.getInstance(ConnectorTransferHandler.class));
+                    p.addLast("ConnectorTransferHandler", injector.getInstance(ConnectorTransferHandler.class));
                 }
             }).connect(host, port)
             .addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
-                    logger.info("connector connect to transfer successfully...");
+                    logger.info("[connector] connect to transfer successfully");
                 } else {
-                    throw new ImException("connector connect to transfer failed!");
+                    throw new ImException("[connector] connect to transfer failed!");
                 }
             });
 
         try {
             f.get(10, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new ImException("connector connect to transfer failed!");
+            throw new ImException("[connector] connect to transfer failed!", e);
         }
     }
 }

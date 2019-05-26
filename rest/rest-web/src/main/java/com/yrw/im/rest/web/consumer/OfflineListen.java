@@ -41,7 +41,7 @@ public class OfflineListen implements ChannelAwareMessageListener {
     @RabbitHandler
     @RabbitListener(queues = MqConstant.OFFLINE_QUEUE, containerFactory = "listenerFactory")
     public void onMessage(Message message, Channel channel) throws Exception {
-        logger.info("[OfflineConsumer] get msg");
+        logger.info("[OfflineConsumer] get msg: {}", message.toString());
         try {
             Chat.ChatMsg chatMsg = Chat.ChatMsg.parseFrom(message.getBody());
             offlineService.saveChatMsg(chatMsg);

@@ -7,4 +7,24 @@ package com.yim.im.client.domain;
  * @author yrw
  */
 public class Friend {
+
+    private Long userId;
+
+    private String encryptKey;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getEncryptKey() {
+        return encryptKey;
+    }
+
+    public void setEncryptKey(String encryptKey) {
+        this.encryptKey = encryptKey;
+    }
 }

@@ -3,9 +3,11 @@ package com.yim.im.client.handler;
 import com.google.inject.Singleton;
 import com.google.protobuf.Message;
 import com.yim.im.client.api.ClientMsgListener;
-import com.yrw.im.common.domain.AbstractMsgParser;
-import com.yrw.im.common.domain.InternalMsgParser;
 import com.yrw.im.common.domain.ResponseCollector;
+import com.yrw.im.common.parse.AbstractMsgParser;
+import com.yrw.im.common.parse.AckParser;
+import com.yrw.im.common.parse.InternalParser;
+import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,8 +18,8 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.yrw.im.common.domain.AbstractMsgParser.checkDest;
-import static com.yrw.im.common.domain.AbstractMsgParser.checkFrom;
+import static com.yrw.im.common.parse.AbstractMsgParser.checkDest;
+import static com.yrw.im.common.parse.AbstractMsgParser.checkFrom;
 
 /**
  * Date: 2019-04-15
@@ -89,12 +91,16 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
         ClientConnectorHandler.clientMsgListener = clientMsgListener;
     }
 
+    public static ClientMsgListener getClientMsgListener() {
+        return clientMsgListener;
+    }
+
     class FromConnectorParser extends AbstractMsgParser {
 
         @Override
         public void registerParsers() {
-            InternalMsgParser parser = new InternalMsgParser(3);
-            parser.register(Internal.InternalMsg.InternalMsgType.ACK, (m, ctx) -> {
+            InternalParser internalParser = new InternalParser(3);
+            internalParser.register(Internal.InternalMsg.MsgType.ACK, (m, ctx) -> {
                 ResponseCollector<Internal.InternalMsg> collector = respCollector.get();
                 if (collector != null) {
                     respCollector.set(null);
@@ -104,8 +110,13 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
                 }
             });
 
+            AckParser ackParser = new AckParser(2);
+            ackParser.register(Ack.AckMsg.MsgType.DELIVERED, (m, ctx) -> clientMsgListener.hasDelivered(m.getId()));
+            ackParser.register(Ack.AckMsg.MsgType.READ, (m, ctx) -> clientMsgListener.hasRead(m.getId()));
+
             register(Chat.ChatMsg.class, (m, ctx) -> clientMsgListener.read(m));
-            register(Internal.InternalMsg.class, parser.generateFun());
+            register(Ack.AckMsg.class, ackParser.generateFun());
+            register(Internal.InternalMsg.class, internalParser.generateFun());
         }
     }
 }

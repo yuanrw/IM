@@ -2,7 +2,6 @@ package com.yrw.im.gateway.connector.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
 import com.yrw.im.common.domain.UserStatus;
 import com.yrw.im.common.exception.ImException;
 import com.yrw.im.common.util.IdWorker;
@@ -30,7 +29,6 @@ public class UserStatusService {
     private ObjectMapper objectMapper;
     private ConnectorTransferHandler connectorTransferHandler;
 
-    @Inject
     public UserStatusService() {
         this.clientConnContext = ConnectorClient.injector.getInstance(ClientConnContext.class);
         this.connectorTransferHandler = ConnectorClient.injector.getInstance(ConnectorTransferHandler.class);
@@ -55,7 +53,7 @@ public class UserStatusService {
         CompletableFuture<Internal.InternalMsg> future = connectorTransferHandler.createUserStatusMsgCollector(Duration.ofSeconds(10)).getFuture()
             .whenComplete((m, e) -> {
                 if (!m.getMsgBody().equals(status.getId() + "")) {
-                    throw new ImException("[Client] user connected to server failed, " +
+                    throw new ImException("[client] connect to connector failed, " +
                         "init msg id is: {}, but received ack id is: {}");
                 } else {
                     sendAckToClient(msg.getId(), ctx);
@@ -74,7 +72,7 @@ public class UserStatusService {
             .setFrom(Internal.InternalMsg.Module.CONNECTOR)
             .setDest(Internal.InternalMsg.Module.CLIENT)
             .setCreateTime(System.currentTimeMillis())
-            .setMsgType(Internal.InternalMsg.InternalMsgType.ACK)
+            .setMsgType(Internal.InternalMsg.MsgType.ACK)
             .setMsgBody(id + "")
             .build();
 
@@ -105,7 +103,7 @@ public class UserStatusService {
             .setFrom(Internal.InternalMsg.Module.CONNECTOR)
             .setDest(Internal.InternalMsg.Module.TRANSFER)
             .setCreateTime(System.currentTimeMillis())
-            .setMsgType(Internal.InternalMsg.InternalMsgType.USER_STATUS)
+            .setMsgType(Internal.InternalMsg.MsgType.USER_STATUS)
             .setMsgBody(objectMapper.writeValueAsString(userStatus))
             .build();
     }

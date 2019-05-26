@@ -49,17 +49,16 @@ public class ConnectorServer {
 
         ChannelFuture f = bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-                //TODO: do some init
-                logger.info("[connector] start successful, waiting for clients connecting......");
+                logger.info("[connector] start successful, waiting for clients to connect...");
             } else {
-                throw new ImException("[connector] start failed!");
+                throw new ImException("[connector] start failed");
             }
         });
 
         try {
             f.get(10, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new ImException("[connector] start failed!");
+            throw new ImException("[connector] start failed", e);
         }
     }
 }

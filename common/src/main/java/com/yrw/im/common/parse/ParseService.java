@@ -4,6 +4,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.yrw.im.common.exception.ImException;
 import com.yrw.im.proto.constant.MsgTypeEnum;
+import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
 
@@ -30,12 +31,13 @@ public class ParseService {
 
         parseFunctionMap.put(MsgTypeEnum.CHAT, Chat.ChatMsg::parseFrom);
         parseFunctionMap.put(MsgTypeEnum.INTERNAL, Internal.InternalMsg::parseFrom);
+        parseFunctionMap.put(MsgTypeEnum.ACK, Ack.AckMsg::parseFrom);
     }
 
     public Message getMsg(MsgTypeEnum msgType, byte[] bytes) throws InvalidProtocolBufferException {
         Parse parseFunction = parseFunctionMap.get(msgType);
         if (parseFunction == null) {
-            throw new ImException("[IM proto msg parse], no proper parse function, msgType: {}", msgType.name());
+            throw new ImException("[msg parse], no proper parse function, msgType: " + msgType.name());
         }
         return parseFunction.process(bytes);
     }

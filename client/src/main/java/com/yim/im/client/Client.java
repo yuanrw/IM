@@ -70,14 +70,14 @@ public class Client {
                 if (future.isSuccess()) {
                     logger.info("Client connect to connector successfully...");
                 } else {
-                    throw new ImException("client connect to connector failed!");
+                    throw new ImException("[client] connect to connector failed!");
                 }
             });
 
         try {
             f.get(10, TimeUnit.SECONDS);
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
-            throw new ImException("client connect to connector failed!");
+            throw new ImException("[client] connect to connector failed!");
         }
 
         return this;
@@ -98,7 +98,7 @@ public class Client {
         return this;
     }
 
-    public <T> T getApi(Class<T> clazz) {
+    public static <T> T getApi(Class<T> clazz) {
         assert clazz == UserApi.class || clazz == ChatApi.class;
         return injector.getInstance(clazz);
     }

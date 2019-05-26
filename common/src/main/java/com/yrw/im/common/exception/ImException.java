@@ -8,36 +8,11 @@ package com.yrw.im.common.exception;
  */
 public class ImException extends RuntimeException {
 
-    private String errCode;
-    private String errMsg;
-
-    public ImException() {
+    public ImException(String message, Throwable e) {
+        super(message, e);
     }
 
-    public ImException(String errCode) {
-        super(errCode);
-        this.errCode = errCode;
-    }
-
-    public ImException(String errCode, String errMsg) {
-        super(errCode + ":" + errMsg);
-        this.errCode = errCode;
-        this.errMsg = errMsg;
-    }
-
-    public String getErrCode() {
-        return errCode;
-    }
-
-    public void setErrCode(String errCode) {
-        this.errCode = errCode;
-    }
-
-    public String getErrMsg() {
-        return errMsg;
-    }
-
-    public void setErrMsg(String errMsg) {
-        this.errMsg = errMsg;
+    public ImException(String errMsg) {
+        super(errMsg);
     }
 }

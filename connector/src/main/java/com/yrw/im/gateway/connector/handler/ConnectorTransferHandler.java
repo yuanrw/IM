@@ -3,12 +3,13 @@ package com.yrw.im.gateway.connector.handler;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.protobuf.Message;
-import com.yrw.im.common.domain.AbstractMsgParser;
-import com.yrw.im.common.domain.InternalMsgParser;
 import com.yrw.im.common.domain.ResponseCollector;
+import com.yrw.im.common.parse.AbstractMsgParser;
+import com.yrw.im.common.parse.InternalParser;
 import com.yrw.im.common.util.IdWorker;
 import com.yrw.im.common.util.SessionIdGenerator;
 import com.yrw.im.gateway.connector.service.ConnectorService;
+import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
 import io.netty.channel.ChannelHandlerContext;
@@ -19,8 +20,8 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.yrw.im.common.domain.AbstractMsgParser.checkDest;
-import static com.yrw.im.common.domain.AbstractMsgParser.checkFrom;
+import static com.yrw.im.common.parse.AbstractMsgParser.checkDest;
+import static com.yrw.im.common.parse.AbstractMsgParser.checkFrom;
 
 /**
  * 将消息发送给transfer
@@ -54,7 +55,7 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
             .setId(IdWorker.genId())
             .setVersion(1)
-            .setMsgType(Internal.InternalMsg.InternalMsgType.GREET)
+            .setMsgType(Internal.InternalMsg.MsgType.GREET)
             .setMsgBody(connectorId)
             .setFrom(Internal.InternalMsg.Module.CONNECTOR)
             .setDest(Internal.InternalMsg.Module.TRANSFER)
@@ -97,13 +98,14 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
 
         @Override
         public void registerParsers() {
-            InternalMsgParser parser = new InternalMsgParser(3);
-            parser.register(Internal.InternalMsg.InternalMsgType.ACK,
+            InternalParser parser = new InternalParser(3);
+            parser.register(Internal.InternalMsg.MsgType.ACK,
                 (m, ctx) -> userStatusSyncDone(m));
-            parser.register(Internal.InternalMsg.InternalMsgType.FORCE_OFFLINE,
+            parser.register(Internal.InternalMsg.MsgType.FORCE_OFFLINE,
                 (m, ctx) -> connectorService.forceOffline(Long.parseLong(m.getMsgBody())));
 
             register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChat((m)));
+            register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAck(m));
             register(Internal.InternalMsg.class, parser.generateFun());
         }
 

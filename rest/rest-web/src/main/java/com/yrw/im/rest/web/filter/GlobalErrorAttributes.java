@@ -31,20 +31,18 @@ public class GlobalErrorAttributes extends DefaultErrorAttributes {
         errorAttributes.put("status", 500);
         Throwable error = this.getError(request);
 
-        logger.error("[IM unknown error]: ", this.getError(request));
+        logger.error("[rest] unknown error", this.getError(request));
 
         if (error instanceof ResponseStatusException) {
             return super.getErrorAttributes(request, includeStackTrace);
         }
         if (error instanceof ImException) {
             ImException e = (ImException) error;
-            errorAttributes.put("error", e.getErrCode());
-            errorAttributes.put("msg", e.getErrMsg());
+            errorAttributes.put("msg", e.getMessage());
         } else if (error instanceof IllegalArgumentException) {
             IllegalArgumentException e = (IllegalArgumentException) error;
             errorAttributes.put("msg", e.getMessage());
         } else {
-            errorAttributes.put("error", "internal.server.error");
             errorAttributes.put("msg", "服务器繁忙，请稍后再试！");
         }
         return errorAttributes;

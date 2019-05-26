@@ -2,6 +2,7 @@ package com.yim.im.client.api;
 
 import com.google.inject.Inject;
 import com.yim.im.client.Client;
+import com.yim.im.client.domain.Friend;
 import com.yim.im.client.domain.RelationCache;
 import com.yim.im.client.handler.ClientConnectorHandler;
 import com.yim.im.client.service.ClientRestService;
@@ -17,6 +18,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * Date: 2019-05-14
@@ -49,7 +51,7 @@ public class UserApi {
             .setDest(Internal.InternalMsg.Module.CONNECTOR)
             .setCreateTime(System.currentTimeMillis())
             .setVersion(1)
-            .setMsgType(Internal.InternalMsg.InternalMsgType.GREET)
+            .setMsgType(Internal.InternalMsg.MsgType.GREET)
             .setMsgBody(String.valueOf(userId))
             .build();
 
@@ -57,10 +59,10 @@ public class UserApi {
         CompletableFuture<Internal.InternalMsg> future = ClientConnectorHandler.createCollector(Duration.ofSeconds(10)).getFuture()
             .whenComplete((m, e) -> {
                 if (!m.getMsgBody().equals(greet.getId() + "")) {
-                    throw new ImException("[Client] user connected to server failed, " +
+                    throw new ImException("[client] user connected to server failed, " +
                         "init msg id is: {}, but received ack id is: {}");
                 } else {
-                    logger.info("[Client] user connected to server success");
+                    logger.info("[client] user connected to server success");
                 }
             });
 
@@ -69,7 +71,7 @@ public class UserApi {
         try {
             future.get();
         } catch (InterruptedException | ExecutionException e) {
-            throw new ImException("");
+            throw new ImException("[client] waiting for connector's response failed", e);
         }
     }
 
@@ -77,8 +79,18 @@ public class UserApi {
         return clientRestService.logout(token);
     }
 
-    public List<Relation> relations(Long userId, String token) {
-        return clientRestService.friends(userId, token);
+    public List<Friend> friends(Long userId, String token) {
+        return getFriend(clientRestService.friends(userId, token), userId);
+    }
+
+    private static List<Friend> getFriend(List<Relation> relations, Long userId) {
+        return relations.stream().map(r -> {
+            Friend friend = new Friend();
+            Long friendId = !r.getUserId1().equals(userId) ? r.getUserId1() : r.getUserId2();
+            friend.setUserId(friendId);
+            friend.setEncryptKey(r.getEncryptKey());
+            return friend;
+        }).collect(Collectors.toList());
     }
 
     public Relation relation(Long userId1, Long userId2, String token) {

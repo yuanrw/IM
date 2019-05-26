@@ -2,12 +2,13 @@ package com.yrw.im.gateway.connector.handler;
 
 import com.google.inject.Inject;
 import com.google.protobuf.Message;
-import com.yrw.im.common.domain.AbstractMsgParser;
-import com.yrw.im.common.domain.InternalMsgParser;
+import com.yrw.im.common.parse.AbstractMsgParser;
+import com.yrw.im.common.parse.InternalParser;
 import com.yrw.im.gateway.connector.domain.ClientConnContext;
 import com.yrw.im.gateway.connector.service.ConnectorService;
 import com.yrw.im.gateway.connector.service.UserStatusService;
 import com.yrw.im.gateway.connector.start.ConnectorClient;
+import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,8 +16,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.yrw.im.common.domain.AbstractMsgParser.checkDest;
-import static com.yrw.im.common.domain.AbstractMsgParser.checkFrom;
+import static com.yrw.im.common.parse.AbstractMsgParser.checkDest;
+import static com.yrw.im.common.parse.AbstractMsgParser.checkFrom;
 
 /**
  * 处理客户端的消息
@@ -62,18 +63,18 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.error("[IM ConnectorClientHandler] has error: ", cause);
         clientConnContext.removeConn(ctx);
-        ctx.close();
     }
 
     class FromClientParser extends AbstractMsgParser {
 
         @Override
         public void registerParsers() {
-            InternalMsgParser parser = new InternalMsgParser(3);
-            parser.register(Internal.InternalMsg.InternalMsgType.GREET,
+            InternalParser parser = new InternalParser(3);
+            parser.register(Internal.InternalMsg.MsgType.GREET,
                 (m, ctx) -> userStatusService.userOnline(m, ctx));
 
             register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChat(m));
+            register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAck(m));
             register(Internal.InternalMsg.class, parser.generateFun());
         }
     }

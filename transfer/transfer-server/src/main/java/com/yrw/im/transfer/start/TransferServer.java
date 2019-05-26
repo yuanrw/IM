@@ -50,16 +50,16 @@ public class TransferServer {
         ChannelFuture f = bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
                 //TODO: do some init
-                logger.info("[transfer] start successful, waiting for connectors connecting......");
+                logger.info("[transfer] start successful, waiting for connectors to connect...");
             } else {
-                throw new ImException("[transfer] start failed!");
+                throw new ImException("[transfer] start failed");
             }
         });
 
         try {
             f.get(10, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new ImException("[transfer] start failed!");
+            throw new ImException("[transfer] start failed");
         }
     }
 }

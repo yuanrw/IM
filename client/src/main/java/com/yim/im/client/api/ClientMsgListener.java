@@ -16,11 +16,32 @@ public interface ClientMsgListener {
     void online();
 
     /**
-     * 获取消息
+     * 消费消息
      *
      * @param chatMsg
      */
     void read(Chat.ChatMsg chatMsg);
+
+    /**
+     * 已发送
+     *
+     * @param id chatMsg id
+     */
+    void hasSent(Long id);
+
+    /**
+     * 已送达
+     *
+     * @param id chatMsg id
+     */
+    void hasDelivered(Long id);
+
+    /**
+     * 已读
+     *
+     * @param id chatMsg id
+     */
+    void hasRead(Long id);
 
     /**
      * 下线

@@ -64,6 +64,6 @@ public class MsgDecoder extends ByteToMessageDecoder {
         Message msg = parseService.getMsg(MsgTypeEnum.getByCode(code), body);
         out.add(msg);
 
-        logger.info("[IM msg decoder]received message: content length {}, msgTypeCode: {}", length, code);
+        logger.debug("[IM msg decoder]received message: content length {}, msgTypeCode: {}", length, code);
     }
 }

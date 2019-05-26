@@ -31,7 +31,7 @@ public class MsgEncoder extends MessageToByteEncoder<Message> {
             buf.writeBytes(bytes);
             out.writeBytes(buf);
 
-            logger.info("send message, remoteAddress: {}, content length {}, msgTypeCode: {}", ctx.channel().remoteAddress(), length, code);
+            logger.debug("send message, remoteAddress: {}, content length {}, msgTypeCode: {}", ctx.channel().remoteAddress(), length, code);
         } catch (Exception e) {
             e.printStackTrace();
         }

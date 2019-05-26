@@ -38,7 +38,7 @@ public class ConnectorConnContext extends MemoryConnContext<InternalConn> {
                     .setCreateTime(System.currentTimeMillis())
                     .setFrom(Internal.InternalMsg.Module.TRANSFER)
                     .setDest(Internal.InternalMsg.Module.CONNECTOR)
-                    .setMsgType(Internal.InternalMsg.InternalMsgType.FORCE_OFFLINE)
+                    .setMsgType(Internal.InternalMsg.MsgType.FORCE_OFFLINE)
                     .setMsgBody(userId + "")
                     .build();
 

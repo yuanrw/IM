@@ -3,11 +3,12 @@ package com.yrw.im.transfer.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.protobuf.Message;
-import com.yrw.im.common.domain.AbstractMsgParser;
-import com.yrw.im.common.domain.InternalMsgParser;
 import com.yrw.im.common.domain.UserStatus;
+import com.yrw.im.common.parse.AbstractMsgParser;
+import com.yrw.im.common.parse.InternalParser;
 import com.yrw.im.common.util.IdWorker;
 import com.yrw.im.proto.constant.UserStatusEnum;
+import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
 import com.yrw.im.status.domain.ConnectorConnContext;
@@ -17,8 +18,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.yrw.im.common.domain.AbstractMsgParser.checkDest;
-import static com.yrw.im.common.domain.AbstractMsgParser.checkFrom;
+import static com.yrw.im.common.parse.AbstractMsgParser.checkDest;
+import static com.yrw.im.common.parse.AbstractMsgParser.checkFrom;
 
 /**
  * Date: 2019-04-12
@@ -62,9 +63,9 @@ public class TransferConnectorHandler extends SimpleChannelInboundHandler<Messag
 
         @Override
         public void registerParsers() {
-            InternalMsgParser parser = new InternalMsgParser(3);
-            parser.register(Internal.InternalMsg.InternalMsgType.GREET, (m, ctx) -> transferService.doGreet(m, ctx));
-            parser.register(Internal.InternalMsg.InternalMsgType.USER_STATUS, (m, ctx) -> {
+            InternalParser parser = new InternalParser(3);
+            parser.register(Internal.InternalMsg.MsgType.GREET, (m, ctx) -> transferService.doGreet(m, ctx));
+            parser.register(Internal.InternalMsg.MsgType.USER_STATUS, (m, ctx) -> {
                 UserStatus userStatus = objectMapper.readValue(m.getMsgBody(), UserStatus.class);
                 if (UserStatusEnum.getStatus(userStatus.getStatus()) == UserStatusEnum.ONLINE) {
                     connectorConnContext.online(ctx, userStatus.getUserId());
@@ -75,6 +76,7 @@ public class TransferConnectorHandler extends SimpleChannelInboundHandler<Messag
             });
 
             register(Chat.ChatMsg.class, (m, ctx) -> transferService.doChat(m));
+            register(Ack.AckMsg.class, (m, ctx) -> transferService.doSendAck(m));
             register(Internal.InternalMsg.class, parser.generateFun());
         }
 
@@ -85,7 +87,7 @@ public class TransferConnectorHandler extends SimpleChannelInboundHandler<Messag
                 .setFrom(Internal.InternalMsg.Module.TRANSFER)
                 .setDest(Internal.InternalMsg.Module.CONNECTOR)
                 .setCreateTime(System.currentTimeMillis())
-                .setMsgType(Internal.InternalMsg.InternalMsgType.ACK)
+                .setMsgType(Internal.InternalMsg.MsgType.ACK)
                 .setMsgBody(id + "")
                 .build();
             ctx.writeAndFlush(msg);

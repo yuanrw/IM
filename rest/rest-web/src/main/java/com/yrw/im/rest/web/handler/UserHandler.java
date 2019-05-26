@@ -52,7 +52,7 @@ public class UserHandler {
                     }))
                     .map(ResultWrapper::success)
                     .flatMap(info -> ok().body(fromObject(info)))
-                    .switchIfEmpty(Mono.error(new ImException("login.verify.error")))
+                    .switchIfEmpty(Mono.error(new ImException("[rest] authentication failed")))
 
             , request, UserReq.class);
     }

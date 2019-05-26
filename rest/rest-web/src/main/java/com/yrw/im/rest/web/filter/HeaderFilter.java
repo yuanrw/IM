@@ -25,12 +25,12 @@ public class HeaderFilter implements WebFilter {
             return webFilterChain.filter(serverWebExchange);
         }
         if (!serverWebExchange.getRequest().getHeaders().containsKey("token")) {
-            return Mono.error(new ImException("not.login"));
+            return Mono.error(new ImException("[rest] user is not login"));
         }
 
         String token = serverWebExchange.getRequest().getHeaders().getFirst("token");
         return RedisSession.getById(token) != null
             ? webFilterChain.filter(serverWebExchange) :
-            Mono.error(new ImException("not.login"));
+            Mono.error(new ImException("[rest] user is not login"));
     }
 }

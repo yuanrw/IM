@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.exception.ImException;
-import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ public abstract class AbstractRestService<R> {
 
         Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://127.0.0.1:8080")
-            .client(new OkHttpClient.Builder().addInterceptor(logging).build())
+            //            .client(new OkHttpClient.Builder().addInterceptor(logging).build())
             .addConverterFactory(JacksonConverterFactory.create(objectMapper))
             .build();
 
@@ -57,21 +56,17 @@ public abstract class AbstractRestService<R> {
         try {
             Response<ResultWrapper<T>> response = function.doRequest();
             if (!response.isSuccessful()) {
-                logger.error("[rest service] rest error: ", response.errorBody());
-                throw new ImException("fail");
+                throw new ImException("[rest service] status is not 200, response body: " + response.errorBody());
             }
             if (response.body() == null) {
-                logger.error("[rest service] rest response body is null");
-                throw new ImException("fail");
+                throw new ImException("[rest service] response body is null");
             }
             if (response.body().getStatus() != 200) {
-                logger.error("[rest service] rest error: {}", new ObjectMapper().writeValueAsString(response.body()));
-                throw new ImException("fail");
+                throw new ImException("[rest service] status is not 200, response body: " + new ObjectMapper().writeValueAsString(response.body()));
             }
             return response.body().getData();
         } catch (IOException e) {
-            logger.error("[rest service] rest error: ", e);
-            throw new ImException("fail");
+            throw new ImException("[rest service] has error", e);
         }
     }
 }

@@ -30,7 +30,7 @@ public class OfflineServiceImpl extends ServiceImpl<OfflineMapper, Offline> impl
         offline.setContent(msg.toString());
 
         if (!save(offline)) {
-            throw new ImException("");
+            throw new ImException("[offline] save chat msg failed");
         }
     }
 
@@ -46,8 +46,7 @@ public class OfflineServiceImpl extends ServiceImpl<OfflineMapper, Offline> impl
                     TextFormat.getParser().merge(o.getContent(), builder);
                     return builder.build();
                 } catch (TextFormat.ParseException e) {
-                    e.printStackTrace();
-                    throw new ImException("");
+                    throw new ImException("[offline] get offline msg failed", e);
                 }
             }).collect(Collectors.toList());
     }

@@ -6,7 +6,7 @@ import com.google.protobuf.Message;
 import com.yim.im.client.service.ClientRestService;
 import com.yrw.im.common.code.MsgDecoder;
 import com.yrw.im.common.domain.po.Relation;
-import com.yrw.im.common.util.Encryptor;
+import com.yrw.im.common.util.Encryption;
 import com.yrw.im.proto.generate.Chat;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
@@ -38,7 +38,7 @@ public class AesDecoder extends MessageToMessageDecoder<Message> {
             Relation relation = clientRestService.relation(cm.getFromId(), cm.getDestId(), cm.getToken());
             String[] keys = relation.getEncryptKey().split("\\|");
 
-            byte[] decodeBody = Encryptor.decrypt(keys[0], keys[1], cm.getMsgBody().toByteArray());
+            byte[] decodeBody = Encryption.decrypt(keys[0], keys[1], cm.getMsgBody().toByteArray());
 
             Chat.ChatMsg decodeMsg = Chat.ChatMsg.newBuilder().mergeFrom(cm)
                 .setMsgBody(ByteString.copyFrom(decodeBody)).build();

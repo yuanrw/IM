@@ -1,4 +1,4 @@
-package com.yrw.im.common.domain;
+package com.yrw.im.common.parse;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;

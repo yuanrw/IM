@@ -8,14 +8,14 @@ import com.yrw.im.proto.generate.Internal;
  *
  * @author yrw
  */
-public class InternalByEnumParser extends AbstractByEnumParser<Internal.InternalMsg.InternalMsgType, Internal.InternalMsg> {
+public class InternalParser extends AbstractByEnumParser<Internal.InternalMsg.MsgType, Internal.InternalMsg> {
 
-    public InternalByEnumParser(int size) {
+    public InternalParser(int size) {
         super(size);
     }
 
     @Override
-    protected Internal.InternalMsg.InternalMsgType getType(Internal.InternalMsg msg) {
+    protected Internal.InternalMsg.MsgType getType(Internal.InternalMsg msg) {
         return msg.getMsgType();
     }
 }

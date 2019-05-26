@@ -1,10 +1,12 @@
 package com.yrw.im.transfer.service;
 
 import com.google.inject.Inject;
+import com.google.protobuf.Message;
 import com.rabbitmq.client.MessageProperties;
 import com.yrw.im.common.domain.conn.Conn;
 import com.yrw.im.common.domain.conn.InternalConn;
 import com.yrw.im.common.domain.constant.MqConstant;
+import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
 import com.yrw.im.status.domain.ConnectorConnContext;
@@ -38,15 +40,25 @@ public class TransferService {
         }
     }
 
+    public void doSendAck(Ack.AckMsg msg) throws IOException {
+        InternalConn conn = connContext.getConnByUserId(msg.getDestId());
+
+        if (conn != null) {
+            conn.getCtx().writeAndFlush(msg);
+        } else {
+            doOffline(msg);
+        }
+    }
+
     public void doGreet(Internal.InternalMsg msg, ChannelHandlerContext ctx) {
         ctx.channel().attr(Conn.NET_ID).set(msg.getMsgBody());
         InternalConn conn = new InternalConn(ctx);
         connContext.addConn(conn);
     }
 
-    private void doOffline(Chat.ChatMsg chatMsg) throws IOException {
+    private void doOffline(Message message) throws IOException {
         TransferMqProducer.getChannel().basicPublish(
             MqConstant.EXCHANGE, MqConstant.ROUTING_KEY,
-            MessageProperties.PERSISTENT_TEXT_PLAIN, chatMsg.toByteArray());
+            MessageProperties.PERSISTENT_TEXT_PLAIN, message.toByteArray());
     }
 }

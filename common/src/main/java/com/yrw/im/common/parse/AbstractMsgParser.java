@@ -1,4 +1,4 @@
-package com.yrw.im.common.domain;
+package com.yrw.im.common.parse;
 
 import com.google.protobuf.Message;
 import com.yrw.im.common.exception.ImException;
@@ -31,7 +31,8 @@ public abstract class AbstractMsgParser {
         if (message instanceof Internal.InternalMsg) {
             Internal.InternalMsg m = (Internal.InternalMsg) message;
             if (m.getFrom() != module) {
-                throw new ImException("from unknown");
+                throw new ImException("[unexpected msg] expect msg from: " + module.name() +
+                    ", but received msg from: " + m.getFrom().name());
             }
         }
     }
@@ -40,7 +41,8 @@ public abstract class AbstractMsgParser {
         if (message instanceof Internal.InternalMsg) {
             Internal.InternalMsg m = (Internal.InternalMsg) message;
             if (m.getDest() != module) {
-                throw new ImException("dest not me");
+                throw new ImException("[unexpected msg] expect msg to: " + module.name() +
+                    ", but received msg to: " + m.getFrom().name());
             }
         }
     }
@@ -68,8 +70,7 @@ public abstract class AbstractMsgParser {
         try {
             consumer.accept(m, ctx);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new ImException("");
+            throw new ImException("[msg parse] has error", e);
         }
     }
 }

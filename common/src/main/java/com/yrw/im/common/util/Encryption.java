@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
  *
  * @author yrw
  */
-public class Encryptor {
+public class Encryption {
 
     public static byte[] encrypt(String key, String initVector, byte[] value) {
         try {
@@ -25,7 +25,7 @@ public class Encryptor {
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
             return Base64.encodeBase64(cipher.doFinal(value));
         } catch (Exception e) {
-            throw new ImException("[Encryptor] encrypt msg failed", e);
+            throw new ImException("[Encryption] encrypt chat msg failed", e);
         }
     }
 
@@ -36,8 +36,8 @@ public class Encryptor {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, sKeySpec, iv);
             return cipher.doFinal(Base64.decodeBase64(encrypted));
-        } catch (Exception ex) {
-            throw new ImException("[Encryptor] decrypt");
+        } catch (Exception e) {
+            throw new ImException("[Encryption] decrypt chat msg failed", e);
         }
     }
 }
