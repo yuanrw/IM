@@ -3,7 +3,6 @@ package com.yrw.im.common.code;
 import com.google.inject.Inject;
 import com.google.protobuf.Message;
 import com.yrw.im.common.parse.ParseService;
-import com.yrw.im.proto.constant.MsgTypeEnum;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -61,7 +60,7 @@ public class MsgDecoder extends ByteToMessageDecoder {
 
         byte[] body = byteBuf.array();
 
-        Message msg = parseService.getMsg(MsgTypeEnum.getByCode(code), body);
+        Message msg = parseService.getMsgByCode(code, body);
         out.add(msg);
 
         logger.debug("[IM msg decoder]received message: content length {}, msgTypeCode: {}", length, code);

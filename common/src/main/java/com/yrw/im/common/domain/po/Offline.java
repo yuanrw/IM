@@ -8,18 +8,28 @@ package com.yrw.im.common.domain.po;
  */
 public class Offline extends DbModel {
 
-    private Long fromUserId;
+    private Long msgId;
+
+    private Integer msgCode;
 
     private Long toUserId;
 
-    private String content;
+    private byte[] content;
 
-    public Long getFromUserId() {
-        return fromUserId;
+    public Long getMsgId() {
+        return msgId;
     }
 
-    public void setFromUserId(Long fromUserId) {
-        this.fromUserId = fromUserId;
+    public void setMsgId(Long msgId) {
+        this.msgId = msgId;
+    }
+
+    public Integer getMsgCode() {
+        return msgCode;
+    }
+
+    public void setMsgCode(Integer msgCode) {
+        this.msgCode = msgCode;
     }
 
     public Long getToUserId() {
@@ -30,11 +40,11 @@ public class Offline extends DbModel {
         this.toUserId = toUserId;
     }
 
-    public String getContent() {
+    public byte[] getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(byte[] content) {
         this.content = content;
     }
 }

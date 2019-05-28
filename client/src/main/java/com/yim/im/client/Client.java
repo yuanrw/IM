@@ -57,7 +57,7 @@ public class Client {
                     ChannelPipeline p = ch.pipeline();
 
                     //out
-                    p.addLast("MsgEncoder", new MsgEncoder());
+                    p.addLast("MsgEncoder", injector.getInstance(MsgEncoder.class));
                     p.addLast("AesEncoder", injector.getInstance(AesEncoder.class));
 
                     //in

@@ -42,7 +42,7 @@ public class ConnectorServer {
                 protected void initChannel(SocketChannel channel) throws Exception {
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
-                    pipeline.addLast("MsgEncoder", new MsgEncoder());
+                    pipeline.addLast("MsgEncoder", injector.getInstance(MsgEncoder.class));
                     pipeline.addLast("ConnectorClientHandler", injector.getInstance(ConnectorClientHandler.class));
                 }
             });

@@ -2,6 +2,8 @@ package com.yrw.im.gateway.connector.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
+import com.google.protobuf.Message;
 import com.yrw.im.common.domain.UserStatus;
 import com.yrw.im.common.exception.ImException;
 import com.yrw.im.common.util.IdWorker;
@@ -14,6 +16,7 @@ import com.yrw.im.proto.generate.Internal;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -28,10 +31,13 @@ public class UserStatusService {
     private ClientConnContext clientConnContext;
     private ObjectMapper objectMapper;
     private ConnectorTransferHandler connectorTransferHandler;
+    private OfflineService offlineService;
 
-    public UserStatusService() {
+    @Inject
+    public UserStatusService(OfflineService offlineService) {
         this.clientConnContext = ConnectorClient.injector.getInstance(ClientConnContext.class);
         this.connectorTransferHandler = ConnectorClient.injector.getInstance(ConnectorTransferHandler.class);
+        this.offlineService = offlineService;
         this.objectMapper = new ObjectMapper();
     }
 
@@ -57,6 +63,12 @@ public class UserStatusService {
                         "init msg id is: {}, but received ack id is: {}");
                 } else {
                     sendAckToClient(msg.getId(), ctx);
+
+                    //发送离线消息
+                    List<Message> msgs = offlineService.getOfflineMsg(userId);
+                    msgs.forEach(ctx::write);
+
+                    ctx.flush();
                 }
             });
 

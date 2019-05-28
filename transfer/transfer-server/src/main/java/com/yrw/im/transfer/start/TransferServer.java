@@ -42,14 +42,13 @@ public class TransferServer {
                 protected void initChannel(SocketChannel channel) throws Exception {
                     ChannelPipeline pipeline = channel.pipeline();
                     pipeline.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
-                    pipeline.addLast("MsgEncoder", new MsgEncoder());
+                    pipeline.addLast("MsgEncoder", injector.getInstance(MsgEncoder.class));
                     pipeline.addLast("TransferClientHandler", injector.getInstance(TransferConnectorHandler.class));
                 }
             });
 
         ChannelFuture f = bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-                //TODO: do some init
                 logger.info("[transfer] start successful, waiting for connectors to connect...");
             } else {
                 throw new ImException("[transfer] start failed");

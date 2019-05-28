@@ -2,7 +2,9 @@ package com.yrw.im.rest.repository.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.protobuf.Message;
 import com.yrw.im.common.domain.po.Offline;
+import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 
 import java.util.List;
@@ -16,11 +18,24 @@ import java.util.List;
 public interface OfflineService extends IService<Offline> {
 
     /**
-     * 保存离线消息
+     * 保存离线聊天消息
      *
      * @param msg
      */
-    void saveChatMsg(Chat.ChatMsg msg);
+    void saveChat(Chat.ChatMsg msg);
 
-    List<Chat.ChatMsg> listOfflineMsg(Long userId) throws JsonProcessingException;
+    /**
+     * 保存离线ack消息
+     *
+     * @param msg
+     */
+    void saveAck(Ack.AckMsg msg);
+
+    /**
+     * 获取某个用户的所有离线消息
+     *
+     * @param userId
+     * @return
+     */
+    List<Offline> listOffline(Long userId) throws JsonProcessingException;
 }

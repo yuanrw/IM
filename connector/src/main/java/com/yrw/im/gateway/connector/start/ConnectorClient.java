@@ -39,7 +39,7 @@ public class ConnectorClient {
                 protected void initChannel(NioSocketChannel ch) throws Exception {
                     ChannelPipeline p = ch.pipeline();
                     p.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
-                    p.addLast("MsgEncoder", new MsgEncoder());
+                    p.addLast("MsgEncoder", injector.getInstance(MsgEncoder.class));
                     p.addLast("ConnectorTransferHandler", injector.getInstance(ConnectorTransferHandler.class));
                 }
             }).connect(host, port)

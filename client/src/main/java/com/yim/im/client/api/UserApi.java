@@ -40,6 +40,7 @@ public class UserApi {
 
     public UserInfo login(String username, String password) {
         UserInfo userInfo = clientRestService.login(username, password);
+        //等待connector的ack信息
         userLoginInit(userInfo.getUserId());
         return userInfo;
     }

@@ -72,7 +72,9 @@ public class UserStatusService {
         String connectorId = userIdToNetId.get(userId);
         if (connectorId == null) {
             connectorId = jedis.hget(USER_CONN_STATUS_KEY, userId + "");
-            userIdToNetId.put(userId, connectorId);
+            if (connectorId != null) {
+                userIdToNetId.put(userId, connectorId);
+            }
         }
         return connectorId;
     }

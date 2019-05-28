@@ -12,7 +12,11 @@ public class ImException extends RuntimeException {
         super(message, e);
     }
 
-    public ImException(String errMsg) {
-        super(errMsg);
+    public ImException(Throwable e) {
+        super(e);
+    }
+
+    public ImException(String message) {
+        super(message);
     }
 }

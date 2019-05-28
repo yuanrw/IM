@@ -34,7 +34,8 @@ public class ParseService {
         parseFunctionMap.put(MsgTypeEnum.ACK, Ack.AckMsg::parseFrom);
     }
 
-    public Message getMsg(MsgTypeEnum msgType, byte[] bytes) throws InvalidProtocolBufferException {
+    public Message getMsgByCode(int code, byte[] bytes) throws InvalidProtocolBufferException {
+        MsgTypeEnum msgType = MsgTypeEnum.getByCode(code);
         Parse parseFunction = parseFunctionMap.get(msgType);
         if (parseFunction == null) {
             throw new ImException("[msg parse], no proper parse function, msgType: " + msgType.name());

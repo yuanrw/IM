@@ -1,5 +1,6 @@
 package com.yrw.im.rest.web.router;
 
+import com.yrw.im.rest.web.handler.OfflineHandler;
 import com.yrw.im.rest.web.handler.RelationHandler;
 import com.yrw.im.rest.web.handler.UserHandler;
 import org.springframework.context.annotation.Bean;
@@ -39,5 +40,12 @@ public class RestRouter {
                 relationHandler::getRelation)
             .andRoute(POST("/relation").and(contentType(APPLICATION_JSON)).and(accept(APPLICATION_JSON)),
                 relationHandler::addRelation);
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> offlineRoutes(OfflineHandler offlineHandler) {
+        return RouterFunctions
+            .route(GET("/offlines").and(accept(APPLICATION_JSON)),
+                offlineHandler::listOfflines);
     }
 }
