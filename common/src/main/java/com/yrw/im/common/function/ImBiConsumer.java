@@ -14,6 +14,7 @@ public interface ImBiConsumer<T, U> {
      *
      * @param t the first input argument
      * @param u the second input argument
+     * @throws Exception
      */
     void accept(T t, U u) throws Exception;
 }

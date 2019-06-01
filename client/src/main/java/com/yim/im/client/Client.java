@@ -68,7 +68,7 @@ public class Client {
             }).connect(connectorHost, connectorPort)
             .addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
-                    logger.info("Client connect to connector successfully...");
+                    logger.info("Client connect to connector successfully");
                 } else {
                     throw new ImException("[client] connect to connector failed!");
                 }

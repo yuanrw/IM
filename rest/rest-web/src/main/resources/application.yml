@@ -1,5 +1,8 @@
 server.port: ${server.port}
 
+logging:
+  level.root: info
+
 spring:
   datasource:
     url: ${spring.datasource.url}

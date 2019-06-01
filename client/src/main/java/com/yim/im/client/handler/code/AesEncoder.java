@@ -43,7 +43,7 @@ public class AesEncoder extends MessageToMessageEncoder<Message> {
                 Chat.ChatMsg encodeMsg = Chat.ChatMsg.newBuilder().mergeFrom(cm)
                     .setMsgBody(ByteString.copyFrom(encodeBody)).build();
 
-                logger.info("[IM encode handler] encode message");
+                logger.debug("[encode] encode message");
 
                 out.add(encodeMsg);
             } else {

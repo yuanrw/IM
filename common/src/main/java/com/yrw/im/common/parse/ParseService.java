@@ -23,6 +23,13 @@ public class ParseService {
 
     @FunctionalInterface
     public interface Parse {
+        /**
+         * parse msg
+         *
+         * @param bytes msg bytes
+         * @return
+         * @throws InvalidProtocolBufferException
+         */
         Message process(byte[] bytes) throws InvalidProtocolBufferException;
     }
 

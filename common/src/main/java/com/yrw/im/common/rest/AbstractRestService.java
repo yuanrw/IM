@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.exception.ImException;
 import okhttp3.logging.HttpLoggingInterceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -20,7 +18,6 @@ import java.io.IOException;
  * @author yrw
  */
 public abstract class AbstractRestService<R> {
-    private Logger logger = LoggerFactory.getLogger(AbstractRestService.class);
 
     protected R restClient;
 

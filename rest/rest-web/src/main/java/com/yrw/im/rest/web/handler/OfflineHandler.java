@@ -1,7 +1,6 @@
 package com.yrw.im.rest.web.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.protobuf.Message;
 import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.domain.po.Offline;
 import com.yrw.im.common.exception.ImException;
@@ -32,13 +31,13 @@ public class OfflineHandler {
         this.offlineService = offlineService;
     }
 
-    public Mono<ServerResponse> listOfflines(ServerRequest request) {
+    public Mono<ServerResponse> pollOfflineMsg(ServerRequest request) {
 
         String userId = request.queryParam("userId").orElseThrow(() -> new ImException("userId can not be empty"));
 
         Flux<Offline> relationFlux;
         try {
-            relationFlux = Flux.fromIterable(offlineService.listOffline(Long.parseLong(userId)));
+            relationFlux = Flux.fromIterable(offlineService.pollOfflineMsg(Long.parseLong(userId)));
         } catch (JsonProcessingException e) {
             throw new ImException(e);
         }

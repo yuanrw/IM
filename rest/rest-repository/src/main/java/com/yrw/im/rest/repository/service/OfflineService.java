@@ -2,7 +2,6 @@ package com.yrw.im.rest.repository.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.protobuf.Message;
 import com.yrw.im.common.domain.po.Offline;
 import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
@@ -36,6 +35,7 @@ public interface OfflineService extends IService<Offline> {
      *
      * @param userId
      * @return
+     * @throws JsonProcessingException
      */
-    List<Offline> listOffline(Long userId) throws JsonProcessingException;
+    List<Offline> pollOfflineMsg(Long userId) throws JsonProcessingException;
 }

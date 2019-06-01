@@ -111,8 +111,8 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
             });
 
             AckParser ackParser = new AckParser(2);
-            ackParser.register(Ack.AckMsg.MsgType.DELIVERED, (m, ctx) -> clientMsgListener.hasDelivered(m.getId()));
-            ackParser.register(Ack.AckMsg.MsgType.READ, (m, ctx) -> clientMsgListener.hasRead(m.getId()));
+            ackParser.register(Ack.AckMsg.MsgType.DELIVERED, (m, ctx) -> clientMsgListener.hasDelivered(m.getAckMsgId()));
+            ackParser.register(Ack.AckMsg.MsgType.READ, (m, ctx) -> clientMsgListener.hasRead(m.getAckMsgId()));
 
             register(Chat.ChatMsg.class, (m, ctx) -> clientMsgListener.read(m));
             register(Ack.AckMsg.class, ackParser.generateFun());

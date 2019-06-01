@@ -63,7 +63,7 @@ public class UserApi {
                     throw new ImException("[client] user connected to server failed, " +
                         "init msg id is: {}, but received ack id is: {}");
                 } else {
-                    logger.info("[client] user connected to server success");
+                    logger.info("[client] client connect to server successfully");
                 }
             });
 

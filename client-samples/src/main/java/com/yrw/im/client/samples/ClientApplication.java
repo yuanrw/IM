@@ -36,7 +36,7 @@ public class ClientApplication {
 
                 @Override
                 public void read(Chat.ChatMsg chatMsg) {
-                    logger.info("[client] read a msg: {}", chatMsg.toString());
+                    logger.info("[client] read a msg: {}", chatMsg.getMsgBody().toStringUtf8());
 
                     //when it's confirmed that user has seen this msg
                     chatApi.confirmRead(chatMsg);
@@ -71,6 +71,6 @@ public class ClientApplication {
         List<Friend> friends = userApi.friends(user.getUserId(), user.getToken());
 
         //发送消息
-        chatApi.text(user.getUserId(), friends.get(0).getUserId(), "hello", user.getToken());
+        chatApi.text(user.getUserId(), user.getUserId(), "hello", user.getToken());
     }
 }

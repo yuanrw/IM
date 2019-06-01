@@ -12,6 +12,7 @@ import com.yrw.im.rest.repository.service.OfflineService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Date: 2019-05-05
@@ -51,9 +52,14 @@ public class OfflineServiceImpl extends ServiceImpl<OfflineMapper, Offline> impl
     }
 
     @Override
-    public List<Offline> listOffline(Long userId) {
-        return list(new LambdaQueryWrapper<Offline>()
+    public List<Offline> pollOfflineMsg(Long userId) {
+        List<Offline> list = list(new LambdaQueryWrapper<Offline>()
             .eq(Offline::getToUserId, userId)
             .orderBy(true, true, Offline::getMsgId));
+
+        List<Long> ids = list.stream().map(Offline::getId).collect(Collectors.toList());
+        removeByIds(ids);
+
+        return list;
     }
 }
