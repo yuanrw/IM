@@ -32,7 +32,11 @@ public class ClientConnContext extends MemoryConnContext<ClientConn> {
         if (netId == null) {
             return null;
         }
-        return connMap.get(netId);
+        ClientConn conn = connMap.get(netId);
+        if (conn == null) {
+            userIdToNetId.remove(userId);
+        }
+        return conn;
     }
 
     @Override

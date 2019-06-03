@@ -40,7 +40,7 @@ import static org.powermock.api.mockito.PowerMockito.when
 @PrepareForTest([ConnectorStarter.class, ConnectorTransferHandler.class])
 class UserStatusServiceTest extends Specification {
 
-    def "test user online"() {
+    def "test user online and offline"() {
         given:
         def netId = -999
         //mock connector-client ctx
@@ -80,6 +80,7 @@ class UserStatusServiceTest extends Specification {
 
         def userId = "123"
 
+        //online
         when:
         Internal.InternalMsg msg = Internal.InternalMsg.newBuilder()
                 .setVersion(1)
@@ -99,5 +100,23 @@ class UserStatusServiceTest extends Specification {
         clientConnContext.getConnByUserId(123) != null
 
         netId >= 0
+
+        //offline
+        when:
+        def connectorClientCtx1 = Mock(ChannelHandlerContext) {
+            channel() >> Mock(Channel) {
+                attr(Conn.NET_ID) >> Mock(Attribute) {
+                    get() >> netId
+                }
+            }
+        }
+
+        userStatusService.userOffline(connectorClientCtx1)
+
+        then:
+        1 * connectorTransferCtx.writeAndFlush(_ as Internal.InternalMsg)
+
+        clientConnContext.getConnByUserId(123) == null
+//        clientConnContext.getConn(connectorClientCtx1) == null
     }
 }
