@@ -3,7 +3,6 @@ package com.yrw.im.connector.service;
 import com.google.protobuf.Message;
 import com.yrw.im.common.domain.conn.Conn;
 import com.yrw.im.common.util.IdWorker;
-import com.yrw.im.connector.domain.ClientConn;
 import com.yrw.im.connector.domain.ClientConnContext;
 import com.yrw.im.connector.handler.ConnectorTransferHandler;
 import com.yrw.im.connector.start.ConnectorClient;
@@ -32,7 +31,7 @@ public class ConnectorService {
                 .setVersion(1)
                 .setFromId(msg.getDestId())
                 .setDestId(msg.getFromId())
-                .setTargetType(msg.getTargetType() == Chat.ChatMsg.DestType.SINGLE ? Ack.AckMsg.DestType.SINGLE : Ack.AckMsg.DestType.GROUP)
+                .setDestType(msg.getDestType() == Chat.ChatMsg.DestType.SINGLE ? Ack.AckMsg.DestType.SINGLE : Ack.AckMsg.DestType.GROUP)
                 .setCreateTime(System.currentTimeMillis())
                 .setMsgType(Ack.AckMsg.MsgType.DELIVERED)
                 .setAckMsgId(msg.getId())
@@ -58,10 +57,5 @@ public class ConnectorService {
             conn.getCtx().writeAndFlush(msg);
             return true;
         }
-    }
-
-    public void forceOffline(Long userId) {
-        ClientConn conn = clientConnContext.getConnByUserId(userId);
-        conn.getCtx().close();
     }
 }

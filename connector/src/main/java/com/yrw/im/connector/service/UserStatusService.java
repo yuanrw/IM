@@ -29,22 +29,19 @@ import java.util.concurrent.ExecutionException;
 public class UserStatusService {
 
     private ClientConnContext clientConnContext;
-    private ObjectMapper objectMapper;
-    private ConnectorTransferHandler connectorTransferHandler;
     private OfflineService offlineService;
+    private ObjectMapper objectMapper;
 
     @Inject
     public UserStatusService(OfflineService offlineService) {
         this.clientConnContext = ConnectorClient.injector.getInstance(ClientConnContext.class);
-        this.connectorTransferHandler = ConnectorClient.injector.getInstance(ConnectorTransferHandler.class);
         this.offlineService = offlineService;
         this.objectMapper = new ObjectMapper();
     }
 
-    public void userOnline(Internal.InternalMsg msg, ChannelHandlerContext ctx) throws JsonProcessingException, ExecutionException, InterruptedException {
+    public void userOnline(Long msgId, Long userId, ChannelHandlerContext ctx) throws JsonProcessingException, ExecutionException, InterruptedException {
         //保存连接
         ClientConn conn = new ClientConn(ctx);
-        Long userId = Long.parseLong(msg.getMsgBody());
         conn.setUserId(userId);
 
         clientConnContext.addConn(conn);
@@ -56,13 +53,15 @@ public class UserStatusService {
 
         Internal.InternalMsg status = statusMsg(userStatus);
 
-        CompletableFuture<Internal.InternalMsg> future = connectorTransferHandler.createUserStatusMsgCollector(Duration.ofSeconds(10)).getFuture()
+        CompletableFuture<Internal.InternalMsg> future = ConnectorTransferHandler
+            .createUserStatusMsgCollector(Duration.ofSeconds(10))
+            .getFuture()
             .whenComplete((m, e) -> {
                 if (!m.getMsgBody().equals(status.getId() + "")) {
                     throw new ImException("[client] connect to connector failed, " +
                         "init msg id is: {}, but received ack id is: {}");
                 } else {
-                    sendAckToClient(msg.getId(), ctx);
+                    sendAckToClient(msgId, ctx);
 
                     //发送离线消息
                     List<Message> msgs = offlineService.pollOfflineMsg(userId);
@@ -106,6 +105,11 @@ public class UserStatusService {
 
         //移除连接
         clientConnContext.removeConn(ctx);
+    }
+
+    public void forceOffline(Long userId) {
+        ClientConn conn = clientConnContext.getConnByUserId(userId);
+        conn.getCtx().close();
     }
 
     private Internal.InternalMsg statusMsg(UserStatus userStatus) throws JsonProcessingException {

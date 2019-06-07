@@ -1,4 +1,4 @@
-package com.yrw.im.connector.test
+package com.yrw.im.connector
 
 import com.yrw.im.common.domain.conn.Conn
 import com.yrw.im.connector.domain.ClientConn

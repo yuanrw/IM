@@ -9,6 +9,7 @@ import com.yrw.im.common.parse.InternalParser;
 import com.yrw.im.common.util.IdWorker;
 import com.yrw.im.common.util.SessionIdGenerator;
 import com.yrw.im.connector.service.ConnectorService;
+import com.yrw.im.connector.service.UserStatusService;
 import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
@@ -39,12 +40,14 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
 
     private FromTransferParser fromTransferParser;
     private ConnectorService connectorService;
-    private AtomicReference<ResponseCollector<Internal.InternalMsg>> userStatusMsgCollector = new AtomicReference<>();
+    private UserStatusService userStatusService;
+    private static AtomicReference<ResponseCollector<Internal.InternalMsg>> userStatusMsgCollector = new AtomicReference<>();
 
     @Inject
-    public ConnectorTransferHandler(ConnectorService connectorService) {
+    public ConnectorTransferHandler(ConnectorService connectorService, UserStatusService userStatusService) {
         this.fromTransferParser = new FromTransferParser();
         this.connectorService = connectorService;
+        this.userStatusService = userStatusService;
     }
 
     @Override
@@ -79,11 +82,11 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
         return ctx;
     }
 
-    public ResponseCollector<Internal.InternalMsg> createUserStatusMsgCollector(Duration timeout) {
+    public static ResponseCollector<Internal.InternalMsg> createUserStatusMsgCollector(Duration timeout) {
         ResponseCollector<Internal.InternalMsg> collector = new ResponseCollector<>(timeout);
         boolean success = userStatusMsgCollector.compareAndSet(null, collector);
         if (!success) {
-            ResponseCollector<Internal.InternalMsg> previousCollector = this.userStatusMsgCollector.get();
+            ResponseCollector<Internal.InternalMsg> previousCollector = userStatusMsgCollector.get();
             if (previousCollector == null) {
                 return createUserStatusMsgCollector(timeout);
             }
@@ -102,7 +105,7 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
             parser.register(Internal.InternalMsg.MsgType.ACK,
                 (m, ctx) -> userStatusSyncDone(m));
             parser.register(Internal.InternalMsg.MsgType.FORCE_OFFLINE,
-                (m, ctx) -> connectorService.forceOffline(Long.parseLong(m.getMsgBody())));
+                (m, ctx) -> userStatusService.forceOffline(Long.parseLong(m.getMsgBody())));
 
             register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChat((m)));
             register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAck(m));

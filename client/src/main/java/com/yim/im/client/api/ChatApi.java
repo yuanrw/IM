@@ -22,7 +22,7 @@ public class ChatApi {
             .setId(IdWorker.genId())
             .setFromId(userId)
             .setDestId(toId)
-            .setTargetType(Chat.ChatMsg.DestType.SINGLE)
+            .setDestType(Chat.ChatMsg.DestType.SINGLE)
             .setCreateTime(System.currentTimeMillis())
             .setMsgType(Chat.ChatMsg.MsgType.TEXT)
             .setVersion(1)
@@ -51,7 +51,7 @@ public class ChatApi {
             .setFromId(msg.getDestId())
             .setDestId(msg.getFromId())
             .setCreateTime(System.currentTimeMillis())
-            .setTargetType(msg.getTargetType() == Chat.ChatMsg.DestType.SINGLE ? Ack.AckMsg.DestType.SINGLE : Ack.AckMsg.DestType.GROUP)
+            .setDestType(msg.getDestType() == Chat.ChatMsg.DestType.SINGLE ? Ack.AckMsg.DestType.SINGLE : Ack.AckMsg.DestType.GROUP)
             .setMsgType(Ack.AckMsg.MsgType.READ)
             .setAckMsgId(msg.getId())
             .build();

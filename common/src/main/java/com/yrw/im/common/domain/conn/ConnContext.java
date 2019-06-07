@@ -49,4 +49,9 @@ public interface ConnContext<C extends Conn> {
      * @param ctx
      */
     void removeConn(ChannelHandlerContext ctx);
+
+    /**
+     * 删除所有连接
+     */
+    void removeAllConn();
 }

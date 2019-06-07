@@ -57,17 +57,17 @@ public final class Chat {
      *接收者类型。
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType targetType = 3;</code>
+     * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType destType = 3;</code>
      */
-    boolean hasTargetType();
+    boolean hasDestType();
     /**
      * <pre>
      *接收者类型。
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType targetType = 3;</code>
+     * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType destType = 3;</code>
      */
-    com.yrw.im.proto.generate.Chat.ChatMsg.DestType getTargetType();
+    com.yrw.im.proto.generate.Chat.ChatMsg.DestType getDestType();
 
     /**
      * <pre>
@@ -181,7 +181,7 @@ public final class Chat {
       super(builder);
     }
     private ChatMsg() {
-      targetType_ = 0;
+      destType_ = 0;
       msgType_ = 0;
       msgBody_ = com.google.protobuf.ByteString.EMPTY;
       token_ = "";
@@ -229,7 +229,7 @@ public final class Chat {
                 unknownFields.mergeVarintField(3, rawValue);
               } else {
                 bitField0_ |= 0x00000004;
-                targetType_ = rawValue;
+                destType_ = rawValue;
               }
               break;
             }
@@ -530,16 +530,16 @@ public final class Chat {
       return id_;
     }
 
-    public static final int TARGETTYPE_FIELD_NUMBER = 3;
-    private int targetType_;
+    public static final int DESTTYPE_FIELD_NUMBER = 3;
+    private int destType_;
     /**
      * <pre>
      *接收者类型。
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType targetType = 3;</code>
+     * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType destType = 3;</code>
      */
-    public boolean hasTargetType() {
+    public boolean hasDestType() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
@@ -547,11 +547,11 @@ public final class Chat {
      *接收者类型。
      * </pre>
      *
-     * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType targetType = 3;</code>
+     * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType destType = 3;</code>
      */
-    public com.yrw.im.proto.generate.Chat.ChatMsg.DestType getTargetType() {
+    public com.yrw.im.proto.generate.Chat.ChatMsg.DestType getDestType() {
       @SuppressWarnings("deprecation")
-      com.yrw.im.proto.generate.Chat.ChatMsg.DestType result = com.yrw.im.proto.generate.Chat.ChatMsg.DestType.valueOf(targetType_);
+      com.yrw.im.proto.generate.Chat.ChatMsg.DestType result = com.yrw.im.proto.generate.Chat.ChatMsg.DestType.valueOf(destType_);
       return result == null ? com.yrw.im.proto.generate.Chat.ChatMsg.DestType.SINGLE : result;
     }
 
@@ -729,7 +729,7 @@ public final class Chat {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasTargetType()) {
+      if (!hasDestType()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -771,7 +771,7 @@ public final class Chat {
         output.writeInt64(2, id_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        output.writeEnum(3, targetType_);
+        output.writeEnum(3, destType_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
         output.writeInt64(4, fromId_);
@@ -810,7 +810,7 @@ public final class Chat {
       }
       if (((bitField0_ & 0x00000004) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(3, targetType_);
+          .computeEnumSize(3, destType_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
         size += com.google.protobuf.CodedOutputStream
@@ -860,9 +860,9 @@ public final class Chat {
         if (getId()
             != other.getId()) return false;
       }
-      if (hasTargetType() != other.hasTargetType()) return false;
-      if (hasTargetType()) {
-        if (targetType_ != other.targetType_) return false;
+      if (hasDestType() != other.hasDestType()) return false;
+      if (hasDestType()) {
+        if (destType_ != other.destType_) return false;
       }
       if (hasFromId() != other.hasFromId()) return false;
       if (hasFromId()) {
@@ -913,9 +913,9 @@ public final class Chat {
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             getId());
       }
-      if (hasTargetType()) {
-        hash = (37 * hash) + TARGETTYPE_FIELD_NUMBER;
-        hash = (53 * hash) + targetType_;
+      if (hasDestType()) {
+        hash = (37 * hash) + DESTTYPE_FIELD_NUMBER;
+        hash = (53 * hash) + destType_;
       }
       if (hasFromId()) {
         hash = (37 * hash) + FROMID_FIELD_NUMBER;
@@ -1081,7 +1081,7 @@ public final class Chat {
         bitField0_ = (bitField0_ & ~0x00000001);
         id_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
-        targetType_ = 0;
+        destType_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
         fromId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -1134,7 +1134,7 @@ public final class Chat {
         if (((from_bitField0_ & 0x00000004) != 0)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.targetType_ = targetType_;
+        result.destType_ = destType_;
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.fromId_ = fromId_;
           to_bitField0_ |= 0x00000008;
@@ -1214,8 +1214,8 @@ public final class Chat {
         if (other.hasId()) {
           setId(other.getId());
         }
-        if (other.hasTargetType()) {
-          setTargetType(other.getTargetType());
+        if (other.hasDestType()) {
+          setDestType(other.getDestType());
         }
         if (other.hasFromId()) {
           setFromId(other.getFromId());
@@ -1250,7 +1250,7 @@ public final class Chat {
         if (!hasId()) {
           return false;
         }
-        if (!hasTargetType()) {
+        if (!hasDestType()) {
           return false;
         }
         if (!hasFromId()) {
@@ -1390,15 +1390,15 @@ public final class Chat {
         return this;
       }
 
-      private int targetType_ = 0;
+      private int destType_ = 0;
       /**
        * <pre>
        *接收者类型。
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType targetType = 3;</code>
+       * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType destType = 3;</code>
        */
-      public boolean hasTargetType() {
+      public boolean hasDestType() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
@@ -1406,11 +1406,11 @@ public final class Chat {
        *接收者类型。
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType targetType = 3;</code>
+       * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType destType = 3;</code>
        */
-      public com.yrw.im.proto.generate.Chat.ChatMsg.DestType getTargetType() {
+      public com.yrw.im.proto.generate.Chat.ChatMsg.DestType getDestType() {
         @SuppressWarnings("deprecation")
-        com.yrw.im.proto.generate.Chat.ChatMsg.DestType result = com.yrw.im.proto.generate.Chat.ChatMsg.DestType.valueOf(targetType_);
+        com.yrw.im.proto.generate.Chat.ChatMsg.DestType result = com.yrw.im.proto.generate.Chat.ChatMsg.DestType.valueOf(destType_);
         return result == null ? com.yrw.im.proto.generate.Chat.ChatMsg.DestType.SINGLE : result;
       }
       /**
@@ -1418,14 +1418,14 @@ public final class Chat {
        *接收者类型。
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType targetType = 3;</code>
+       * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType destType = 3;</code>
        */
-      public Builder setTargetType(com.yrw.im.proto.generate.Chat.ChatMsg.DestType value) {
+      public Builder setDestType(com.yrw.im.proto.generate.Chat.ChatMsg.DestType value) {
         if (value == null) {
           throw new NullPointerException();
         }
         bitField0_ |= 0x00000004;
-        targetType_ = value.getNumber();
+        destType_ = value.getNumber();
         onChanged();
         return this;
       }
@@ -1434,11 +1434,11 @@ public final class Chat {
        *接收者类型。
        * </pre>
        *
-       * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType targetType = 3;</code>
+       * <code>required .com.yrw.im.proto.generate.ChatMsg.DestType destType = 3;</code>
        */
-      public Builder clearTargetType() {
+      public Builder clearDestType() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        targetType_ = 0;
+        destType_ = 0;
         onChanged();
         return this;
       }
@@ -3588,17 +3588,17 @@ public final class Chat {
   static {
     java.lang.String[] descriptorData = {
       "\n\nchat.proto\022\031com.yrw.im.proto.generate\"" +
-      "\272\002\n\007ChatMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002id\030\002 \002(\003" +
-      "\022?\n\ntargetType\030\003 \002(\0162+.com.yrw.im.proto." +
-      "generate.ChatMsg.DestType\022\016\n\006fromId\030\004 \002(" +
-      "\003\022\016\n\006destId\030\005 \002(\003\022\022\n\ncreateTime\030\006 \002(\003\022;\n" +
-      "\007msgType\030\007 \002(\0162*.com.yrw.im.proto.genera" +
-      "te.ChatMsg.MsgType\022\017\n\007msgBody\030\010 \002(\014\022\r\n\005t" +
-      "oken\030\t \002(\t\"!\n\010DestType\022\n\n\006SINGLE\020\000\022\t\n\005GR" +
-      "OUP\020\001\"\035\n\007MsgType\022\010\n\004TEXT\020\000\022\010\n\004FILE\020\001\"\030\n\010" +
-      "TextBody\022\014\n\004text\030\001 \002(\t\"M\n\010FileBody\022\016\n\006fi" +
-      "leId\030\001 \002(\t\022\023\n\013media_crc32\030\002 \002(\005\022\r\n\005fSize" +
-      "\030\003 \002(\005\022\r\n\005fName\030\004 \002(\tB\006B\004Chat"
+      "\270\002\n\007ChatMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002id\030\002 \002(\003" +
+      "\022=\n\010destType\030\003 \002(\0162+.com.yrw.im.proto.ge" +
+      "nerate.ChatMsg.DestType\022\016\n\006fromId\030\004 \002(\003\022" +
+      "\016\n\006destId\030\005 \002(\003\022\022\n\ncreateTime\030\006 \002(\003\022;\n\007m" +
+      "sgType\030\007 \002(\0162*.com.yrw.im.proto.generate" +
+      ".ChatMsg.MsgType\022\017\n\007msgBody\030\010 \002(\014\022\r\n\005tok" +
+      "en\030\t \002(\t\"!\n\010DestType\022\n\n\006SINGLE\020\000\022\t\n\005GROU" +
+      "P\020\001\"\035\n\007MsgType\022\010\n\004TEXT\020\000\022\010\n\004FILE\020\001\"\030\n\010Te" +
+      "xtBody\022\014\n\004text\030\001 \002(\t\"M\n\010FileBody\022\016\n\006file" +
+      "Id\030\001 \002(\t\022\023\n\013media_crc32\030\002 \002(\005\022\r\n\005fSize\030\003" +
+      " \002(\005\022\r\n\005fName\030\004 \002(\tB\006B\004Chat"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3617,7 +3617,7 @@ public final class Chat {
     internal_static_com_yrw_im_proto_generate_ChatMsg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_yrw_im_proto_generate_ChatMsg_descriptor,
-        new java.lang.String[] { "Version", "Id", "TargetType", "FromId", "DestId", "CreateTime", "MsgType", "MsgBody", "Token", });
+        new java.lang.String[] { "Version", "Id", "DestType", "FromId", "DestId", "CreateTime", "MsgType", "MsgBody", "Token", });
     internal_static_com_yrw_im_proto_generate_TextBody_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_yrw_im_proto_generate_TextBody_fieldAccessorTable = new

@@ -10,8 +10,8 @@ import com.yrw.im.proto.constant.MsgTypeEnum;
 import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
-import com.yrw.im.transfer.user.status.domain.ConnectorConnContext;
 import com.yrw.im.transfer.server.start.TransferMqProducer;
+import com.yrw.im.transfer.user.status.domain.ConnectorConnContext;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;

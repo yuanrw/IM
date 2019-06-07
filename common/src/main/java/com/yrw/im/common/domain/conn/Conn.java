@@ -1,5 +1,6 @@
 package com.yrw.im.common.domain.conn;
 
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;
 
@@ -29,4 +30,11 @@ public interface Conn {
      * @return
      */
     ChannelHandlerContext getCtx();
+
+    /**
+     * 关闭连接
+     *
+     * @return
+     */
+    ChannelFuture close();
 }

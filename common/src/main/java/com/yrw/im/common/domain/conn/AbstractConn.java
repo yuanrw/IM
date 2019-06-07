@@ -1,5 +1,6 @@
 package com.yrw.im.common.domain.conn;
 
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.Serializable;
@@ -37,5 +38,10 @@ public abstract class AbstractConn implements Conn {
     @Override
     public ChannelHandlerContext getCtx() {
         return ctx;
+    }
+
+    @Override
+    public ChannelFuture close() {
+        return ctx.close();
     }
 }

@@ -10,7 +10,7 @@ message AckMsg {
     required int64 id = 2;
     //消息id
 
-    required DestType targetType = 3;
+    required DestType destType = 3;
     //接收者类型。
 
     required int64 fromId = 4;

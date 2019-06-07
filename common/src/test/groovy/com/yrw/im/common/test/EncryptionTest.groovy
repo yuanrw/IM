@@ -1,6 +1,5 @@
 package com.yrw.im.common.test
 
-
 import com.yrw.im.common.util.Encryption
 import io.netty.util.CharsetUtil
 import spock.lang.Specification
