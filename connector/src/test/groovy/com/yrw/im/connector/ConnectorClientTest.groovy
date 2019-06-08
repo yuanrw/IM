@@ -69,7 +69,7 @@ class ConnectorClientTest extends Specification {
         clientConnContext.removeAllConn()
     }
 
-    def "test get get internal"() {
+    def "test get internal greet"() {
         given:
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)

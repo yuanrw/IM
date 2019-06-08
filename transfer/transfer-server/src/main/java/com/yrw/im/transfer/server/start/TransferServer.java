@@ -28,7 +28,7 @@ import java.util.concurrent.TimeoutException;
 public class TransferServer {
     private static Logger logger = LoggerFactory.getLogger(TransferServer.class);
 
-    private static Injector injector = Guice.createInjector();
+    static Injector injector = Guice.createInjector();
 
     public static void startTransferServer(int port) {
         EventLoopGroup bossGroup = new NioEventLoopGroup();

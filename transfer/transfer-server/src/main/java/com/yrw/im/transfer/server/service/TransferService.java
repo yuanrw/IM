@@ -6,7 +6,6 @@ import com.rabbitmq.client.MessageProperties;
 import com.yrw.im.common.domain.conn.Conn;
 import com.yrw.im.common.domain.conn.InternalConn;
 import com.yrw.im.common.domain.constant.MqConstant;
-import com.yrw.im.proto.constant.MsgTypeEnum;
 import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
@@ -58,16 +57,7 @@ public class TransferService {
     }
 
     private void doOffline(Message msg) throws IOException {
-        int code = MsgTypeEnum.getByClass(msg.getClass()).getCode();
-
-        byte[] srcB = msg.toByteArray();
-        byte[] destB = new byte[srcB.length + 1];
-        destB[0] = (byte) code;
-
-        System.arraycopy(msg.toByteArray(), 0, destB, 1, msg.toByteArray().length);
-
-        TransferMqProducer.getChannel().basicPublish(
-            MqConstant.EXCHANGE, MqConstant.ROUTING_KEY,
-            MessageProperties.PERSISTENT_TEXT_PLAIN, destB);
+        TransferMqProducer.basicPublish(MqConstant.EXCHANGE, MqConstant.ROUTING_KEY,
+            MessageProperties.PERSISTENT_TEXT_PLAIN, msg);
     }
 }

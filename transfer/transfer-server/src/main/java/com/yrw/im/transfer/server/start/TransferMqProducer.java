@@ -1,9 +1,8 @@
 package com.yrw.im.transfer.server.start;
 
-import com.rabbitmq.client.BuiltinExchangeType;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
+import com.google.protobuf.Message;
+import com.rabbitmq.client.*;
+import com.yrw.im.proto.constant.MsgTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,7 @@ public class TransferMqProducer {
 
     private static Channel channel;
 
-    public static void startProducer(String host, int port, String exchange, String queue, String routingKey) throws IOException, TimeoutException {
+    static void startProducer(String host, int port, String exchange, String queue, String routingKey) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(host);
         factory.setPort(port);
@@ -35,6 +34,18 @@ public class TransferMqProducer {
 
         TransferMqProducer.channel = channel;
         logger.info("[transfer] producer start success");
+    }
+
+    public static void basicPublish(String exchange, String routingKey, AMQP.BasicProperties properties, Message message) throws IOException {
+        int code = MsgTypeEnum.getByClass(message.getClass()).getCode();
+
+        byte[] srcB = message.toByteArray();
+        byte[] destB = new byte[srcB.length + 1];
+        destB[0] = (byte) code;
+
+        System.arraycopy(message.toByteArray(), 0, destB, 1, message.toByteArray().length);
+
+        channel.basicPublish(exchange, routingKey, properties, destB);
     }
 
     public static Channel getChannel() {
