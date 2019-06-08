@@ -1,0 +1,15 @@
+language: java
+
+sudo: false # run on container-based infrastructure
+
+cache:
+  directories:
+    - $HOME/.m2/repository/
+
+jdk:
+  - oraclejdk11
+  - openjdk11
+
+install: true
+
+script: mvn clean package
