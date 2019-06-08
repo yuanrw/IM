@@ -109,7 +109,7 @@ public class UserStatusService {
 
     public void forceOffline(Long userId) {
         ClientConn conn = clientConnContext.getConnByUserId(userId);
-        conn.getCtx().close();
+        clientConnContext.removeConn(conn.getNetId());
     }
 
     private Internal.InternalMsg statusMsg(UserStatus userStatus) throws JsonProcessingException {

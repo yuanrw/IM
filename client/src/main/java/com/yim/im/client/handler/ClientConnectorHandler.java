@@ -60,13 +60,13 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        super.channelInactive(ctx);
         clientMsgListener.offline();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error("[client] has error: ", cause);
+        clientMsgListener.hasException(ctx, cause);
     }
 
     public static ChannelHandlerContext getCtx() {

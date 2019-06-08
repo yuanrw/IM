@@ -78,6 +78,11 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
         fromTransferParser.parse(msg, ctx);
     }
 
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        //todo: reconnect
+    }
+
     public static ChannelHandlerContext getCtx() {
         return ctx;
     }

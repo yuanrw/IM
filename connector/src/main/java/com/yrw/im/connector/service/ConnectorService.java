@@ -48,7 +48,7 @@ public class ConnectorService {
     private boolean send(Long destId, Message msg) {
         Conn conn = clientConnContext.getConnByUserId(destId);
         if (conn == null) {
-            //不在当前机器上
+            //todo: 不在当前机器上
             ConnectorTransferHandler.getCtx().writeAndFlush(msg);
             return false;
         } else {

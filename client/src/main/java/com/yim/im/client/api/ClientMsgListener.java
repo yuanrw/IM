@@ -1,6 +1,7 @@
 package com.yim.im.client.api;
 
 import com.yrw.im.proto.generate.Chat;
+import io.netty.channel.ChannelHandlerContext;
 
 /**
  * Date: 2019-05-18
@@ -47,4 +48,12 @@ public interface ClientMsgListener {
      * 下线
      */
     void offline();
+
+    /**
+     * 捕获异常
+     *
+     * @param ctx
+     * @param cause
+     */
+    void hasException(ChannelHandlerContext ctx, Throwable cause);
 }

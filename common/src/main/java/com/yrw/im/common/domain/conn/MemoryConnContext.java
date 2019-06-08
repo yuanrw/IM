@@ -57,7 +57,10 @@ public class MemoryConnContext<C extends Conn> implements ConnContext<C> {
 
     @Override
     public void removeConn(Serializable netId) {
-        connMap.remove(netId);
+        connMap.computeIfPresent(netId, (id, c) -> {
+            c.close();
+            return null;
+        });
     }
 
     @Override
@@ -66,7 +69,7 @@ public class MemoryConnContext<C extends Conn> implements ConnContext<C> {
         if (netId == null) {
             logger.warn("[MemoryConnContext] channel id is null");
         }
-        connMap.remove(netId);
+        removeConn(netId);
     }
 
     @Override

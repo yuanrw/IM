@@ -7,6 +7,7 @@ import com.yim.im.client.api.UserApi;
 import com.yim.im.client.domain.Friend;
 import com.yrw.im.common.domain.UserInfo;
 import com.yrw.im.proto.generate.Chat;
+import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +61,11 @@ public class ClientApplication {
                 @Override
                 public void offline() {
                     logger.info("[client] I am offline!");
+                }
+
+                @Override
+                public void hasException(ChannelHandlerContext ctx, Throwable cause) {
+
                 }
             })
             .start();
