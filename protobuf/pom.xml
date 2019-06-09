@@ -48,9 +48,9 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
+                        <!--<goals>-->
+                            <!--<goal>compile</goal>-->
+                        <!--</goals>-->
                     </execution>
                 </executions>
             </plugin>
