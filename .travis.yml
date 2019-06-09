@@ -7,9 +7,14 @@ cache:
     - $HOME/.m2/repository/
 
 jdk:
+#  - oraclejdk8
+#  - openjdk8
   - oraclejdk11
   - openjdk11
 
 install: true
 
 script: mvn clean package
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
