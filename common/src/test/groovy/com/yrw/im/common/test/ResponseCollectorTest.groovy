@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
  */
 class ResponseCollectorTest extends Specification {
 
-    @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 4500, unit = TimeUnit.MILLISECONDS)
     def "test wait time out"() {
         given:
         def msgResponseCollector = new ResponseCollector(Duration.ofSeconds(2))
