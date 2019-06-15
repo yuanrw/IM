@@ -46,13 +46,9 @@ public class ConnectorStarter {
         InputStream inputStream;
         String path = System.getProperty("config");
         if (path == null) {
-            path = "connector.properties";
-            inputStream = ConnectorStarter.class.getClassLoader().getResourceAsStream(path);
+            throw new ImException("connector.properties is not defined");
         } else {
             inputStream = new FileInputStream(path);
-        }
-        if (inputStream == null) {
-            throw new ImException("can not find config file " + path);
         }
 
         Properties properties = new Properties();

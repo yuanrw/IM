@@ -57,8 +57,10 @@ public class OfflineServiceImpl extends ServiceImpl<OfflineMapper, Offline> impl
             .eq(Offline::getToUserId, userId)
             .orderBy(true, true, Offline::getMsgId));
 
-        List<Long> ids = list.stream().map(Offline::getId).collect(Collectors.toList());
-        removeByIds(ids);
+        if (list.size() > 0) {
+            List<Long> ids = list.stream().map(Offline::getId).collect(Collectors.toList());
+            removeByIds(ids);
+        }
 
         return list;
     }
