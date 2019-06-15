@@ -7,7 +7,6 @@ import com.yrw.im.common.parse.InternalParser;
 import com.yrw.im.connector.domain.ClientConnContext;
 import com.yrw.im.connector.service.ConnectorService;
 import com.yrw.im.connector.service.UserStatusService;
-import com.yrw.im.connector.start.ConnectorClient;
 import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.proto.generate.Internal;
@@ -35,11 +34,11 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
     private FromClientParser fromClientParser;
 
     @Inject
-    public ConnectorClientHandler(ConnectorService connectorService, UserStatusService userStatusService) {
+    public ConnectorClientHandler(ConnectorService connectorService, UserStatusService userStatusService, ClientConnContext clientConnContext) {
         this.fromClientParser = new FromClientParser();
         this.connectorService = connectorService;
         this.userStatusService = userStatusService;
-        this.clientConnContext = ConnectorClient.injector.getInstance(ClientConnContext.class);
+        this.clientConnContext = clientConnContext;
     }
 
     @Override

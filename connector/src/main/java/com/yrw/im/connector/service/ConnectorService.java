@@ -1,11 +1,11 @@
 package com.yrw.im.connector.service;
 
+import com.google.inject.Inject;
 import com.google.protobuf.Message;
 import com.yrw.im.common.domain.conn.Conn;
 import com.yrw.im.common.util.IdWorker;
 import com.yrw.im.connector.domain.ClientConnContext;
 import com.yrw.im.connector.handler.ConnectorTransferHandler;
-import com.yrw.im.connector.start.ConnectorClient;
 import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 
@@ -20,8 +20,9 @@ public class ConnectorService {
 
     private ClientConnContext clientConnContext;
 
-    public ConnectorService() {
-        this.clientConnContext = ConnectorClient.injector.getInstance(ClientConnContext.class);
+    @Inject
+    public ConnectorService(ClientConnContext clientConnContext) {
+        this.clientConnContext = clientConnContext;
     }
 
     public void doChat(Chat.ChatMsg msg) {

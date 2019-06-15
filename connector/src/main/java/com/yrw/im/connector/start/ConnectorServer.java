@@ -49,7 +49,7 @@ public class ConnectorServer {
 
         ChannelFuture f = bootstrap.bind(new InetSocketAddress(port)).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-                logger.info("[connector] start successfully, waiting for clients to connect...");
+                logger.info("[connector] start successfully at port {}, waiting for clients to connect...", port);
             } else {
                 throw new ImException("[connector] start failed");
             }

@@ -10,11 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>transfer</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>transfer-server</module>
-        <module>user-status</module>
-    </modules>
+
+    <properties>
+        <main.class>com.yrw.im.transfer.server.start.TransferStarter</main.class>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -37,6 +36,15 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.yrw.im</groupId>
+            <artifactId>user-status</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -48,7 +56,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
             </plugin>
             <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
+                <artifactId>maven-assembly-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>

@@ -55,13 +55,13 @@ class ConnectorTransferTest extends Specification {
     @Shared
     def connectorRestService = Mock(ConnectorRestService)
     @Shared
-    def userStatusService = new UserStatusService(new OfflineService(connectorRestService, new ParseService()))
+    def userStatusService = new UserStatusService(new OfflineService(connectorRestService, new ParseService()), clientConnContext)
 
     def setupSpec() {
         channel.pipeline()
                 .addLast("MsgDecoder", ConnectorClient.injector.getInstance(MsgDecoder.class))
                 .addLast("MsgEncoder", ConnectorClient.injector.getInstance(MsgEncoder.class))
-                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(), userStatusService))
+                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext), userStatusService))
     }
 
     def cleanup() {

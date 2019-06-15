@@ -56,13 +56,13 @@ class ConnectorClientTest extends Specification {
     @Shared
     def clientConnContext = ConnectorClient.injector.getInstance(ClientConnContext.class)
     @Shared
-    def userStatusService = new UserStatusService(new OfflineService(connectorRestService, new ParseService()))
+    def userStatusService = new UserStatusService(new OfflineService(connectorRestService, new ParseService()), clientConnContext)
 
     def setupSpec() {
         ch.pipeline()
                 .addLast("MsgDecoder", ConnectorClient.injector.getInstance(MsgDecoder.class))
                 .addLast("MsgEncoder", ConnectorClient.injector.getInstance(MsgEncoder.class))
-                .addLast("ConnectorClientHandler", new ConnectorClientHandler(new ConnectorService(), userStatusService))
+                .addLast("ConnectorClientHandler", new ConnectorClientHandler(new ConnectorService(clientConnContext), userStatusService, clientConnContext))
     }
 
     def cleanup() {

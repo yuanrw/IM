@@ -16,6 +16,7 @@
         <module>transfer</module>
         <module>common</module>
         <module>client-samples</module>
+        <module>user-status</module>
     </modules>
 
     <properties>
@@ -132,6 +133,11 @@
                 <artifactId>guice</artifactId>
                 <version>${guice.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.google.inject.extensions</groupId>
+                <artifactId>guice-assistedinject</artifactId>
+                <version>${guice.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.rabbitmq</groupId>
@@ -175,6 +181,22 @@
 
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -191,39 +213,33 @@
                     <configuration>
                         <excludes>
                             <exclude>**/*Test.class</exclude>
-                            <exclude>**/*.properties</exclude>
                             <exclude>**/*.sql</exclude>
                         </excludes>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <classpathPrefix>lib/</classpathPrefix>
+                                <mainClass>${main.class}</mainClass>
+                            </manifest>
+                        </archive>
                     </configuration>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-dependency-plugin</artifactId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.1.1</version>
                     <configuration>
-                        <outputDirectory>
-                            ${project.build.directory}/${project.artifactId}/lib
-                        </outputDirectory>
-                        <excludeTransitive>false</excludeTransitive>
-                        <stripVersion>false</stripVersion>
+                        <finalName>${project.artifactId}-${project.version}</finalName>
+                        <descriptors>
+                            <descriptor>src/assembly/assembly.xml</descriptor>
+                        </descriptors>
                     </configuration>
                     <executions>
                         <execution>
-                            <id>copy-dependencies</id>
+                            <id>make-assembly</id>
                             <phase>package</phase>
                             <goals>
-                                <goal>copy-dependencies</goal>
+                                <goal>single</goal>
                             </goals>
-                            <configuration>
-                                <outputDirectory>
-                                    ${project.build.directory}/${project.artifactId}/lib
-                                </outputDirectory>
-                                <excludeTransitive>false</excludeTransitive>
-                                <stripVersion>false</stripVersion>
-                                <overWriteReleases>false</overWriteReleases>
-                                <overWriteSnapshots>false</overWriteSnapshots>
-                                <overWriteIfNewer>true</overWriteIfNewer>
-                                <excludeScope>provided</excludeScope>
-                                <includeScope>runtime</includeScope>
-                            </configuration>
                         </execution>
                     </executions>
                 </plugin>

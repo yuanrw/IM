@@ -10,7 +10,6 @@ import com.yrw.im.common.util.IdWorker;
 import com.yrw.im.connector.domain.ClientConn;
 import com.yrw.im.connector.domain.ClientConnContext;
 import com.yrw.im.connector.handler.ConnectorTransferHandler;
-import com.yrw.im.connector.start.ConnectorClient;
 import com.yrw.im.proto.constant.UserStatusEnum;
 import com.yrw.im.proto.generate.Internal;
 import io.netty.channel.ChannelHandlerContext;
@@ -33,8 +32,8 @@ public class UserStatusService {
     private ObjectMapper objectMapper;
 
     @Inject
-    public UserStatusService(OfflineService offlineService) {
-        this.clientConnContext = ConnectorClient.injector.getInstance(ClientConnContext.class);
+    public UserStatusService(OfflineService offlineService, ClientConnContext clientConnContext) {
+        this.clientConnContext = clientConnContext;
         this.offlineService = offlineService;
         this.objectMapper = new ObjectMapper();
     }

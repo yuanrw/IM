@@ -1,20 +1,19 @@
-server.port: ${server.port}
+server.port: ${port}
 
 logging:
-  level.root: info
+  level.root: ${log.level}
+log:
+  path: ${log.path}
 
 spring:
   datasource:
-    url: ${spring.datasource.url}
-    password: ${spring.datasource.password}
-    username: ${spring.datasource.username}
-    driver-class-name: ${spring.datasource.driver-class-name}
+    url: ${datasource.url}
+    password: ${datasource.password}
+    username: ${datasource.username}
+    driver-class-name: ${datasource.driver-class-name}
   application:
     name: IM
 
-  profiles:
-    active: ${spring.profiles.active}
-
   redis:
-    host: ${spring.redis.host}
-    password: ${spring.redis.password}
+    host: ${redis.host}
+    password: ${redis.password}

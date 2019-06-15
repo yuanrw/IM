@@ -9,6 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <main.class>com.yrw.im.rest.web.RestStarter</main.class>
+    </properties>
+
     <artifactId>rest-web</artifactId>
 
     <dependencies>
@@ -57,10 +61,13 @@
     </dependencies>
 
     <build>
-        <filters>
-            <filter>../../prop/prop.properties</filter>
-        </filters>
         <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
