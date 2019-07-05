@@ -7,7 +7,7 @@ import com.yrw.im.common.domain.ResponseCollector;
 import com.yrw.im.common.parse.AbstractMsgParser;
 import com.yrw.im.common.parse.InternalParser;
 import com.yrw.im.common.util.IdWorker;
-import com.yrw.im.common.util.SessionIdGenerator;
+import com.yrw.im.common.util.TokenGenerator;
 import com.yrw.im.connector.service.ConnectorService;
 import com.yrw.im.connector.service.UserStatusService;
 import com.yrw.im.proto.generate.Ack;
@@ -35,7 +35,7 @@ import static com.yrw.im.common.parse.AbstractMsgParser.checkFrom;
 public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Message> {
     private static Logger logger = LoggerFactory.getLogger(ConnectorTransferHandler.class);
 
-    private static String connectorId = SessionIdGenerator.generateId();
+    private static String connectorId = TokenGenerator.generate();
     private static ChannelHandlerContext ctx;
 
     private FromTransferParser fromTransferParser;

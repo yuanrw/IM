@@ -1,6 +1,5 @@
 package com.yim.im.client.handler;
 
-import com.google.inject.Singleton;
 import com.google.protobuf.Message;
 import com.yim.im.client.api.ClientMsgListener;
 import com.yrw.im.common.domain.ResponseCollector;
@@ -27,18 +26,18 @@ import static com.yrw.im.common.parse.AbstractMsgParser.checkFrom;
  *
  * @author yrw
  */
-@Singleton
 public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message> {
     private Logger logger = LoggerFactory.getLogger(ClientConnectorHandler.class);
 
     private static ChannelHandlerContext ctx;
-    private static ClientMsgListener clientMsgListener;
     private static AtomicReference<ResponseCollector<Internal.InternalMsg>> respCollector = new AtomicReference<>();
 
+    private ClientMsgListener clientMsgListener;
     private FromConnectorParser fromConnectorParser;
 
-    public ClientConnectorHandler() {
+    public ClientConnectorHandler(ClientMsgListener clientMsgListener) {
         assert clientMsgListener != null;
+        this.clientMsgListener = clientMsgListener;
         this.fromConnectorParser = new FromConnectorParser();
     }
 
@@ -69,6 +68,11 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
         clientMsgListener.hasException(ctx, cause);
     }
 
+    public void writeAndFlush(Message message, Long id) {
+        ClientConnectorHandler.ctx.writeAndFlush(message);
+        clientMsgListener.hasSent(id);
+    }
+
     public static ChannelHandlerContext getCtx() {
         return ctx;
     }
@@ -85,14 +89,6 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
             throw new IllegalStateException("Still waiting for init response from server");
         }
         return collector;
-    }
-
-    public static void setClientMsgListener(ClientMsgListener clientMsgListener) {
-        ClientConnectorHandler.clientMsgListener = clientMsgListener;
-    }
-
-    public static ClientMsgListener getClientMsgListener() {
-        return clientMsgListener;
     }
 
     class FromConnectorParser extends AbstractMsgParser {

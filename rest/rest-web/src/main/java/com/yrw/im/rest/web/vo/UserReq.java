@@ -17,7 +17,7 @@ public class UserReq {
     private String username;
 
     @NotEmpty
-    private String pwdSha;
+    private String pwd;
 
     public String getUsername() {
         return username;
@@ -27,11 +27,11 @@ public class UserReq {
         this.username = username;
     }
 
-    public String getPwdSha() {
-        return pwdSha;
+    public String getPwd() {
+        return pwd;
     }
 
-    public void setPwdSha(String pwdSha) {
-        this.pwdSha = pwdSha;
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 }

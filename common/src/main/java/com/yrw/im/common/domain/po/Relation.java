@@ -1,11 +1,14 @@
 package com.yrw.im.common.domain.po;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Date: 2019-02-09
  * Time: 20:44
  *
  * @author yrw
  */
+@JsonIgnoreProperties("deleted")
 public class Relation extends DbModel {
 
     private Long userId1;

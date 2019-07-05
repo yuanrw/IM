@@ -1,9 +1,11 @@
 package com.yrw.im.rest.web.handler;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.ImmutableMap;
 import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.domain.po.Relation;
-import com.yrw.im.rest.repository.service.RelationService;
+import com.yrw.im.rest.web.service.RelationService;
+import com.yrw.im.rest.web.vo.RelationReq;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -57,10 +59,22 @@ public class RelationHandler {
             .switchIfEmpty(notFound().build());
     }
 
-    public Mono<ServerResponse> addRelation(ServerRequest request) {
-        return request.bodyToMono(Relation.class)
-            .flatMap(r -> Mono.fromCallable(() -> relationService.addRelation(r.getUserId1(), r.getUserId2())))
+    public Mono<ServerResponse> saveRelation(ServerRequest request) {
+        return request.bodyToMono(RelationReq.class)
+            .flatMap(r -> Mono.fromCallable(() -> relationService.saveRelation(r.getUserId1(), r.getUserId2())))
+            .map(id -> ImmutableMap.of("id", String.valueOf(id)))
+            .map(ResultWrapper::success)
+            .flatMap(r -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(r)));
+    }
+
+    public Mono<ServerResponse> deleteRelation(ServerRequest request) {
+
+        String id = request.pathVariable("id");
+
+        return request.bodyToMono(RelationReq.class)
+            .flatMap(r -> Mono.fromCallable(() -> relationService.removeById(id)))
             .map(ResultWrapper::wrapBol)
+            .defaultIfEmpty(ResultWrapper.success())
             .flatMap(r -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(r)));
     }
 }

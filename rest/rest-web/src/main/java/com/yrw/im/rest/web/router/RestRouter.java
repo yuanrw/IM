@@ -25,10 +25,11 @@ public class RestRouter {
     public RouterFunction<ServerResponse> userRoutes(UserHandler userHandler) {
         return RouterFunctions
             .route(POST("/user/register").and(contentType(APPLICATION_JSON)),
-                userHandler::add)
+                userHandler::saveUser)
             .andRoute(POST("/user/login").and(contentType(APPLICATION_JSON)).and(accept(APPLICATION_JSON)),
                 userHandler::login)
-            .andRoute(GET("/user/logout"), userHandler::logout);
+            .andRoute(GET("/user/logout").and(accept(APPLICATION_JSON)),
+                userHandler::logout);
     }
 
     @Bean
@@ -39,7 +40,9 @@ public class RestRouter {
             .andRoute(GET("/relation").and(accept(APPLICATION_JSON)),
                 relationHandler::getRelation)
             .andRoute(POST("/relation").and(contentType(APPLICATION_JSON)).and(accept(APPLICATION_JSON)),
-                relationHandler::addRelation);
+                relationHandler::saveRelation)
+            .andRoute(DELETE("/relation/{id}").and(accept(APPLICATION_JSON)),
+                relationHandler::deleteRelation);
     }
 
     @Bean

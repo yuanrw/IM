@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.yim.im.client.api.ChatApi;
 import com.yim.im.client.api.ClientMsgListener;
 import com.yim.im.client.api.UserApi;
+import com.yim.im.client.context.UserContext;
 import com.yim.im.client.handler.ClientConnectorHandler;
 import com.yim.im.client.handler.code.AesDecoder;
 import com.yim.im.client.handler.code.AesEncoder;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
+ * client's connection info
  * Date: 2019-04-15
  * Time: 16:42
  *
@@ -30,8 +32,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class Client {
     private static Logger logger = LoggerFactory.getLogger(Client.class);
-
-    public static Injector injector = Guice.createInjector();
+    public static Injector injector = Guice.createInjector(new ClientModule());
 
     private String connectorHost;
     private Integer connectorPort;
@@ -40,12 +41,14 @@ public class Client {
     public Client() {
     }
 
-    public Client start() {
+    public void start() {
         assert connectorHost != null;
         assert connectorPort != null;
         assert clientMsgListener != null;
 
-        ClientConnectorHandler.setClientMsgListener(clientMsgListener);
+        UserContext userContext = injector.getInstance(UserContext.class);
+        ClientConnectorHandler handler = new ClientConnectorHandler(clientMsgListener);
+        userContext.setClientConnectorHandler(handler);
 
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
@@ -63,7 +66,7 @@ public class Client {
                     //in
                     p.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
                     p.addLast("AesDecoder", injector.getInstance(AesDecoder.class));
-                    p.addLast("ClientConnectorHandler", injector.getInstance(ClientConnectorHandler.class));
+                    p.addLast("ClientConnectorHandler", handler);
                 }
             }).connect(connectorHost, connectorPort)
             .addListener((ChannelFutureListener) future -> {
@@ -79,8 +82,6 @@ public class Client {
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
             throw new ImException("[client] connect to connector failed!");
         }
-
-        return this;
     }
 
     public Client setConnectorHost(String connectorHost) {

@@ -3,7 +3,7 @@ package com.yim.im.client.handler.code;
 import com.google.inject.Inject;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
-import com.yim.im.client.service.ClientRestService;
+import com.yim.im.client.context.UserContext;
 import com.yrw.im.common.code.MsgDecoder;
 import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.util.Encryption;
@@ -24,18 +24,18 @@ import java.util.List;
 public class AesDecoder extends MessageToMessageDecoder<Message> {
 
     private static final Logger logger = LoggerFactory.getLogger(MsgDecoder.class);
-    private ClientRestService clientRestService;
+    private UserContext userContext;
 
     @Inject
-    public AesDecoder(ClientRestService clientRestService) {
-        this.clientRestService = clientRestService;
+    public AesDecoder(UserContext userContext) {
+        this.userContext = userContext;
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, Message msg, List<Object> out) throws Exception {
         if (msg instanceof Chat.ChatMsg) {
             Chat.ChatMsg cm = (Chat.ChatMsg) msg;
-            Relation relation = clientRestService.relation(cm.getFromId(), cm.getDestId(), cm.getToken());
+            Relation relation = userContext.getRelation(cm.getFromId(), cm.getDestId());
             String[] keys = relation.getEncryptKey().split("\\|");
 
             byte[] decodeBody = Encryption.decrypt(keys[0], keys[1], cm.getMsgBody().toByteArray());

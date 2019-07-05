@@ -155,18 +155,18 @@ public final class Chat {
     com.google.protobuf.ByteString getMsgBody();
 
     /**
-     * <code>required string token = 9;</code>
+     * <code>optional string addition = 32;</code>
      */
-    boolean hasToken();
+    boolean hasAddition();
     /**
-     * <code>required string token = 9;</code>
+     * <code>optional string addition = 32;</code>
      */
-    java.lang.String getToken();
+    java.lang.String getAddition();
     /**
-     * <code>required string token = 9;</code>
+     * <code>optional string addition = 32;</code>
      */
     com.google.protobuf.ByteString
-        getTokenBytes();
+        getAdditionBytes();
   }
   /**
    * Protobuf type {@code com.yrw.im.proto.generate.ChatMsg}
@@ -184,7 +184,7 @@ public final class Chat {
       destType_ = 0;
       msgType_ = 0;
       msgBody_ = com.google.protobuf.ByteString.EMPTY;
-      token_ = "";
+      addition_ = "";
     }
 
     @java.lang.Override
@@ -265,10 +265,10 @@ public final class Chat {
               msgBody_ = input.readBytes();
               break;
             }
-            case 74: {
+            case 258: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000100;
-              token_ = bs;
+              addition_ = bs;
               break;
             }
             default: {
@@ -672,19 +672,19 @@ public final class Chat {
       return msgBody_;
     }
 
-    public static final int TOKEN_FIELD_NUMBER = 9;
-    private volatile java.lang.Object token_;
+    public static final int ADDITION_FIELD_NUMBER = 32;
+    private volatile java.lang.Object addition_;
     /**
-     * <code>required string token = 9;</code>
+     * <code>optional string addition = 32;</code>
      */
-    public boolean hasToken() {
+    public boolean hasAddition() {
       return ((bitField0_ & 0x00000100) != 0);
     }
     /**
-     * <code>required string token = 9;</code>
+     * <code>optional string addition = 32;</code>
      */
-    public java.lang.String getToken() {
-      java.lang.Object ref = token_;
+    public java.lang.String getAddition() {
+      java.lang.Object ref = addition_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -692,22 +692,22 @@ public final class Chat {
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
-          token_ = s;
+          addition_ = s;
         }
         return s;
       }
     }
     /**
-     * <code>required string token = 9;</code>
+     * <code>optional string addition = 32;</code>
      */
     public com.google.protobuf.ByteString
-        getTokenBytes() {
-      java.lang.Object ref = token_;
+        getAdditionBytes() {
+      java.lang.Object ref = addition_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        token_ = b;
+        addition_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -753,10 +753,6 @@ public final class Chat {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasToken()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -789,7 +785,7 @@ public final class Chat {
         output.writeBytes(8, msgBody_);
       }
       if (((bitField0_ & 0x00000100) != 0)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 9, token_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 32, addition_);
       }
       unknownFields.writeTo(output);
     }
@@ -833,7 +829,7 @@ public final class Chat {
           .computeBytesSize(8, msgBody_);
       }
       if (((bitField0_ & 0x00000100) != 0)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(9, token_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(32, addition_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -888,10 +884,10 @@ public final class Chat {
         if (!getMsgBody()
             .equals(other.getMsgBody())) return false;
       }
-      if (hasToken() != other.hasToken()) return false;
-      if (hasToken()) {
-        if (!getToken()
-            .equals(other.getToken())) return false;
+      if (hasAddition() != other.hasAddition()) return false;
+      if (hasAddition()) {
+        if (!getAddition()
+            .equals(other.getAddition())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -940,9 +936,9 @@ public final class Chat {
         hash = (37 * hash) + MSGBODY_FIELD_NUMBER;
         hash = (53 * hash) + getMsgBody().hashCode();
       }
-      if (hasToken()) {
-        hash = (37 * hash) + TOKEN_FIELD_NUMBER;
-        hash = (53 * hash) + getToken().hashCode();
+      if (hasAddition()) {
+        hash = (37 * hash) + ADDITION_FIELD_NUMBER;
+        hash = (53 * hash) + getAddition().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1093,7 +1089,7 @@ public final class Chat {
         bitField0_ = (bitField0_ & ~0x00000040);
         msgBody_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000080);
-        token_ = "";
+        addition_ = "";
         bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
@@ -1158,7 +1154,7 @@ public final class Chat {
         if (((from_bitField0_ & 0x00000100) != 0)) {
           to_bitField0_ |= 0x00000100;
         }
-        result.token_ = token_;
+        result.addition_ = addition_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1232,9 +1228,9 @@ public final class Chat {
         if (other.hasMsgBody()) {
           setMsgBody(other.getMsgBody());
         }
-        if (other.hasToken()) {
+        if (other.hasAddition()) {
           bitField0_ |= 0x00000100;
-          token_ = other.token_;
+          addition_ = other.addition_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -1266,9 +1262,6 @@ public final class Chat {
           return false;
         }
         if (!hasMsgBody()) {
-          return false;
-        }
-        if (!hasToken()) {
           return false;
         }
         return true;
@@ -1691,24 +1684,24 @@ public final class Chat {
         return this;
       }
 
-      private java.lang.Object token_ = "";
+      private java.lang.Object addition_ = "";
       /**
-       * <code>required string token = 9;</code>
+       * <code>optional string addition = 32;</code>
        */
-      public boolean hasToken() {
+      public boolean hasAddition() {
         return ((bitField0_ & 0x00000100) != 0);
       }
       /**
-       * <code>required string token = 9;</code>
+       * <code>optional string addition = 32;</code>
        */
-      public java.lang.String getToken() {
-        java.lang.Object ref = token_;
+      public java.lang.String getAddition() {
+        java.lang.Object ref = addition_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
-            token_ = s;
+            addition_ = s;
           }
           return s;
         } else {
@@ -1716,53 +1709,53 @@ public final class Chat {
         }
       }
       /**
-       * <code>required string token = 9;</code>
+       * <code>optional string addition = 32;</code>
        */
       public com.google.protobuf.ByteString
-          getTokenBytes() {
-        java.lang.Object ref = token_;
+          getAdditionBytes() {
+        java.lang.Object ref = addition_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          token_ = b;
+          addition_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>required string token = 9;</code>
+       * <code>optional string addition = 32;</code>
        */
-      public Builder setToken(
+      public Builder setAddition(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000100;
-        token_ = value;
+        addition_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string token = 9;</code>
+       * <code>optional string addition = 32;</code>
        */
-      public Builder clearToken() {
+      public Builder clearAddition() {
         bitField0_ = (bitField0_ & ~0x00000100);
-        token_ = getDefaultInstance().getToken();
+        addition_ = getDefaultInstance().getAddition();
         onChanged();
         return this;
       }
       /**
-       * <code>required string token = 9;</code>
+       * <code>optional string addition = 32;</code>
        */
-      public Builder setTokenBytes(
+      public Builder setAdditionBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000100;
-        token_ = value;
+        addition_ = value;
         onChanged();
         return this;
       }
@@ -3588,17 +3581,17 @@ public final class Chat {
   static {
     java.lang.String[] descriptorData = {
       "\n\nchat.proto\022\031com.yrw.im.proto.generate\"" +
-      "\270\002\n\007ChatMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002id\030\002 \002(\003" +
+      "\273\002\n\007ChatMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002id\030\002 \002(\003" +
       "\022=\n\010destType\030\003 \002(\0162+.com.yrw.im.proto.ge" +
       "nerate.ChatMsg.DestType\022\016\n\006fromId\030\004 \002(\003\022" +
       "\016\n\006destId\030\005 \002(\003\022\022\n\ncreateTime\030\006 \002(\003\022;\n\007m" +
       "sgType\030\007 \002(\0162*.com.yrw.im.proto.generate" +
-      ".ChatMsg.MsgType\022\017\n\007msgBody\030\010 \002(\014\022\r\n\005tok" +
-      "en\030\t \002(\t\"!\n\010DestType\022\n\n\006SINGLE\020\000\022\t\n\005GROU" +
-      "P\020\001\"\035\n\007MsgType\022\010\n\004TEXT\020\000\022\010\n\004FILE\020\001\"\030\n\010Te" +
-      "xtBody\022\014\n\004text\030\001 \002(\t\"M\n\010FileBody\022\016\n\006file" +
-      "Id\030\001 \002(\t\022\023\n\013media_crc32\030\002 \002(\005\022\r\n\005fSize\030\003" +
-      " \002(\005\022\r\n\005fName\030\004 \002(\tB\006B\004Chat"
+      ".ChatMsg.MsgType\022\017\n\007msgBody\030\010 \002(\014\022\020\n\010add" +
+      "ition\030  \001(\t\"!\n\010DestType\022\n\n\006SINGLE\020\000\022\t\n\005G" +
+      "ROUP\020\001\"\035\n\007MsgType\022\010\n\004TEXT\020\000\022\010\n\004FILE\020\001\"\030\n" +
+      "\010TextBody\022\014\n\004text\030\001 \002(\t\"M\n\010FileBody\022\016\n\006f" +
+      "ileId\030\001 \002(\t\022\023\n\013media_crc32\030\002 \002(\005\022\r\n\005fSiz" +
+      "e\030\003 \002(\005\022\r\n\005fName\030\004 \002(\tB\006B\004Chat"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3617,7 +3610,7 @@ public final class Chat {
     internal_static_com_yrw_im_proto_generate_ChatMsg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_yrw_im_proto_generate_ChatMsg_descriptor,
-        new java.lang.String[] { "Version", "Id", "DestType", "FromId", "DestId", "CreateTime", "MsgType", "MsgBody", "Token", });
+        new java.lang.String[] { "Version", "Id", "DestType", "FromId", "DestId", "CreateTime", "MsgType", "MsgBody", "Addition", });
     internal_static_com_yrw_im_proto_generate_TextBody_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_yrw_im_proto_generate_TextBody_fieldAccessorTable = new

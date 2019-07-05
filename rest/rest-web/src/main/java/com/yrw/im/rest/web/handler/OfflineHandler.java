@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.domain.po.Offline;
 import com.yrw.im.common.exception.ImException;
-import com.yrw.im.rest.repository.service.OfflineService;
+import com.yrw.im.rest.web.service.OfflineService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;

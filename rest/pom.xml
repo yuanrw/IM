@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>rest-web</module>
-        <module>rest-repository</module>
+        <module>rest-spi</module>
     </modules>
 
     <build>

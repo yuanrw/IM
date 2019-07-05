@@ -8,11 +8,11 @@ package com.yim.im.client.domain;
  */
 public class UserReq {
     private String username;
-    private String pwdSha;
+    private String pwd;
 
-    public UserReq(String username, String pwdSha) {
+    public UserReq(String username, String pwd) {
         this.username = username;
-        this.pwdSha = pwdSha;
+        this.pwd = pwd;
     }
 
     public String getUsername() {
@@ -23,11 +23,11 @@ public class UserReq {
         this.username = username;
     }
 
-    public String getPwdSha() {
-        return pwdSha;
+    public String getPwd() {
+        return pwd;
     }
 
-    public void setPwdSha(String pwdSha) {
-        this.pwdSha = pwdSha;
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 }

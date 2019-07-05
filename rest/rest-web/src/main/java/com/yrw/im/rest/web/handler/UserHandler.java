@@ -1,10 +1,14 @@
 package com.yrw.im.rest.web.handler;
 
+import com.google.common.collect.ImmutableMap;
 import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.domain.UserInfo;
 import com.yrw.im.common.exception.ImException;
-import com.yrw.im.rest.repository.service.UserService;
-import com.yrw.im.rest.web.session.RedisSession;
+import com.yrw.im.rest.spi.UserSpi;
+import com.yrw.im.rest.web.filter.TokenManager;
+import com.yrw.im.rest.web.service.RelationService;
+import com.yrw.im.rest.web.service.UserService;
+import com.yrw.im.rest.web.util.SpiFactory;
 import com.yrw.im.rest.web.vo.UserReq;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -24,17 +28,23 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 @Component
 public class UserHandler {
 
+    private UserSpi userSpi;
     private UserService userService;
+    private RelationService relationService;
+    private TokenManager tokenManager;
 
-    public UserHandler(UserService userService) {
+    public UserHandler(SpiFactory spiFactory, UserService userService, RelationService relationService, TokenManager tokenManager) {
+        this.userSpi = spiFactory.getUserSpi();
         this.userService = userService;
+        this.relationService = relationService;
+        this.tokenManager = tokenManager;
     }
 
-    public Mono<ServerResponse> add(ServerRequest request) {
+    public Mono<ServerResponse> saveUser(ServerRequest request) {
         return ValidHandler.requireValidBody(req ->
 
-                req.map(user -> userService.saveUser(user.getUsername(), user.getPwdSha()))
-                    .map(String::valueOf)
+                req.map(user -> userService.saveUser(user.getUsername(), user.getPwd()))
+                    .map(id -> ImmutableMap.of("id", String.valueOf(id)))
                     .map(ResultWrapper::success)
                     .flatMap(id -> ok().contentType(APPLICATION_JSON).body(fromObject(id)))
 
@@ -44,11 +54,13 @@ public class UserHandler {
     public Mono<ServerResponse> login(ServerRequest request) {
         return ValidHandler.requireValidBody(req ->
 
-                req.flatMap(login -> Mono.fromSupplier(() -> userService.verifyAndGet(login.getUsername(), login.getPwdSha())))
-                    .map(u -> new UserInfo(u.getId()))
-                    .flatMap(u -> Mono.fromSupplier(() -> {
-                        u.setToken(RedisSession.createSession(u.getUserId()).getId());
-                        return u;
+                req.flatMap(login -> Mono.fromSupplier(() -> userSpi.getUser(login.getUsername(), login.getPwd())))
+                    .flatMap(u -> tokenManager.createNewToken(u.getId()).map(t -> {
+                        UserInfo userInfo = new UserInfo();
+                        userInfo.setId(u.getId());
+                        userInfo.setToken(t);
+                        userInfo.setRelations(relationService.friends(u.getId()));
+                        return userInfo;
                     }))
                     .map(ResultWrapper::success)
                     .flatMap(info -> ok().body(fromObject(info)))
@@ -58,12 +70,9 @@ public class UserHandler {
     }
 
     public Mono<ServerResponse> logout(ServerRequest request) {
+        String token = request.headers().header("token").get(0);
 
-        String sessionId = request.headers().header("token").get(0);
-
-        return Mono.fromCallable(() -> RedisSession.getById(sessionId))
-            .flatMap(session -> Mono.fromCallable(session::expire))
-            .map(ResultWrapper::success)
-            .flatMap(ignore -> ok().build());
+        return tokenManager.expire(token).map(ResultWrapper::wrapBol)
+            .flatMap(r -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(r)));
     }
 }

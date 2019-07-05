@@ -4,12 +4,11 @@ import com.yim.im.client.domain.UserReq;
 import com.yrw.im.common.domain.UserInfo;
 import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.rest.AbstractRestService;
-import io.netty.util.CharsetUtil;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.List;
 
 /**
+ * request for rest module
  * Date: 2019-04-21
  * Time: 16:45
  *
@@ -23,7 +22,7 @@ public class ClientRestService extends AbstractRestService<ClientRestClient> {
 
     public UserInfo login(String username, String password) {
         return doRequest(() ->
-            restClient.login(new UserReq(username, pwdSha256(password))).execute());
+            restClient.login(new UserReq(username, password)).execute());
     }
 
     public Void logout(String token) {
@@ -36,9 +35,5 @@ public class ClientRestService extends AbstractRestService<ClientRestClient> {
 
     public Relation relation(Long userId1, Long userId2, String token) {
         return doRequest(() -> restClient.relation(userId1, userId2, token).execute());
-    }
-
-    private String pwdSha256(String password) {
-        return DigestUtils.sha256Hex(password.getBytes(CharsetUtil.UTF_8));
     }
 }

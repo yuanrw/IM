@@ -15,7 +15,7 @@ import java.util.Properties;
  * @author yrw
  */
 public class ConnectorStarter {
-    public static ConnectorConfig CONNECTOR_CONFIG = new ConnectorConfig();
+    private static ConnectorConfig CONNECTOR_CONFIG = new ConnectorConfig();
 
     public static void main(String[] args) throws IOException {
         //parse start parameter

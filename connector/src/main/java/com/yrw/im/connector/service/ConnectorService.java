@@ -10,7 +10,7 @@ import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
 
 /**
- * 消息执行器
+ * process msg the connector received
  * Date: 2019-04-08
  * Time: 21:05
  *
@@ -49,12 +49,11 @@ public class ConnectorService {
     private boolean send(Long destId, Message msg) {
         Conn conn = clientConnContext.getConnByUserId(destId);
         if (conn == null) {
-            //todo: 不在当前机器上
             ConnectorTransferHandler.getCtx().writeAndFlush(msg);
             return false;
         } else {
-            //在当前机器上，转发给用户
-            //不保存历史记录
+            //the user is connected to this machine
+            //won't save chat histories
             conn.getCtx().writeAndFlush(msg);
             return true;
         }

@@ -39,7 +39,7 @@ public class ResultWrapper<T> {
 
 
     public static ResultWrapper<String> fail(String message) {
-        ResultWrapper<String> resultWrapper = new ResultWrapper();
+        ResultWrapper<String> resultWrapper = new ResultWrapper<>();
         resultWrapper.setStatus(500);
         resultWrapper.setMsg(message);
         return resultWrapper;

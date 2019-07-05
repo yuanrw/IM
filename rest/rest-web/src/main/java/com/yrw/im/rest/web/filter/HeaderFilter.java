@@ -1,7 +1,6 @@
 package com.yrw.im.rest.web.filter;
 
 import com.yrw.im.common.exception.ImException;
-import com.yrw.im.rest.web.session.RedisSession;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -17,6 +16,12 @@ import reactor.core.publisher.Mono;
 @Component
 public class HeaderFilter implements WebFilter {
 
+    private TokenManager tokenManager;
+
+    public HeaderFilter(TokenManager tokenManager) {
+        this.tokenManager = tokenManager;
+    }
+
     @Override
     public Mono<Void> filter(ServerWebExchange serverWebExchange, WebFilterChain webFilterChain) {
         String path = serverWebExchange.getRequest().getPath().value();
@@ -29,8 +34,8 @@ public class HeaderFilter implements WebFilter {
         }
 
         String token = serverWebExchange.getRequest().getHeaders().getFirst("token");
-        return RedisSession.getById(token) != null
-            ? webFilterChain.filter(serverWebExchange) :
-            Mono.error(new ImException("[rest] user is not login"));
+
+        return tokenManager.validateToken(token).flatMap(b -> b ? webFilterChain.filter(serverWebExchange) :
+            Mono.error(new ImException("[rest] user is not login")));
     }
 }

@@ -53,7 +53,7 @@ public abstract class AbstractRestService<R> {
         try {
             Response<ResultWrapper<T>> response = function.doRequest();
             if (!response.isSuccessful()) {
-                throw new ImException("[rest service] status is not 200, response body: " + response.errorBody());
+                throw new ImException("[rest service] status is not 200, response body: " + response.toString());
             }
             if (response.body() == null) {
                 throw new ImException("[rest service] response body is null");

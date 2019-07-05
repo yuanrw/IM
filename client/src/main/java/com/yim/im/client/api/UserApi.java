@@ -1,9 +1,8 @@
 package com.yim.im.client.api;
 
 import com.google.inject.Inject;
-import com.yim.im.client.Client;
+import com.yim.im.client.context.UserContext;
 import com.yim.im.client.domain.Friend;
-import com.yim.im.client.domain.RelationCache;
 import com.yim.im.client.handler.ClientConnectorHandler;
 import com.yim.im.client.service.ClientRestService;
 import com.yrw.im.common.domain.UserInfo;
@@ -30,18 +29,24 @@ public class UserApi {
     private Logger logger = LoggerFactory.getLogger(UserApi.class);
 
     private ClientRestService clientRestService;
-    private RelationCache relationCache;
+    private UserContext userContext;
 
     @Inject
-    public UserApi(ClientRestService clientRestService) {
-        this.relationCache = Client.injector.getInstance(RelationCache.class);
+    public UserApi(ClientRestService clientRestService, UserContext userContext) {
         this.clientRestService = clientRestService;
+        this.userContext = userContext;
     }
 
     public UserInfo login(String username, String password) {
         UserInfo userInfo = clientRestService.login(username, password);
         //等待connector的ack信息
-        userLoginInit(userInfo.getUserId());
+        userLoginInit(userInfo.getId());
+
+        assert userInfo.getId() != null;
+
+        userContext.setUserId(userInfo.getId());
+        userContext.setToken(userInfo.getToken());
+        userContext.addRelations(userInfo.getRelations());
         return userInfo;
     }
 
@@ -92,10 +97,5 @@ public class UserApi {
             friend.setEncryptKey(r.getEncryptKey());
             return friend;
         }).collect(Collectors.toList());
-    }
-
-    public Relation relation(Long userId1, Long userId2, String token) {
-        Relation relation = relationCache.get(userId1, userId2);
-        return relation != null ? relation : clientRestService.relation(userId1, userId2, token);
     }
 }

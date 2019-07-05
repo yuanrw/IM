@@ -95,14 +95,14 @@ public class UserStatusService {
             return;
         }
 
-        //向transfer同步用户状态
+        //tell the transfer the user is offline
         UserStatus userStatus = new UserStatus();
         userStatus.setUserId(conn.getUserId());
         userStatus.setStatus(UserStatusEnum.OFFLINE.getCode());
 
         ConnectorTransferHandler.getCtx().writeAndFlush(statusMsg(userStatus));
 
-        //移除连接
+        //remove the connection
         clientConnContext.removeConn(ctx);
     }
 

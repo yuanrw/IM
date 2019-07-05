@@ -100,7 +100,6 @@ class ConnectorTransferTest extends Specification {
                 .setMsgType(Chat.ChatMsg.MsgType.TEXT)
                 .setMsgBody(ByteString.copyFromUtf8("encodedMsg"))
                 .setDestType(Chat.ChatMsg.DestType.SINGLE)
-                .setToken("token")
                 .build()
 
         when:

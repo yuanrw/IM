@@ -5,6 +5,11 @@ logging:
 log:
   path: ${log.path}
 
+spi:
+  user:
+    impl:
+      class: ${spi.user.impl.class}
+
 spring:
   datasource:
     url: ${datasource.url}

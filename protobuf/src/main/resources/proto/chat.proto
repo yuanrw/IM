@@ -28,7 +28,7 @@ message ChatMsg {
     required bytes msgBody = 8;
     //消息体，json，格式由消息类型决定
 
-    required string token = 9;
+    optional string addition = 32;
 
     enum DestType {
         SINGLE = 0;

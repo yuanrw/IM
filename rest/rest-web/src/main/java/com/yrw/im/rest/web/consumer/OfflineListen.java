@@ -6,7 +6,7 @@ import com.yrw.im.common.parse.ParseService;
 import com.yrw.im.proto.constant.MsgTypeEnum;
 import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
-import com.yrw.im.rest.repository.service.OfflineService;
+import com.yrw.im.rest.web.service.OfflineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -44,7 +44,7 @@ public class OfflineListen implements ChannelAwareMessageListener {
     @RabbitHandler
     @RabbitListener(queues = MqConstant.OFFLINE_QUEUE, containerFactory = "listenerFactory")
     public void onMessage(Message message, Channel channel) throws Exception {
-        logger.info("[OfflineConsumer] get msg: {}", message.toString());
+        logger.info("[OfflineConsumer] getUserSpi msg: {}", message.toString());
         try {
             int code = message.getBody()[0];
 

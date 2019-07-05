@@ -1,8 +1,11 @@
 package com.yim.im.client.api;
 
+import com.google.inject.Inject;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
+import com.yim.im.client.context.UserContext;
 import com.yim.im.client.handler.ClientConnectorHandler;
+import com.yrw.im.common.exception.ImException;
 import com.yrw.im.common.util.IdWorker;
 import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
@@ -16,17 +19,24 @@ import io.netty.util.CharsetUtil;
  */
 public class ChatApi {
 
-    public Long text(Long userId, Long toId, String text, String token) {
+    private UserContext userContext;
+
+    @Inject
+    public ChatApi(UserContext userContext) {
+        this.userContext = userContext;
+    }
+
+    public Long text(Long toId, String text) {
+        checkLogin();
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
             .setId(IdWorker.genId())
-            .setFromId(userId)
+            .setFromId(userContext.getUserId())
             .setDestId(toId)
             .setDestType(Chat.ChatMsg.DestType.SINGLE)
             .setCreateTime(System.currentTimeMillis())
             .setMsgType(Chat.ChatMsg.MsgType.TEXT)
             .setVersion(1)
-            .setToken(token)
             .setMsgBody(ByteString.copyFrom(text, CharsetUtil.UTF_8))
             .build();
 
@@ -35,13 +45,19 @@ public class ChatApi {
         return chat.getId();
     }
 
-    public Long file(Long userId, Long toId, byte[] bytes) {
+    public Long file(Long toId, byte[] bytes) {
+        checkLogin();
         return null;
     }
 
+    private void checkLogin() {
+        if (userContext.getUserId() == null) {
+            throw new ImException("client has not login!");
+        }
+    }
+
     private void sendToConnector(Message msg, Long id) {
-        ClientConnectorHandler.getCtx().writeAndFlush(msg);
-        ClientConnectorHandler.getClientMsgListener().hasSent(id);
+        userContext.getClientConnectorHandler().writeAndFlush(msg, id);
     }
 
     public void confirmRead(Chat.ChatMsg msg) {

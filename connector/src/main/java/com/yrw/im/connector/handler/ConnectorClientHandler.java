@@ -53,7 +53,7 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        //删除连接并更新用户状态
+        //remove connection and update user's status
         userStatusService.userOffline(ctx);
         ctx.close();
     }

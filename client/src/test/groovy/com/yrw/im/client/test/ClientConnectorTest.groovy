@@ -3,10 +3,11 @@ package com.yrw.im.client.test
 import com.google.protobuf.ByteString
 import com.yim.im.client.Client
 import com.yim.im.client.api.ClientMsgListener
+import com.yim.im.client.context.MemoryRelationCache
+import com.yim.im.client.context.UserContext
 import com.yim.im.client.handler.ClientConnectorHandler
 import com.yim.im.client.handler.code.AesDecoder
 import com.yim.im.client.handler.code.AesEncoder
-import com.yim.im.client.service.ClientRestService
 import com.yrw.im.common.code.MsgDecoder
 import com.yrw.im.common.code.MsgEncoder
 import com.yrw.im.common.domain.po.Relation
@@ -28,21 +29,16 @@ import java.time.Duration
  */
 class ClientConnectorTest extends Specification {
 
-    def setup() {
-        ClientConnectorHandler.setClientMsgListener(Mock(ClientMsgListener))
-    }
-
     def "test get ack"() {
         given:
         def channel = new EmbeddedChannel()
         def clientMsgListener = Mock(ClientMsgListener)
-        ClientConnectorHandler.setClientMsgListener(clientMsgListener)
         channel.pipeline()
-                .addLast("MsgEncoder", Client.injector.getInstance(MsgEncoder.class))
-                .addLast("AesEncoder", Client.injector.getInstance(AesEncoder.class))
+                .addLast("MsgEncoder", new MsgEncoder())
+                .addLast("AesEncoder", new AesEncoder(new UserContext()))
                 .addLast("MsgDecoder", Client.injector.getInstance(MsgDecoder.class))
-                .addLast("AesDecoder", Client.injector.getInstance(AesDecoder.class))
-                .addLast("ClientConnectorHandler", new ClientConnectorHandler())
+                .addLast("AesDecoder", new AesDecoder())
+                .addLast("ClientConnectorHandler", new ClientConnectorHandler(clientMsgListener))
 
         when:
         def delivered = Ack.AckMsg.newBuilder()
@@ -78,12 +74,12 @@ class ClientConnectorTest extends Specification {
     def "test get internal"() {
         given:
         def channel = new EmbeddedChannel()
-        def handler = new ClientConnectorHandler()
+        def handler = new ClientConnectorHandler(Mock(ClientMsgListener))
         channel.pipeline()
-                .addLast("MsgEncoder", Client.injector.getInstance(MsgEncoder.class))
-                .addLast("AesEncoder", Client.injector.getInstance(AesEncoder.class))
-                .addLast("MsgDecoder", Client.injector.getInstance(MsgDecoder.class))
-                .addLast("AesDecoder", Client.injector.getInstance(AesDecoder.class))
+                .addLast("MsgEncoder", new MsgEncoder())
+                .addLast("AesEncoder", new AesEncoder(new UserContext()))
+                .addLast("MsgDecoder", new MsgDecoder())
+                .addLast("AesDecoder", new AesEncoder(new UserContext()))
                 .addLast("ClientConnectorHandler", handler)
 
         def collector = handler.createCollector(Duration.ofSeconds(2))
@@ -111,26 +107,26 @@ class ClientConnectorTest extends Specification {
     def "test get chat"() {
         given:
         def clientMsgListener = Mock(ClientMsgListener)
-        ClientConnectorHandler.setClientMsgListener(clientMsgListener)
 
         def channel = new EmbeddedChannel()
 
         def r = new Relation()
+        r.setUserId1(123)
+        r.setUserId2(456)
         r.setEncryptKey("HvxZFa7B1dBlKwP7|9302073163544974")
 
-        def clientRestService = Mock(ClientRestService) {
-            relation(123, 456, "token") >> r
-        }
+        def userContext = new UserContext(new MemoryRelationCache())
+        userContext.addRelation(r)
 
         String[] keys = r.getEncryptKey().split("\\|")
         byte[] encodeBody = Encryption.encrypt(keys[0], keys[1], "hello".getBytes(CharsetUtil.UTF_8))
 
         channel.pipeline()
-                .addLast("MsgEncoder", Client.injector.getInstance(MsgEncoder.class))
-                .addLast("AesEncoder", Client.injector.getInstance(AesEncoder.class))
+                .addLast("MsgEncoder", new MsgEncoder())
+                .addLast("AesEncoder", new AesEncoder(userContext))
                 .addLast("MsgDecoder", Client.injector.getInstance(MsgDecoder.class))
-                .addLast("AesDecoder", new AesDecoder(clientRestService))
-                .addLast("ClientConnectorHandler", new ClientConnectorHandler())
+                .addLast("AesDecoder", new AesDecoder(userContext))
+                .addLast("ClientConnectorHandler", new ClientConnectorHandler(clientMsgListener))
 
         def chat = Chat.ChatMsg.newBuilder()
                 .setVersion(1)
@@ -141,7 +137,6 @@ class ClientConnectorTest extends Specification {
                 .setMsgType(Chat.ChatMsg.MsgType.TEXT)
                 .setDestType(Chat.ChatMsg.DestType.SINGLE)
                 .setMsgBody(ByteString.copyFrom(encodeBody))
-                .setToken("token")
                 .build()
 
         def decodedChat = Chat.ChatMsg.newBuilder().mergeFrom(chat)

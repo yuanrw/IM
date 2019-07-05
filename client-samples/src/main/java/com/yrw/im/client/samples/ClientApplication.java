@@ -8,6 +8,8 @@ import com.yim.im.client.domain.Friend;
 import com.yrw.im.common.domain.UserInfo;
 import com.yrw.im.proto.generate.Chat;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.CharsetUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,12 +73,12 @@ public class ClientApplication {
             .start();
 
         //登录换取token
-        UserInfo user = userApi.login("yuanrw", "123abc");
+        UserInfo user = userApi.login("yuanrw", DigestUtils.sha256Hex("123abc".getBytes(CharsetUtil.UTF_8)));
 
         //获取好友列表
-        List<Friend> friends = userApi.friends(user.getUserId(), user.getToken());
+        List<Friend> friends = userApi.friends(user.getId(), user.getToken());
 
         //发送消息
-        chatApi.text(user.getUserId(), user.getUserId(), "hello", user.getToken());
+        chatApi.text(user.getId(), "hello");
     }
 }

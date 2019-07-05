@@ -1,7 +1,5 @@
 package com.yrw.im.common.domain.po;
 
-import com.yrw.im.common.domain.po.DbModel;
-
 /**
  * Date: 2019-02-09
  * Time: 14:02
