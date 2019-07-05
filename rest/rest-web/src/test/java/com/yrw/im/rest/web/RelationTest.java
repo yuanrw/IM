@@ -84,7 +84,7 @@ public class RelationTest {
             .jsonPath("$.data.id").exists();
     }
 
-    //    @Test
+    @Test
     public void testAddNewRelation() {
         RelationReq req = new RelationReq();
         req.setUserId1(1119861162352148481L);
@@ -102,7 +102,7 @@ public class RelationTest {
             .jsonPath("$.data.id").exists();
     }
 
-    //    @Test
+    @Test
     public void testAddExistRelation() {
         RelationReq req = new RelationReq();
         req.setUserId1(1119861162352148481L);
@@ -120,7 +120,7 @@ public class RelationTest {
             .jsonPath("$.data.id").exists();
     }
 
-    //    @Test
+    @Test
     public void testAddRelationUserNotExist() {
         RelationReq req = new RelationReq();
         req.setUserId1(123L);
@@ -137,7 +137,7 @@ public class RelationTest {
             .jsonPath("$.msg").isEqualTo("user not exist");
     }
 
-    //    @Test
+    @Test
     public void testDeleteRelation() {
         webClient.delete().uri("/relation/1142784914681237505")
             .header("token", token)

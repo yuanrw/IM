@@ -23,7 +23,7 @@ import java.util.Properties;
 @PropertySource(value = {"file:${config}"})
 @SpringBootApplication
 public class RestStarter {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         System.setProperty("log.path", (String) getProperties().get("log.path"));
         SpringApplication.run(RestStarter.class, args);
     }
