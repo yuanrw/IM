@@ -13,6 +13,9 @@ jdk:
 
 install: true
 
+services:
+  - rabbitmq
+
 script: mvn clean package
 
 after_success:
