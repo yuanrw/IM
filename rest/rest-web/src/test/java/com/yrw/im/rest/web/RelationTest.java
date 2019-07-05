@@ -5,7 +5,6 @@ import com.yrw.im.rest.web.vo.RelationReq;
 import com.yrw.im.rest.web.vo.UserReq;
 import io.netty.util.CharsetUtil;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,12 +39,8 @@ public class RelationTest {
 
     @BeforeClass
     public static void setup() {
-        System.setProperty("config", "/Users/yrw/Desktop/github/IM/rest/rest-web/src/test/resources/rest-test.properties");
-    }
-
-    @AfterClass
-    public static void close(){
-
+        String propertiesPath = System.getProperty("user.dir") + "/target/test-classes/rest-test.properties";
+        System.setProperty("config", propertiesPath);
     }
 
     @Before
@@ -89,7 +84,7 @@ public class RelationTest {
             .jsonPath("$.data.id").exists();
     }
 
-//    @Test
+    //    @Test
     public void testAddNewRelation() {
         RelationReq req = new RelationReq();
         req.setUserId1(1119861162352148481L);
@@ -107,7 +102,7 @@ public class RelationTest {
             .jsonPath("$.data.id").exists();
     }
 
-//    @Test
+    //    @Test
     public void testAddExistRelation() {
         RelationReq req = new RelationReq();
         req.setUserId1(1119861162352148481L);
@@ -125,7 +120,7 @@ public class RelationTest {
             .jsonPath("$.data.id").exists();
     }
 
-//    @Test
+    //    @Test
     public void testAddRelationUserNotExist() {
         RelationReq req = new RelationReq();
         req.setUserId1(123L);
@@ -142,7 +137,7 @@ public class RelationTest {
             .jsonPath("$.msg").isEqualTo("user not exist");
     }
 
-//    @Test
+    //    @Test
     public void testDeleteRelation() {
         webClient.delete().uri("/relation/1142784914681237505")
             .header("token", token)

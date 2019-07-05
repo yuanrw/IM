@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.ClassPathResource;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,27 +29,19 @@ public class RestStarter {
     }
 
     private static Properties getProperties() {
-        InputStream inputStream;
-        String path = System.getProperty("config");
-        if (path == null) {
-            throw new ImException("rest.properties is not defined");
-        } else {
-            try {
+        try {
+            InputStream inputStream;
+            String path = System.getProperty("config");
+            if (path == null) {
+                throw new ImException("rest.properties is not defined");
+            } else {
                 inputStream = new FileInputStream(path);
-            } catch (IOException e) {
-                try {
-                    inputStream = new ClassPathResource("rest.properties").getInputStream();
-                } catch (IOException e1) {
-                    throw new ImException(e1);
-                }
-            }
-            Properties properties = new Properties();
-            try {
+                Properties properties = new Properties();
                 properties.load(inputStream);
                 return properties;
-            } catch (IOException e) {
-                throw new ImException(e);
             }
+        } catch (IOException e) {
+            throw new ImException(e);
         }
     }
 

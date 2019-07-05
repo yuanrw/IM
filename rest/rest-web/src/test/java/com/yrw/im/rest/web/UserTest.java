@@ -47,7 +47,8 @@ public class UserTest {
 
     @BeforeClass
     public static void setup() {
-        System.setProperty("config", "/Users/yrw/Desktop/github/IM/rest/rest-web/src/test/resources/rest-test.properties");
+        String propertiesPath = System.getProperty("user.dir") + "/target/test-classes/rest-test.properties";
+        System.setProperty("config", propertiesPath);
     }
 
     @Before
