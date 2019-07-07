@@ -8,15 +8,15 @@ package com.yrw.im.common.domain;
  */
 public class UserStatus {
 
-    private Long userId;
+    private String userId;
 
     private int status;
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

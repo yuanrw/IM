@@ -17,7 +17,7 @@ import java.util.List;
 @Singleton
 public class UserContext {
 
-    private Long userId;
+    private String userId;
 
     private String token;
 
@@ -38,7 +38,11 @@ public class UserContext {
         this.clientConnectorHandler = clientConnectorHandler;
     }
 
-    public void setUserId(Long userId) {
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -46,8 +50,12 @@ public class UserContext {
         this.token = token;
     }
 
-    public Long getUserId() {
-        return userId;
+    public RelationCache getRelationCache() {
+        return relationCache;
+    }
+
+    public void setRelationCache(RelationCache relationCache) {
+        this.relationCache = relationCache;
     }
 
     public String getToken() {
@@ -62,7 +70,7 @@ public class UserContext {
         relationCache.addRelation(relation);
     }
 
-    public Relation getRelation(Long userId1, Long userId2) {
+    public Relation getRelation(String userId1, String userId2) {
         return relationCache.getRelation(userId1, userId2, token);
     }
 }

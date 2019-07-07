@@ -13,10 +13,10 @@ message ChatMsg {
     required DestType destType = 3;
     //接收者类型。
 
-    required int64 fromId = 4;
+    required string fromId = 4;
     //发送者userId
 
-    required int64 destId = 5;
+    required string destId = 5;
     //接收者userId
 
     required int64 createTime = 6;

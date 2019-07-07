@@ -5,13 +5,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yrw.im.common.domain.po.Relation;
 import com.yrw.im.common.exception.ImException;
 import com.yrw.im.rest.spi.UserSpi;
+import com.yrw.im.rest.spi.domain.UserBase;
 import com.yrw.im.rest.web.mapper.RelationMapper;
 import com.yrw.im.rest.web.service.RelationService;
 import com.yrw.im.rest.web.util.SpiFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * Date: 2019-04-07
@@ -22,33 +23,34 @@ import java.util.List;
 @Service
 public class RelationServiceImpl extends ServiceImpl<RelationMapper, Relation> implements RelationService {
 
-    private UserSpi userSpi;
+    private UserSpi<? extends UserBase> userSpi;
 
     public RelationServiceImpl(SpiFactory spiFactory) {
         this.userSpi = spiFactory.getUserSpi();
     }
 
     @Override
-    public List<Relation> friends(Long id) {
-        return list(new LambdaQueryWrapper<Relation>()
-            .eq(Relation::getUserId1, id).or().eq(Relation::getUserId2, id));
+    public Flux<Relation> friends(String id) {
+        return Flux.fromIterable(list(new LambdaQueryWrapper<Relation>()
+            .eq(Relation::getUserId1, id).or().eq(Relation::getUserId2, id)));
     }
 
     @Override
-    public Long saveRelation(Long userId1, Long userId2) {
-        if (userSpi.getById(userId1 + "") == null || userSpi.getById(userId2 + "") == null) {
-            throw new ImException("user not exist");
-        }
+    public Mono<Long> saveRelation(String userId1, String userId2) {
+        return userSpi.getById(userId1)
+            .flatMap(ignore -> userSpi.getById(userId2))
+            .switchIfEmpty(Mono.error(new ImException("user not exist")))
+            .map(ignore -> {
+                Relation relation = new Relation();
 
-        Relation relation = new Relation();
-        relation.setUserId1(Math.min(userId1, userId2));
-        relation.setUserId2(Math.max(userId1, userId2));
-        relation.setEncryptKey(RandomStringUtils.randomAlphanumeric(16) + "|" + RandomStringUtils.randomNumeric(16));
+                String max = userId1.compareTo(userId2) >= 0 ? userId1 : userId2;
+                String min = max.equals(userId1) ? userId2 : userId1;
 
-        if (save(relation)) {
-            return relation.getId();
-        } else {
-            throw new ImException("[rest] save relation failed");
-        }
+                relation.setUserId1(min);
+                relation.setUserId2(max);
+                relation.setEncryptKey(RandomStringUtils.randomAlphanumeric(16) + "|" + RandomStringUtils.randomNumeric(16));
+                return save(relation) ? relation.getId() : null;
+            })
+            .flatMap(id -> id != null ? Mono.just(id) : Mono.error(new ImException("[rest] save relation failed")));
     }
 }

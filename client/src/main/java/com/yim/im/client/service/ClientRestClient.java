@@ -29,10 +29,10 @@ public interface ClientRestClient {
     Call<ResultWrapper<Void>> logout(@Header("token") String token);
 
     @GET("/relation/{id}")
-    Call<ResultWrapper<List<Relation>>> friends(@Path("id") Long userId, @Header("token") String token);
+    Call<ResultWrapper<List<Relation>>> friends(@Path("id") String userId, @Header("token") String token);
 
     @GET("/relation")
     Call<ResultWrapper<Relation>> relation(
-        @Query("userId1") Long userId1, @Query("userId2") Long userId2,
+        @Query("userId1") String userId1, @Query("userId2") String userId2,
         @Header("token") String token);
 }

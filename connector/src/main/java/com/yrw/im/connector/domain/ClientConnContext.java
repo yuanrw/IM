@@ -20,14 +20,14 @@ import java.util.concurrent.ConcurrentMap;
 public class ClientConnContext extends MemoryConnContext<ClientConn> {
     private static final Logger logger = LoggerFactory.getLogger(ClientConnContext.class);
 
-    private ConcurrentMap<Long, Serializable> userIdToNetId;
+    private ConcurrentMap<String, Serializable> userIdToNetId;
 
     public ClientConnContext() {
         this.connMap = new ConcurrentHashMap<>();
         this.userIdToNetId = new ConcurrentHashMap<>();
     }
 
-    public ClientConn getConnByUserId(Long userId) {
+    public ClientConn getConnByUserId(String userId) {
         Serializable netId = userIdToNetId.get(userId);
         if (netId == null) {
             return null;
@@ -41,7 +41,7 @@ public class ClientConnContext extends MemoryConnContext<ClientConn> {
 
     @Override
     public void addConn(ClientConn conn) {
-        Long userId = conn.getUserId();
+        String userId = conn.getUserId();
 
         if (userIdToNetId.containsKey(userId)) {
             removeConn(userIdToNetId.containsKey(userId));

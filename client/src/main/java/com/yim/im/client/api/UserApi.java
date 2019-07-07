@@ -50,7 +50,7 @@ public class UserApi {
         return userInfo;
     }
 
-    private void userLoginInit(Long userId) {
+    private void userLoginInit(String userId) {
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
             .setId(IdWorker.genId())
             .setFrom(Internal.InternalMsg.Module.CLIENT)
@@ -58,7 +58,7 @@ public class UserApi {
             .setCreateTime(System.currentTimeMillis())
             .setVersion(1)
             .setMsgType(Internal.InternalMsg.MsgType.GREET)
-            .setMsgBody(String.valueOf(userId))
+            .setMsgBody(userId)
             .build();
 
 
@@ -85,14 +85,14 @@ public class UserApi {
         return clientRestService.logout(token);
     }
 
-    public List<Friend> friends(Long userId, String token) {
+    public List<Friend> friends(String userId, String token) {
         return getFriend(clientRestService.friends(userId, token), userId);
     }
 
-    private static List<Friend> getFriend(List<Relation> relations, Long userId) {
+    private static List<Friend> getFriend(List<Relation> relations, String userId) {
         return relations.stream().map(r -> {
             Friend friend = new Friend();
-            Long friendId = !r.getUserId1().equals(userId) ? r.getUserId1() : r.getUserId2();
+            String friendId = !r.getUserId1().equals(userId) ? r.getUserId1() : r.getUserId2();
             friend.setUserId(friendId);
             friend.setEncryptKey(r.getEncryptKey());
             return friend;

@@ -21,7 +21,7 @@ public class RedisUserStatusServiceImpl implements UserStatusService {
     /**
      * 缓存
      */
-    private ConcurrentMap<Long, String> userIdToNetId;
+    private ConcurrentMap<String, String> userIdToNetId;
     private Jedis jedis;
 
     /**
@@ -34,7 +34,7 @@ public class RedisUserStatusServiceImpl implements UserStatusService {
     }
 
     @Override
-    public String online(String connectorId, Long userId) {
+    public String online(String connectorId, String userId) {
         String oldConnectorId = jedis.hget(USER_CONN_STATUS_KEY, String.valueOf(userId));
         if (oldConnectorId != null) {
             return oldConnectorId;
@@ -46,14 +46,14 @@ public class RedisUserStatusServiceImpl implements UserStatusService {
     }
 
     @Override
-    public void offline(Long userId) {
+    public void offline(String userId) {
         userIdToNetId.remove(userId);
 
         jedis.hdel(USER_CONN_STATUS_KEY, String.valueOf(userId));
     }
 
     @Override
-    public String getConnectorId(Long userId) {
+    public String getConnectorId(String userId) {
         String connectorId = userIdToNetId.get(userId);
         if (connectorId == null) {
             connectorId = jedis.hget(USER_CONN_STATUS_KEY, userId + "");

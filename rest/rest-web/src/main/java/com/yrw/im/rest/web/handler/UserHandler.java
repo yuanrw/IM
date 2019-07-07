@@ -5,6 +5,7 @@ import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.domain.UserInfo;
 import com.yrw.im.common.exception.ImException;
 import com.yrw.im.rest.spi.UserSpi;
+import com.yrw.im.rest.spi.domain.UserBase;
 import com.yrw.im.rest.web.filter.TokenManager;
 import com.yrw.im.rest.web.service.RelationService;
 import com.yrw.im.rest.web.service.UserService;
@@ -28,7 +29,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 @Component
 public class UserHandler {
 
-    private UserSpi userSpi;
+    private UserSpi<? extends UserBase> userSpi;
     private UserService userService;
     private RelationService relationService;
     private TokenManager tokenManager;
@@ -54,14 +55,19 @@ public class UserHandler {
     public Mono<ServerResponse> login(ServerRequest request) {
         return ValidHandler.requireValidBody(req ->
 
-                req.flatMap(login -> Mono.fromSupplier(() -> userSpi.getUser(login.getUsername(), login.getPwd())))
-                    .flatMap(u -> tokenManager.createNewToken(u.getId()).map(t -> {
-                        UserInfo userInfo = new UserInfo();
-                        userInfo.setId(u.getId());
-                        userInfo.setToken(t);
-                        userInfo.setRelations(relationService.friends(u.getId()));
-                        return userInfo;
-                    }))
+                req.flatMap(login -> userSpi.getUser(login.getUsername(), login.getPwd()))
+                    .flatMap(u -> tokenManager.createNewToken(u.getId())
+                        .map(t -> {
+                            UserInfo userInfo = new UserInfo();
+                            userInfo.setId(u.getId());
+                            userInfo.setToken(t);
+                            return userInfo;
+                        }))
+                    .flatMap(u -> relationService.friends(u.getId()).collectList()
+                        .map(list -> {
+                            u.setRelations(list);
+                            return u;
+                        }))
                     .map(ResultWrapper::success)
                     .flatMap(info -> ok().body(fromObject(info)))
                     .switchIfEmpty(Mono.error(new ImException("[rest] authentication failed")))

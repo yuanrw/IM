@@ -15,14 +15,14 @@ public interface UserStatusService {
      * @param userId
      * @return the user's previous connection id, if don't exist then return null
      */
-    String online(String connectorId, Long userId);
+    String online(String connectorId, String userId);
 
     /**
      * user offline
      *
      * @param userId
      */
-    void offline(Long userId);
+    void offline(String userId);
 
     /**
      * get connector id by user id
@@ -30,5 +30,5 @@ public interface UserStatusService {
      * @param userId
      * @return
      */
-    String getConnectorId(Long userId);
+    String getConnectorId(String userId);
 }

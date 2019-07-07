@@ -12,7 +12,7 @@ public class Offline extends DbModel {
 
     private Integer msgCode;
 
-    private Long toUserId;
+    private String toUserId;
 
     private byte[] content;
 
@@ -32,11 +32,11 @@ public class Offline extends DbModel {
         this.msgCode = msgCode;
     }
 
-    public Long getToUserId() {
+    public String getToUserId() {
         return toUserId;
     }
 
-    public void setToUserId(Long toUserId) {
+    public void setToUserId(String toUserId) {
         this.toUserId = toUserId;
     }
 

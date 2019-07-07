@@ -26,7 +26,7 @@ public class ChatApi {
         this.userContext = userContext;
     }
 
-    public Long text(Long toId, String text) {
+    public Long text(String toId, String text) {
         checkLogin();
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
@@ -45,7 +45,7 @@ public class ChatApi {
         return chat.getId();
     }
 
-    public Long file(Long toId, byte[] bytes) {
+    public Long file(String toId, byte[] bytes) {
         checkLogin();
         return null;
     }

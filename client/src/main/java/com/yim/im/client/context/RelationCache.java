@@ -34,5 +34,5 @@ public interface RelationCache {
      * @param token
      * @return
      */
-    Relation getRelation(Long userId1, Long userId2, String token);
+    Relation getRelation(String userId1, String userId2, String token);
 }

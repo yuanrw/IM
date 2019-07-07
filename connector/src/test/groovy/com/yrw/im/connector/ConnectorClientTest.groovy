@@ -93,7 +93,7 @@ class ConnectorClientTest extends Specification {
 
         then:
         1 * connectorTransferCtx.writeAndFlush(_ as Internal.InternalMsg)
-        clientConnContext.getConnByUserId(123) != null
+        clientConnContext.getConnByUserId("123") != null
     }
 
     def "test get ack"() {
@@ -117,14 +117,14 @@ class ConnectorClientTest extends Specification {
                 }
             }
         }
-        userStatusService.userOnline(111112, 456, ctx)
+        userStatusService.userOnline(111112L, "456", ctx)
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
                 .setVersion(1)
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
-                .setFromId(123)
-                .setDestId(456)
+                .setFromId("123")
+                .setDestId("456")
                 .setMsgType(Ack.AckMsg.MsgType.DELIVERED)
                 .setAckMsgId(11241244)
                 .setDestType(Ack.AckMsg.DestType.SINGLE)
@@ -168,14 +168,14 @@ class ConnectorClientTest extends Specification {
                 }
             }
         }
-        userStatusService.userOnline(111112, 456, ctx)
+        userStatusService.userOnline(111112, "456", ctx)
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
                 .setVersion(1)
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
-                .setFromId(123)
-                .setDestId(456)
+                .setFromId("123")
+                .setDestId("456")
                 .setMsgType(Chat.ChatMsg.MsgType.TEXT)
                 .setMsgBody(ByteString.copyFromUtf8("encodedMsg"))
                 .setDestType(Chat.ChatMsg.DestType.SINGLE)

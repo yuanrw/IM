@@ -1,6 +1,7 @@
 package com.yrw.im.rest.spi;
 
-import com.yrw.im.common.domain.po.DbModel;
+import com.yrw.im.rest.spi.domain.UserBase;
+import reactor.core.publisher.Mono;
 
 /**
  * Date: 2019-07-03
@@ -8,17 +9,19 @@ import com.yrw.im.common.domain.po.DbModel;
  *
  * @author yrw
  */
-public interface UserSpi<T extends DbModel> {
+public interface UserSpi<T extends UserBase> {
 
     /**
      * get user by username and password, return user(id can not be null)
-     * if username and password are right, else return null.
+     * if username and password are right, else return Mono.empty().
+     * <p>
+     * be sure that your password has been properly encoded
      *
      * @param username
      * @param pwd
      * @return
      */
-    T getUser(String username, String pwd);
+    Mono<T> getUser(String username, String pwd);
 
     /**
      * get user by id, if id not exist then return null.
@@ -26,5 +29,5 @@ public interface UserSpi<T extends DbModel> {
      * @param id
      * @return
      */
-    T getById(String id);
+    Mono<T> getById(String id);
 }

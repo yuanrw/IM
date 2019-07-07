@@ -33,7 +33,7 @@ class TransferConnectorTest extends Specification {
     def "test get internal greet"() {
         given:
         def userStatusService = Mock(UserStatusService) {
-            online(_ as String, _ as Long) >> null
+            online(_ as String, _ as String) >> null
         }
         def userStatusServiceFactory = Mock(UserStatusServiceFactory) {
             createService(_ as String, _ as Integer) >> userStatusService
@@ -66,7 +66,7 @@ class TransferConnectorTest extends Specification {
     def "test get internal user status"() {
         given:
         def userStatusService = Mock(UserStatusService) {
-            online(_ as String, _ as Long) >> null
+            online(_ as String, _ as String) >> null
         }
         def userStatusServiceFactory = Mock(UserStatusServiceFactory) {
             createService(_ as String, _ as Integer) >> userStatusService
@@ -93,7 +93,7 @@ class TransferConnectorTest extends Specification {
         channel.writeInbound(greet)
 
         def online = new UserStatus()
-        online.setUserId(123)
+        online.setUserId("123")
         online.setStatus(UserStatusEnum.ONLINE.getCode())
 
         Internal.InternalMsg msg = Internal.InternalMsg.newBuilder()
@@ -108,11 +108,11 @@ class TransferConnectorTest extends Specification {
         channel.writeInbound(msg)
 
         then:
-        1 * userStatusService.online(_ as String, 123)
+        1 * userStatusService.online(_ as String, "123")
 
         when:
         def offline = new UserStatus()
-        offline.setUserId(123)
+        offline.setUserId("123")
         offline.setStatus(UserStatusEnum.OFFLINE.getCode())
 
         msg = Internal.InternalMsg.newBuilder()
@@ -122,7 +122,7 @@ class TransferConnectorTest extends Specification {
         channel.writeInbound(msg)
 
         then:
-        userStatusService.offline(123)
+        userStatusService.offline("123")
     }
 
 //    def "test force offline"() {

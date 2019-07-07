@@ -23,15 +23,17 @@ public class TokenManager {
         this.template = template;
     }
 
-    public Mono<Boolean> validateToken(String token) {
-        return template.hasKey(SESSION_KEY + token).flatMap(b ->
-            b ? template.expire(SESSION_KEY + token, Duration.ofMinutes(30)) : Mono.just(false));
+    public Mono<Long> validateToken(String token) {
+        return template.opsForValue().get(SESSION_KEY + token).map(id -> {
+            template.expire(SESSION_KEY + token, Duration.ofMinutes(30));
+            return Long.parseLong(id);
+        }).switchIfEmpty(Mono.empty());
     }
 
-    public Mono<String> createNewToken(Long userId) {
+    public Mono<String> createNewToken(String userId) {
         String token = TokenGenerator.generate();
-        return template.opsForValue().set(SESSION_KEY + token, String.valueOf(userId)).flatMap(
-            b -> b ? template.expire(SESSION_KEY + token, Duration.ofMinutes(30)) : Mono.just(false))
+        return template.opsForValue().set(SESSION_KEY + token, userId)
+            .flatMap(b -> b ? template.expire(SESSION_KEY + token, Duration.ofMinutes(30)) : Mono.just(false))
             .flatMap(b -> b ? Mono.just(token) : Mono.empty());
     }
 

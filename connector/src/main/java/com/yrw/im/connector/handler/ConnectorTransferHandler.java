@@ -110,7 +110,7 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
             parser.register(Internal.InternalMsg.MsgType.ACK,
                 (m, ctx) -> userStatusSyncDone(m));
             parser.register(Internal.InternalMsg.MsgType.FORCE_OFFLINE,
-                (m, ctx) -> userStatusService.forceOffline(Long.parseLong(m.getMsgBody())));
+                (m, ctx) -> userStatusService.forceOffline(m.getMsgBody()));
 
             register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChat((m)));
             register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAck(m));

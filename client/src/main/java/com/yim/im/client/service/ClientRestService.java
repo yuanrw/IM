@@ -29,11 +29,11 @@ public class ClientRestService extends AbstractRestService<ClientRestClient> {
         return doRequest(() -> restClient.logout(token).execute());
     }
 
-    public List<Relation> friends(Long userId, String token) {
+    public List<Relation> friends(String userId, String token) {
         return doRequest(() -> restClient.friends(userId, token).execute());
     }
 
-    public Relation relation(Long userId1, Long userId2, String token) {
+    public Relation relation(String userId1, String userId2, String token) {
         return doRequest(() -> restClient.relation(userId1, userId2, token).execute());
     }
 }

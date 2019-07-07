@@ -2,8 +2,8 @@ package com.yrw.im.rest.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yrw.im.common.domain.po.Relation;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * Date: 2019-04-07
@@ -14,19 +14,19 @@ import java.util.List;
 public interface RelationService extends IService<Relation> {
 
     /**
-     * 返回用户的朋友列表
+     * return the friends list of the user
      *
-     * @param id 用户id
+     * @param id userId
      * @return
      */
-    List<Relation> friends(Long id);
+    Flux<Relation> friends(String id);
 
     /**
-     * 添加关系
+     * add an relation between user1 and user2
      *
-     * @param userId1
-     * @param userId2
-     * @return relation id
+     * @param userId1 id of user1l
+     * @param userId2 id of user2
+     * @return if success, return relation id, else return Mono.empty()
      */
-    Long saveRelation(Long userId1, Long userId2);
+    Mono<Long> saveRelation(String userId1, String userId2);
 }

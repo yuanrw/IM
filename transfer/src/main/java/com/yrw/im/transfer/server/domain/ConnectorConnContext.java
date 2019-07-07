@@ -31,7 +31,7 @@ public class ConnectorConnContext extends MemoryConnContext<InternalConn> {
             .createService(TRANSFER_CONFIG.getRedisHost(), TRANSFER_CONFIG.getRedisPort());
     }
 
-    public void online(ChannelHandlerContext ctx, Long userId) {
+    public void online(ChannelHandlerContext ctx, String userId) {
         String oldConnectorId = userStatusService.online(getConn(ctx).getNetId().toString(), userId);
         if (oldConnectorId != null) {
             InternalConn conn = getConn(oldConnectorId);
@@ -51,11 +51,11 @@ public class ConnectorConnContext extends MemoryConnContext<InternalConn> {
         }
     }
 
-    public void offline(Long userId) {
+    public void offline(String userId) {
         userStatusService.offline(userId);
     }
 
-    public InternalConn getConnByUserId(Long userId) {
+    public InternalConn getConnByUserId(String userId) {
         String connectorId = userStatusService.getConnectorId(userId);
         if (connectorId != null) {
             InternalConn conn = getConn(connectorId);

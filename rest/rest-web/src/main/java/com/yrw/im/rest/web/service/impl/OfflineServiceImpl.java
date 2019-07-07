@@ -10,6 +10,7 @@ import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.rest.web.mapper.OfflineMapper;
 import com.yrw.im.rest.web.service.OfflineService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +53,7 @@ public class OfflineServiceImpl extends ServiceImpl<OfflineMapper, Offline> impl
     }
 
     @Override
+    @Transactional
     public List<Offline> pollOfflineMsg(Long userId) {
         List<Offline> list = list(new LambdaQueryWrapper<Offline>()
             .eq(Offline::getToUserId, userId)

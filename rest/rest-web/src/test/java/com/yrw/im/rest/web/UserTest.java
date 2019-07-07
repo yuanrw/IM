@@ -24,7 +24,6 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 
 /**
@@ -55,9 +54,9 @@ public class UserTest {
     public void mock() {
         String token = UUID.randomUUID().toString();
 
-        Mockito.when(tokenManager.createNewToken(anyLong())).thenReturn(Mono.just(token));
+        Mockito.when(tokenManager.createNewToken(anyString())).thenReturn(Mono.just(token));
         Mockito.when(tokenManager.expire(anyString())).thenReturn(Mono.just(true));
-        Mockito.when(tokenManager.validateToken(token)).thenReturn(Mono.just(true));
+        Mockito.when(tokenManager.validateToken(token)).thenReturn(Mono.just(123L));
     }
 
     @Test

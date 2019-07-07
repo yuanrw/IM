@@ -89,14 +89,14 @@ class ConnectorTransferTest extends Specification {
                 }
             }
         }
-        userStatusService.userOnline(111112, 456, ctx)
+        userStatusService.userOnline(111112, "456", ctx)
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
                 .setVersion(1)
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
-                .setFromId(123)
-                .setDestId(456)
+                .setFromId("123")
+                .setDestId("456")
                 .setMsgType(Chat.ChatMsg.MsgType.TEXT)
                 .setMsgBody(ByteString.copyFromUtf8("encodedMsg"))
                 .setDestType(Chat.ChatMsg.DestType.SINGLE)
@@ -132,14 +132,14 @@ class ConnectorTransferTest extends Specification {
                 }
             }
         }
-        userStatusService.userOnline(111112, 456, ctx)
+        userStatusService.userOnline(111112, "456", ctx)
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
                 .setVersion(1)
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
-                .setFromId(123)
-                .setDestId(456)
+                .setFromId("123")
+                .setDestId("456")
                 .setMsgType(Ack.AckMsg.MsgType.DELIVERED)
                 .setAckMsgId(11241244)
                 .setDestType(Ack.AckMsg.DestType.SINGLE)
@@ -180,7 +180,7 @@ class ConnectorTransferTest extends Specification {
                 }
             }
         }
-        userStatusService.userOnline(11112, 123, ctx)
+        userStatusService.userOnline(11112, "123", ctx)
 
         when:
         Internal.InternalMsg offline = Internal.InternalMsg.newBuilder()
@@ -195,7 +195,7 @@ class ConnectorTransferTest extends Specification {
         channel.writeInbound(offline)
 
         then:
-        clientConnContext.getConnByUserId(123) == null
+        clientConnContext.getConnByUserId("123") == null
         clientConnContext.getConn(ctx) == null
     }
 

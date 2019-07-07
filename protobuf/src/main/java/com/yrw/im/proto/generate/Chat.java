@@ -74,7 +74,7 @@ public final class Chat {
      *发送者userId
      * </pre>
      *
-     * <code>required int64 fromId = 4;</code>
+     * <code>required string fromId = 4;</code>
      */
     boolean hasFromId();
     /**
@@ -82,16 +82,25 @@ public final class Chat {
      *发送者userId
      * </pre>
      *
-     * <code>required int64 fromId = 4;</code>
+     * <code>required string fromId = 4;</code>
      */
-    long getFromId();
+    java.lang.String getFromId();
+    /**
+     * <pre>
+     *发送者userId
+     * </pre>
+     *
+     * <code>required string fromId = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getFromIdBytes();
 
     /**
      * <pre>
      *接收者userId
      * </pre>
      *
-     * <code>required int64 destId = 5;</code>
+     * <code>required string destId = 5;</code>
      */
     boolean hasDestId();
     /**
@@ -99,9 +108,18 @@ public final class Chat {
      *接收者userId
      * </pre>
      *
-     * <code>required int64 destId = 5;</code>
+     * <code>required string destId = 5;</code>
      */
-    long getDestId();
+    java.lang.String getDestId();
+    /**
+     * <pre>
+     *接收者userId
+     * </pre>
+     *
+     * <code>required string destId = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getDestIdBytes();
 
     /**
      * <pre>
@@ -182,6 +200,8 @@ public final class Chat {
     }
     private ChatMsg() {
       destType_ = 0;
+      fromId_ = "";
+      destId_ = "";
       msgType_ = 0;
       msgBody_ = com.google.protobuf.ByteString.EMPTY;
       addition_ = "";
@@ -233,14 +253,16 @@ public final class Chat {
               }
               break;
             }
-            case 32: {
+            case 34: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000008;
-              fromId_ = input.readInt64();
+              fromId_ = bs;
               break;
             }
-            case 40: {
+            case 42: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000010;
-              destId_ = input.readInt64();
+              destId_ = bs;
               break;
             }
             case 48: {
@@ -556,13 +578,13 @@ public final class Chat {
     }
 
     public static final int FROMID_FIELD_NUMBER = 4;
-    private long fromId_;
+    private volatile java.lang.Object fromId_;
     /**
      * <pre>
      *发送者userId
      * </pre>
      *
-     * <code>required int64 fromId = 4;</code>
+     * <code>required string fromId = 4;</code>
      */
     public boolean hasFromId() {
       return ((bitField0_ & 0x00000008) != 0);
@@ -572,20 +594,51 @@ public final class Chat {
      *发送者userId
      * </pre>
      *
-     * <code>required int64 fromId = 4;</code>
+     * <code>required string fromId = 4;</code>
      */
-    public long getFromId() {
-      return fromId_;
+    public java.lang.String getFromId() {
+      java.lang.Object ref = fromId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          fromId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *发送者userId
+     * </pre>
+     *
+     * <code>required string fromId = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getFromIdBytes() {
+      java.lang.Object ref = fromId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        fromId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int DESTID_FIELD_NUMBER = 5;
-    private long destId_;
+    private volatile java.lang.Object destId_;
     /**
      * <pre>
      *接收者userId
      * </pre>
      *
-     * <code>required int64 destId = 5;</code>
+     * <code>required string destId = 5;</code>
      */
     public boolean hasDestId() {
       return ((bitField0_ & 0x00000010) != 0);
@@ -595,10 +648,41 @@ public final class Chat {
      *接收者userId
      * </pre>
      *
-     * <code>required int64 destId = 5;</code>
+     * <code>required string destId = 5;</code>
      */
-    public long getDestId() {
-      return destId_;
+    public java.lang.String getDestId() {
+      java.lang.Object ref = destId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          destId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     *接收者userId
+     * </pre>
+     *
+     * <code>required string destId = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDestIdBytes() {
+      java.lang.Object ref = destId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        destId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     public static final int CREATETIME_FIELD_NUMBER = 6;
@@ -770,10 +854,10 @@ public final class Chat {
         output.writeEnum(3, destType_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
-        output.writeInt64(4, fromId_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, fromId_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
-        output.writeInt64(5, destId_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, destId_);
       }
       if (((bitField0_ & 0x00000020) != 0)) {
         output.writeInt64(6, createTime_);
@@ -809,12 +893,10 @@ public final class Chat {
           .computeEnumSize(3, destType_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, fromId_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, fromId_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(5, destId_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, destId_);
       }
       if (((bitField0_ & 0x00000020) != 0)) {
         size += com.google.protobuf.CodedOutputStream
@@ -862,13 +944,13 @@ public final class Chat {
       }
       if (hasFromId() != other.hasFromId()) return false;
       if (hasFromId()) {
-        if (getFromId()
-            != other.getFromId()) return false;
+        if (!getFromId()
+            .equals(other.getFromId())) return false;
       }
       if (hasDestId() != other.hasDestId()) return false;
       if (hasDestId()) {
-        if (getDestId()
-            != other.getDestId()) return false;
+        if (!getDestId()
+            .equals(other.getDestId())) return false;
       }
       if (hasCreateTime() != other.hasCreateTime()) return false;
       if (hasCreateTime()) {
@@ -915,13 +997,11 @@ public final class Chat {
       }
       if (hasFromId()) {
         hash = (37 * hash) + FROMID_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getFromId());
+        hash = (53 * hash) + getFromId().hashCode();
       }
       if (hasDestId()) {
         hash = (37 * hash) + DESTID_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getDestId());
+        hash = (53 * hash) + getDestId().hashCode();
       }
       if (hasCreateTime()) {
         hash = (37 * hash) + CREATETIME_FIELD_NUMBER;
@@ -1079,9 +1159,9 @@ public final class Chat {
         bitField0_ = (bitField0_ & ~0x00000002);
         destType_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
-        fromId_ = 0L;
+        fromId_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
-        destId_ = 0L;
+        destId_ = "";
         bitField0_ = (bitField0_ & ~0x00000010);
         createTime_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -1132,13 +1212,13 @@ public final class Chat {
         }
         result.destType_ = destType_;
         if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.fromId_ = fromId_;
           to_bitField0_ |= 0x00000008;
         }
+        result.fromId_ = fromId_;
         if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.destId_ = destId_;
           to_bitField0_ |= 0x00000010;
         }
+        result.destId_ = destId_;
         if (((from_bitField0_ & 0x00000020) != 0)) {
           result.createTime_ = createTime_;
           to_bitField0_ |= 0x00000020;
@@ -1214,10 +1294,14 @@ public final class Chat {
           setDestType(other.getDestType());
         }
         if (other.hasFromId()) {
-          setFromId(other.getFromId());
+          bitField0_ |= 0x00000008;
+          fromId_ = other.fromId_;
+          onChanged();
         }
         if (other.hasDestId()) {
-          setDestId(other.getDestId());
+          bitField0_ |= 0x00000010;
+          destId_ = other.destId_;
+          onChanged();
         }
         if (other.hasCreateTime()) {
           setCreateTime(other.getCreateTime());
@@ -1436,13 +1520,13 @@ public final class Chat {
         return this;
       }
 
-      private long fromId_ ;
+      private java.lang.Object fromId_ = "";
       /**
        * <pre>
        *发送者userId
        * </pre>
        *
-       * <code>required int64 fromId = 4;</code>
+       * <code>required string fromId = 4;</code>
        */
       public boolean hasFromId() {
         return ((bitField0_ & 0x00000008) != 0);
@@ -1452,20 +1536,55 @@ public final class Chat {
        *发送者userId
        * </pre>
        *
-       * <code>required int64 fromId = 4;</code>
+       * <code>required string fromId = 4;</code>
        */
-      public long getFromId() {
-        return fromId_;
+      public java.lang.String getFromId() {
+        java.lang.Object ref = fromId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            fromId_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *发送者userId
        * </pre>
        *
-       * <code>required int64 fromId = 4;</code>
+       * <code>required string fromId = 4;</code>
        */
-      public Builder setFromId(long value) {
-        bitField0_ |= 0x00000008;
+      public com.google.protobuf.ByteString
+          getFromIdBytes() {
+        java.lang.Object ref = fromId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          fromId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *发送者userId
+       * </pre>
+       *
+       * <code>required string fromId = 4;</code>
+       */
+      public Builder setFromId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
         fromId_ = value;
         onChanged();
         return this;
@@ -1475,22 +1594,39 @@ public final class Chat {
        *发送者userId
        * </pre>
        *
-       * <code>required int64 fromId = 4;</code>
+       * <code>required string fromId = 4;</code>
        */
       public Builder clearFromId() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        fromId_ = 0L;
+        fromId_ = getDefaultInstance().getFromId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *发送者userId
+       * </pre>
+       *
+       * <code>required string fromId = 4;</code>
+       */
+      public Builder setFromIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        fromId_ = value;
         onChanged();
         return this;
       }
 
-      private long destId_ ;
+      private java.lang.Object destId_ = "";
       /**
        * <pre>
        *接收者userId
        * </pre>
        *
-       * <code>required int64 destId = 5;</code>
+       * <code>required string destId = 5;</code>
        */
       public boolean hasDestId() {
         return ((bitField0_ & 0x00000010) != 0);
@@ -1500,20 +1636,55 @@ public final class Chat {
        *接收者userId
        * </pre>
        *
-       * <code>required int64 destId = 5;</code>
+       * <code>required string destId = 5;</code>
        */
-      public long getDestId() {
-        return destId_;
+      public java.lang.String getDestId() {
+        java.lang.Object ref = destId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            destId_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
        * <pre>
        *接收者userId
        * </pre>
        *
-       * <code>required int64 destId = 5;</code>
+       * <code>required string destId = 5;</code>
        */
-      public Builder setDestId(long value) {
-        bitField0_ |= 0x00000010;
+      public com.google.protobuf.ByteString
+          getDestIdBytes() {
+        java.lang.Object ref = destId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          destId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       *接收者userId
+       * </pre>
+       *
+       * <code>required string destId = 5;</code>
+       */
+      public Builder setDestId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
         destId_ = value;
         onChanged();
         return this;
@@ -1523,11 +1694,28 @@ public final class Chat {
        *接收者userId
        * </pre>
        *
-       * <code>required int64 destId = 5;</code>
+       * <code>required string destId = 5;</code>
        */
       public Builder clearDestId() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        destId_ = 0L;
+        destId_ = getDefaultInstance().getDestId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       *接收者userId
+       * </pre>
+       *
+       * <code>required string destId = 5;</code>
+       */
+      public Builder setDestIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        destId_ = value;
         onChanged();
         return this;
       }
@@ -3583,8 +3771,8 @@ public final class Chat {
       "\n\nchat.proto\022\031com.yrw.im.proto.generate\"" +
       "\273\002\n\007ChatMsg\022\017\n\007version\030\001 \002(\005\022\n\n\002id\030\002 \002(\003" +
       "\022=\n\010destType\030\003 \002(\0162+.com.yrw.im.proto.ge" +
-      "nerate.ChatMsg.DestType\022\016\n\006fromId\030\004 \002(\003\022" +
-      "\016\n\006destId\030\005 \002(\003\022\022\n\ncreateTime\030\006 \002(\003\022;\n\007m" +
+      "nerate.ChatMsg.DestType\022\016\n\006fromId\030\004 \002(\t\022" +
+      "\016\n\006destId\030\005 \002(\t\022\022\n\ncreateTime\030\006 \002(\003\022;\n\007m" +
       "sgType\030\007 \002(\0162*.com.yrw.im.proto.generate" +
       ".ChatMsg.MsgType\022\017\n\007msgBody\030\010 \002(\014\022\020\n\010add" +
       "ition\030  \001(\t\"!\n\010DestType\022\n\n\006SINGLE\020\000\022\t\n\005G" +

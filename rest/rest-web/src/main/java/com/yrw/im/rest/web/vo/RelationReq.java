@@ -1,6 +1,6 @@
 package com.yrw.im.rest.web.vo;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Date: 2019-06-23
@@ -10,25 +10,25 @@ import javax.validation.constraints.NotNull;
  */
 public class RelationReq {
 
-    @NotNull
-    private Long userId1;
+    @NotEmpty
+    private String userId1;
 
-    @NotNull
-    private Long userId2;
+    @NotEmpty
+    private String userId2;
 
-    public Long getUserId1() {
+    public String getUserId1() {
         return userId1;
     }
 
-    public void setUserId1(Long userId1) {
+    public void setUserId1(String userId1) {
         this.userId1 = userId1;
     }
 
-    public Long getUserId2() {
+    public String getUserId2() {
         return userId2;
     }
 
-    public void setUserId2(Long userId2) {
+    public void setUserId2(String userId2) {
         this.userId2 = userId2;
     }
 }

@@ -28,7 +28,7 @@ public class OfflineService {
         this.parseService = parseService;
     }
 
-    public List<Message> pollOfflineMsg(Long userId) {
+    public List<Message> pollOfflineMsg(String userId) {
         List<Offline> msgs = connectorRestService.offlines(userId);
         return msgs.stream()
             .map(o -> {

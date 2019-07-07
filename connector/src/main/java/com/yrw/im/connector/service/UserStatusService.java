@@ -38,7 +38,7 @@ public class UserStatusService {
         this.objectMapper = new ObjectMapper();
     }
 
-    public void userOnline(Long msgId, Long userId, ChannelHandlerContext ctx) throws JsonProcessingException, ExecutionException, InterruptedException {
+    public void userOnline(Long msgId, String userId, ChannelHandlerContext ctx) throws JsonProcessingException, ExecutionException, InterruptedException {
         //保存连接
         ClientConn conn = new ClientConn(ctx);
         conn.setUserId(userId);
@@ -106,7 +106,7 @@ public class UserStatusService {
         clientConnContext.removeConn(ctx);
     }
 
-    public void forceOffline(Long userId) {
+    public void forceOffline(String userId) {
         ClientConn conn = clientConnContext.getConnByUserId(userId);
         clientConnContext.removeConn(conn.getNetId());
     }

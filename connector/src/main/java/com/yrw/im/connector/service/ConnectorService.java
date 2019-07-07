@@ -46,7 +46,7 @@ public class ConnectorService {
         send(ackMsg.getDestId(), ackMsg);
     }
 
-    private boolean send(Long destId, Message msg) {
+    private boolean send(String destId, Message msg) {
         Conn conn = clientConnContext.getConnByUserId(destId);
         if (conn == null) {
             ConnectorTransferHandler.getCtx().writeAndFlush(msg);

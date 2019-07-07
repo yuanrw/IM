@@ -27,10 +27,10 @@ class ClientConnContextTest extends Specification {
 
         when:
         ClientConn conn = new ClientConn(ctx)
-        conn.setUserId(123L)
+        conn.setUserId("123")
         then:
         conn.getCtx() == ctx
-        conn.getUserId() == 123L
+        conn.getUserId() == "123"
         conn.getNetId() >= 0L
 
         1 * ctx.channel().attr(Conn.NET_ID).set(_ as Long)
@@ -47,7 +47,7 @@ class ClientConnContextTest extends Specification {
         def context = new ClientConnContext()
 
         when:
-        def userId = 7073059L
+        def userId = "7073059"
         def conn = new ClientConn(ctx)
         conn.setUserId(userId)
         context.addConn(conn)
@@ -60,7 +60,7 @@ class ClientConnContextTest extends Specification {
         context.getConnByUserId(userId) == conn
 
         context.getConn("sndigso") == null
-        context.getConnByUserId(2222L) == null
+        context.getConnByUserId("2222") == null
 
         when:
         context.removeConn(conn.getNetId())

@@ -70,7 +70,7 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
         public void registerParsers() {
             InternalParser parser = new InternalParser(3);
             parser.register(Internal.InternalMsg.MsgType.GREET,
-                (m, ctx) -> userStatusService.userOnline(m.getId(), Long.parseLong(m.getMsgBody()), ctx));
+                (m, ctx) -> userStatusService.userOnline(m.getId(), m.getMsgBody(), ctx));
 
             register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChat(m));
             register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAck(m));

@@ -8,15 +8,15 @@ package com.yim.im.client.domain;
  */
 public class Friend {
 
-    private Long userId;
+    private String userId;
 
     private String encryptKey;
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

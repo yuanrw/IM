@@ -1,6 +1,5 @@
 package com.yrw.im.common.domain;
 
-import com.yrw.im.common.domain.po.DbModel;
 import com.yrw.im.common.domain.po.Relation;
 
 import java.util.List;
@@ -11,11 +10,21 @@ import java.util.List;
  *
  * @author yrw
  */
-public class UserInfo extends DbModel {
+public class UserInfo {
+
+    private String id;
 
     private String token;
 
     private List<Relation> relations;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getToken() {
         return token;

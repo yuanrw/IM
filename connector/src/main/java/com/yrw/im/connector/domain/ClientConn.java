@@ -16,7 +16,7 @@ public class ClientConn extends AbstractConn {
 
     private static final AtomicLong NETID_GENERATOR = new AtomicLong(0);
 
-    private Long userId;
+    private String userId;
 
     public ClientConn(ChannelHandlerContext ctx) {
         super(ctx);
@@ -27,11 +27,11 @@ public class ClientConn extends AbstractConn {
         return NETID_GENERATOR.getAndIncrement();
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 }

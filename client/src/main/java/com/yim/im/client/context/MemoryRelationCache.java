@@ -43,7 +43,7 @@ public class MemoryRelationCache implements RelationCache {
     }
 
     @Override
-    public Relation getRelation(Long userId1, Long userId2, String token) {
+    public Relation getRelation(String userId1, String userId2, String token) {
         Relation relation = relationMap.get(generateKey(userId1, userId2));
         if (relation == null) {
             relation = getRelationFromRest(userId1, userId2, token);
@@ -52,11 +52,13 @@ public class MemoryRelationCache implements RelationCache {
         return relation;
     }
 
-    private Relation getRelationFromRest(Long userId1, Long userId2, String token) {
+    private Relation getRelationFromRest(String userId1, String userId2, String token) {
         return clientRestService.relation(userId1, userId2, token);
     }
 
-    private String generateKey(Long userId1, Long userId2) {
-        return Math.min(userId1, userId2) + "_" + Math.max(userId1, userId2);
+    private String generateKey(String userId1, String userId2) {
+        String max = userId1.compareTo(userId2) >= 0 ? userId1 : userId2;
+        String min = max.equals(userId1) ? userId2 : userId1;
+        return min + "_" + max;
     }
 }

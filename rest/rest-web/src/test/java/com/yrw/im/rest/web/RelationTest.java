@@ -67,8 +67,8 @@ public class RelationTest {
             .jsonPath("$.status").isEqualTo(200)
             .jsonPath("$.msg").isEqualTo("SUCCESS")
             .jsonPath("$.data[0].id").isNumber()
-            .jsonPath("$.data[0].userId1").isNumber()
-            .jsonPath("$.data[0].userId2").isNumber()
+            .jsonPath("$.data[0].userId1").exists()
+            .jsonPath("$.data[0].userId2").exists()
             .jsonPath("$.data[0].encryptKey").exists();
     }
 
@@ -87,8 +87,8 @@ public class RelationTest {
     @Test
     public void testAddNewRelation() {
         RelationReq req = new RelationReq();
-        req.setUserId1(1119861162352148481L);
-        req.setUserId2(1142784917944406018L);
+        req.setUserId1("1119861162352148481");
+        req.setUserId2("1142784917944406018");
 
         webClient.post().uri("/relation")
             .header("token", token)
@@ -105,8 +105,8 @@ public class RelationTest {
     @Test
     public void testAddExistRelation() {
         RelationReq req = new RelationReq();
-        req.setUserId1(1119861162352148481L);
-        req.setUserId2(1142784917944406018L);
+        req.setUserId1("1119861162352148481");
+        req.setUserId2("1142784917944406018");
 
         webClient.post().uri("/relation")
             .header("token", token)
@@ -123,8 +123,8 @@ public class RelationTest {
     @Test
     public void testAddRelationUserNotExist() {
         RelationReq req = new RelationReq();
-        req.setUserId1(123L);
-        req.setUserId2(1142784917944406018L);
+        req.setUserId1("123");
+        req.setUserId2("1142784917944406018");
 
         webClient.post().uri("/relation")
             .header("token", token)

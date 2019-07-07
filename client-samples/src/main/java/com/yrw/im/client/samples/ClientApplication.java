@@ -79,6 +79,6 @@ public class ClientApplication {
         List<Friend> friends = userApi.friends(user.getId(), user.getToken());
 
         //发送消息
-        chatApi.text(user.getId(), "hello");
+        chatApi.text(friends.get(0).getUserId(), "hello");
     }
 }

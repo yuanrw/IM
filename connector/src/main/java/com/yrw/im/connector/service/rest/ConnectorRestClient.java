@@ -17,5 +17,5 @@ import java.util.List;
 public interface ConnectorRestClient {
 
     @GET("/offline/poll")
-    Call<ResultWrapper<List<Offline>>> pollOfflineMsg(@Query("userId") Long userId);
+    Call<ResultWrapper<List<Offline>>> pollOfflineMsg(@Query("userId") String userId);
 }
