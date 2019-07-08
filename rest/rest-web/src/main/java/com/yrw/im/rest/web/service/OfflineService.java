@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yrw.im.common.domain.po.Offline;
 import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -17,25 +18,27 @@ import java.util.List;
 public interface OfflineService extends IService<Offline> {
 
     /**
-     * 保存离线聊天消息
+     * save offline chat msg
      *
      * @param msg
+     * @return
      */
     void saveChat(Chat.ChatMsg msg);
 
     /**
-     * 保存离线ack消息
+     * save offline ack msg
      *
      * @param msg
+     * @return
      */
     void saveAck(Ack.AckMsg msg);
 
     /**
-     * 获取某个用户的所有离线消息
+     * get a user's all offline msgs
      *
      * @param userId
      * @return
      * @throws JsonProcessingException
      */
-    List<Offline> pollOfflineMsg(Long userId) throws JsonProcessingException;
+    Mono<List<Offline>> pollOfflineMsg(Long userId) throws JsonProcessingException;
 }

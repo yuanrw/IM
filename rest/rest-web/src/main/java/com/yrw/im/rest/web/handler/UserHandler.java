@@ -44,7 +44,7 @@ public class UserHandler {
     public Mono<ServerResponse> saveUser(ServerRequest request) {
         return ValidHandler.requireValidBody(req ->
 
-                req.map(user -> userService.saveUser(user.getUsername(), user.getPwd()))
+                req.flatMap(user -> userService.saveUser(user.getUsername(), user.getPwd()))
                     .map(id -> ImmutableMap.of("id", String.valueOf(id)))
                     .map(ResultWrapper::success)
                     .flatMap(id -> ok().contentType(APPLICATION_JSON).body(fromObject(id)))

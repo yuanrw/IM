@@ -2,6 +2,7 @@ package com.yrw.im.rest.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yrw.im.common.domain.po.User;
+import reactor.core.publisher.Mono;
 
 /**
  * Date: 2019-04-07
@@ -18,7 +19,7 @@ public interface UserService extends IService<User> {
      * @param pwd      密码
      * @return
      */
-    User verifyAndGet(String username, String pwd);
+    Mono<User> verifyAndGet(String username, String pwd);
 
     /**
      * 保存用户
@@ -27,5 +28,5 @@ public interface UserService extends IService<User> {
      * @param pwd      密码
      * @return
      */
-    Long saveUser(String username, String pwd);
+    Mono<Long> saveUser(String username, String pwd);
 }

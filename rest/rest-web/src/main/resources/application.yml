@@ -24,19 +24,18 @@ spring:
     port: ${redis.port}
     password: ${redis.password}
 
-  ldap:
-    base: "dc=example,dc=org"
-    username: "cn=admin,dc=example,dc=org"
-    password: "password"
-    searchFilter: "(uid={0})"
-    urls:
-      - "ldap://localhost:389"
-
-ldap:
-  mapping:
-    objectClass:
-    loginId: "uid"
-    userDisplayName:
-    email: "mail"
-  filter:
-  memberOf: "cn=ServiceDEV,ou=DEV,dc=example,dc=org|cn=WebDEV,ou=DEV,dc=example,dc=org"
+#  ldap:
+#    base: ${ldap.base}
+#    username: ${ldap.username}
+#    password: ${ldap.password}
+#    searchFilter: ${ldap.searchFilter}
+#    urls: ${ldap.urls}
+#
+#ldap:
+#  mapping:
+#    objectClass: ${ldap.mapping.objectClass}
+#    loginId: ${ldap.mapping.loginId}
+#    userDisplayName: ${ldap.mapping.userDisplayName}
+#    email: ${ldap.mapping.email}
+#  filter:
+#    memberOf: "cn=ServiceDEV,ou=DEV,dc=example,dc=org|cn=WebDEV,ou=DEV,dc=example,dc=org"

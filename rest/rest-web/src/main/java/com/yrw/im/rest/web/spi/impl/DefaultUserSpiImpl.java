@@ -23,7 +23,7 @@ public class DefaultUserSpiImpl implements UserSpi<UserBase> {
 
     @Override
     public Mono<UserBase> getUser(String username, String pwd) {
-        return Mono.fromSupplier(() -> userService.verifyAndGet(username, pwd))
+        return userService.verifyAndGet(username, pwd)
             .map(u -> {
                 UserBase userBase = new UserBase();
                 userBase.setId(u.getId() + "");

@@ -39,7 +39,7 @@ public class RelationServiceImpl extends ServiceImpl<RelationMapper, Relation> i
     public Mono<Long> saveRelation(String userId1, String userId2) {
         return userSpi.getById(userId1)
             .flatMap(ignore -> userSpi.getById(userId2))
-            .switchIfEmpty(Mono.error(new ImException("user not exist")))
+            .switchIfEmpty(Mono.error(new ImException("[rest] user not exist")))
             .map(ignore -> {
                 Relation relation = new Relation();
 
@@ -49,7 +49,13 @@ public class RelationServiceImpl extends ServiceImpl<RelationMapper, Relation> i
                 relation.setUserId1(min);
                 relation.setUserId2(max);
                 relation.setEncryptKey(RandomStringUtils.randomAlphanumeric(16) + "|" + RandomStringUtils.randomNumeric(16));
-                return save(relation) ? relation.getId() : null;
+
+                try {
+                    boolean suc = save(relation);
+                    return suc ? relation.getId() : null;
+                } catch (Exception e) {
+                    throw new ImException("[rest] relation exist");
+                }
             })
             .flatMap(id -> id != null ? Mono.just(id) : Mono.error(new ImException("[rest] save relation failed")));
     }

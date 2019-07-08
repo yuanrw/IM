@@ -6,7 +6,8 @@ CREATE TABLE `im_user` (
   `gmt_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `gmt_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
 ) DEFAULT CHARSET=utf8;
 INSERT INTO `im_user` (`id`, `username`, `pwd_hash`, `salt`, `gmt_create`, `gmt_update`, `deleted`)
 VALUES

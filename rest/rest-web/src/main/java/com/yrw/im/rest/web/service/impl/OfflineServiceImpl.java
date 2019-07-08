@@ -10,7 +10,8 @@ import com.yrw.im.proto.generate.Chat;
 import com.yrw.im.rest.web.mapper.OfflineMapper;
 import com.yrw.im.rest.web.service.OfflineService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,17 +54,17 @@ public class OfflineServiceImpl extends ServiceImpl<OfflineMapper, Offline> impl
     }
 
     @Override
-    @Transactional
-    public List<Offline> pollOfflineMsg(Long userId) {
-        List<Offline> list = list(new LambdaQueryWrapper<Offline>()
+    public Mono<List<Offline>> pollOfflineMsg(Long userId) {
+        return Flux.fromIterable(list(new LambdaQueryWrapper<Offline>()
             .eq(Offline::getToUserId, userId)
-            .orderBy(true, true, Offline::getMsgId));
-
-        if (list.size() > 0) {
-            List<Long> ids = list.stream().map(Offline::getId).collect(Collectors.toList());
-            removeByIds(ids);
-        }
-
-        return list;
+            .orderBy(true, true, Offline::getMsgId)))
+            .collectList()
+            .map(list -> {
+                if (list.size() > 0) {
+                    List<Long> ids = list.stream().map(Offline::getId).collect(Collectors.toList());
+                    removeByIds(ids);
+                }
+                return list;
+            });
     }
 }

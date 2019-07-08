@@ -134,7 +134,7 @@ public class RelationTest {
             .expectStatus().isOk()
             .expectBody()
             .jsonPath("$.status").isEqualTo(500)
-            .jsonPath("$.msg").isEqualTo("user not exist");
+            .jsonPath("$.msg").isEqualTo("[rest] user not exist");
     }
 
     @Test

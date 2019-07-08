@@ -1,13 +1,14 @@
 DROP TABLE IF EXISTS `im_user`;
 CREATE TABLE `im_user` (
-  `id` bigint(20) NOT NULL,
-  `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '用户名',
-  `pwd_hash` char(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '密码加密后的hash值',
-  `salt` char(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '盐',
-  `gmt_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `gmt_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+                         `id` bigint(20) NOT NULL,
+                         `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '用户名',
+                         `pwd_hash` char(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '密码加密后的hash值',
+                         `salt` char(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '盐',
+                         `gmt_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                         `gmt_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                         `deleted` tinyint(1) NOT NULL DEFAULT '0',
+                         PRIMARY KEY (`id`),
+                         UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `im_relation`;
@@ -19,7 +20,8 @@ CREATE TABLE `im_relation` (
                              `gmt_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                              `gmt_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                              `deleted` tinyint(1) NOT NULL DEFAULT '0',
-                             PRIMARY KEY (`id`)
+                             PRIMARY KEY (`id`),
+                             UNIQUE KEY `USERID1_USERID2` (`user_id1`,`user_id2`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `im_offline`;
