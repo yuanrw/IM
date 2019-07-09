@@ -14,6 +14,7 @@ import com.yrw.im.rest.web.vo.UserReq;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -44,7 +45,9 @@ public class UserHandler {
     public Mono<ServerResponse> saveUser(ServerRequest request) {
         return ValidHandler.requireValidBody(req ->
 
-                req.flatMap(user -> userService.saveUser(user.getUsername(), user.getPwd()))
+                req.map(user -> userService.saveUser(user.getUsername(), user.getPwd()))
+                    .onErrorMap(e -> new ImException("[rest] username exist"))
+                    .switchIfEmpty(Mono.error(new ImException("[rest] save user info failed")))
                     .map(id -> ImmutableMap.of("id", String.valueOf(id)))
                     .map(ResultWrapper::success)
                     .flatMap(id -> ok().contentType(APPLICATION_JSON).body(fromObject(id)))
@@ -55,7 +58,7 @@ public class UserHandler {
     public Mono<ServerResponse> login(ServerRequest request) {
         return ValidHandler.requireValidBody(req ->
 
-                req.flatMap(login -> userSpi.getUser(login.getUsername(), login.getPwd()))
+                req.map(login -> userSpi.getUser(login.getUsername(), login.getPwd()))
                     .flatMap(u -> tokenManager.createNewToken(u.getId())
                         .map(t -> {
                             UserInfo userInfo = new UserInfo();
@@ -63,7 +66,8 @@ public class UserHandler {
                             userInfo.setToken(t);
                             return userInfo;
                         }))
-                    .flatMap(u -> relationService.friends(u.getId()).collectList()
+                    .flatMap(u -> Flux.fromIterable(relationService.friends(u.getId()))
+                        .collectList()
                         .map(list -> {
                             u.setRelations(list);
                             return u;

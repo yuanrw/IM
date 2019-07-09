@@ -9,6 +9,7 @@ import com.yrw.im.rest.web.vo.RelationReq;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -34,7 +35,7 @@ public class RelationHandler {
 
         String id = request.pathVariable("id");
 
-        return relationService.friends(id)
+        return Flux.fromIterable(relationService.friends(id))
             .collectList()
             .map(ResultWrapper::success)
             .flatMap(res -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(res)));
@@ -58,7 +59,7 @@ public class RelationHandler {
 
     public Mono<ServerResponse> saveRelation(ServerRequest request) {
         return request.bodyToMono(RelationReq.class)
-            .flatMap(r -> relationService.saveRelation(r.getUserId1(), r.getUserId2()))
+            .map(r -> relationService.saveRelation(r.getUserId1(), r.getUserId2()))
             .map(id -> ImmutableMap.of("id", String.valueOf(id)))
             .map(ResultWrapper::success)
             .flatMap(r -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(r)));

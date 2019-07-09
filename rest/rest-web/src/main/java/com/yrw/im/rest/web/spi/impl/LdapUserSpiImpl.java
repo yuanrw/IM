@@ -13,7 +13,6 @@
 //import org.springframework.ldap.query.SearchScope;
 //import org.springframework.ldap.support.LdapUtils;
 //import org.springframework.stereotype.Service;
-//import reactor.core.publisher.Mono;
 //
 //import javax.naming.directory.Attribute;
 //import javax.naming.ldap.LdapName;
@@ -100,22 +99,22 @@
 //    private static final String MEMBER_UID_ATTR_NAME = "memberUid";
 //
 //    @Override
-//    public Mono<LdapUser> getUser(String username, String pwd) {
+//    public LdapUser getUser(String username, String pwd) {
 //        return null;
 //    }
 //
 //    @Override
-//    public Mono<LdapUser> getById(String id) {
+//    public LdapUser getById(String id) {
 //        if (StringUtils.isNotBlank(groupSearch)) {
 //            List<LdapUser> lists = searchUserInfoByGroup(groupBase, groupSearch, null,
 //                Collections.singletonList(id));
 //            if (lists != null && !lists.isEmpty() && lists.get(0) != null) {
-//                return Mono.just(lists.get(0));
+//                return lists.get(0);
 //            }
 //            return null;
 //        } else {
-//            return Mono.fromCallable(() -> ldapTemplate
-//                .searchForObject(ldapQueryCriteria().and(loginIdAttrName).is(id), ldapUserInfoMapper));
+//            return ldapTemplate
+//                .searchForObject(ldapQueryCriteria().and(loginIdAttrName).is(id), ldapUserInfoMapper);
 //        }
 //    }
 //

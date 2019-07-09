@@ -11,8 +11,8 @@ import com.yrw.im.rest.web.service.RelationService;
 import com.yrw.im.rest.web.util.SpiFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * Date: 2019-04-07
@@ -30,33 +30,28 @@ public class RelationServiceImpl extends ServiceImpl<RelationMapper, Relation> i
     }
 
     @Override
-    public Flux<Relation> friends(String id) {
-        return Flux.fromIterable(list(new LambdaQueryWrapper<Relation>()
-            .eq(Relation::getUserId1, id).or().eq(Relation::getUserId2, id)));
+    public List<Relation> friends(String id) {
+        return list(new LambdaQueryWrapper<Relation>()
+            .eq(Relation::getUserId1, id).or().eq(Relation::getUserId2, id));
     }
 
     @Override
-    public Mono<Long> saveRelation(String userId1, String userId2) {
-        return userSpi.getById(userId1)
-            .flatMap(ignore -> userSpi.getById(userId2))
-            .switchIfEmpty(Mono.error(new ImException("[rest] user not exist")))
-            .map(ignore -> {
-                Relation relation = new Relation();
+    public Long saveRelation(String userId1, String userId2) {
+        if (userSpi.getById(userId1 + "") == null || userSpi.getById(userId2 + "") == null) {
+            throw new ImException("[rest] user not exist");
+        }
+        String max = userId1.compareTo(userId2) >= 0 ? userId1 : userId2;
+        String min = max.equals(userId1) ? userId2 : userId1;
 
-                String max = userId1.compareTo(userId2) >= 0 ? userId1 : userId2;
-                String min = max.equals(userId1) ? userId2 : userId1;
+        Relation relation = new Relation();
+        relation.setUserId1(min);
+        relation.setUserId2(max);
+        relation.setEncryptKey(RandomStringUtils.randomAlphanumeric(16) + "|" + RandomStringUtils.randomNumeric(16));
 
-                relation.setUserId1(min);
-                relation.setUserId2(max);
-                relation.setEncryptKey(RandomStringUtils.randomAlphanumeric(16) + "|" + RandomStringUtils.randomNumeric(16));
-
-                try {
-                    boolean suc = save(relation);
-                    return suc ? relation.getId() : null;
-                } catch (Exception e) {
-                    throw new ImException("[rest] relation exist");
-                }
-            })
-            .flatMap(id -> id != null ? Mono.just(id) : Mono.error(new ImException("[rest] save relation failed")));
+        if (save(relation)) {
+            return relation.getId();
+        } else {
+            throw new ImException("[rest] save relation failed");
+        }
     }
 }

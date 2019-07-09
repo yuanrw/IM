@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yrw.im.common.domain.po.Offline;
 import com.yrw.im.proto.generate.Ack;
 import com.yrw.im.proto.generate.Chat;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -40,5 +39,5 @@ public interface OfflineService extends IService<Offline> {
      * @return
      * @throws JsonProcessingException
      */
-    Mono<List<Offline>> pollOfflineMsg(Long userId) throws JsonProcessingException;
+    List<Offline> pollOfflineMsg(Long userId) throws JsonProcessingException;
 }

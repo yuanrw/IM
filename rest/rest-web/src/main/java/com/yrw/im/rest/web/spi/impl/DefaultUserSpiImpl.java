@@ -1,10 +1,10 @@
 package com.yrw.im.rest.web.spi.impl;
 
+import com.yrw.im.common.domain.po.User;
 import com.yrw.im.rest.spi.UserSpi;
 import com.yrw.im.rest.spi.domain.UserBase;
 import com.yrw.im.rest.web.service.UserService;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 /**
  * Date: 2019-07-03
@@ -22,24 +22,28 @@ public class DefaultUserSpiImpl implements UserSpi<UserBase> {
     }
 
     @Override
-    public Mono<UserBase> getUser(String username, String pwd) {
-        return userService.verifyAndGet(username, pwd)
-            .map(u -> {
-                UserBase userBase = new UserBase();
-                userBase.setId(u.getId() + "");
-                userBase.setUsername(u.getUsername());
-                return userBase;
-            });
+    public UserBase getUser(String username, String pwd) {
+        User user = userService.verifyAndGet(username, pwd);
+        if (user == null) {
+            return null;
+        }
+
+        UserBase userBase = new UserBase();
+        userBase.setId(user.getId() + "");
+        userBase.setUsername(user.getUsername());
+        return userBase;
     }
 
     @Override
-    public Mono<UserBase> getById(String id) {
-        return Mono.fromSupplier(() -> userService.getById(Long.parseLong(id)))
-            .map(r -> {
-                UserBase userBase = new UserBase();
-                userBase.setId(userBase.getId());
-                userBase.setUsername(userBase.getUsername());
-                return userBase;
-            });
+    public UserBase getById(String id) {
+        User user = userService.getById(Long.parseLong(id));
+        if (user == null) {
+            return null;
+        }
+
+        UserBase userBase = new UserBase();
+        userBase.setId(userBase.getId());
+        userBase.setUsername(userBase.getUsername());
+        return userBase;
     }
 }

@@ -35,7 +35,7 @@ public class OfflineHandler {
         String token = request.headers().header("token").get(0);
         Mono<Long> id = tokenManager.validateToken(token);
 
-        return id.flatMap(i -> {
+        return id.map(i -> {
             try {
                 return offlineService.pollOfflineMsg(i);
             } catch (JsonProcessingException e) {
