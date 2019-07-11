@@ -39,5 +39,5 @@ public interface OfflineService extends IService<Offline> {
      * @return
      * @throws JsonProcessingException
      */
-    List<Offline> pollOfflineMsg(Long userId) throws JsonProcessingException;
+    List<Offline> pollOfflineMsg(String userId) throws JsonProcessingException;
 }

@@ -26,6 +26,18 @@ public class ChatApi {
         this.userContext = userContext;
     }
 
+    public Chat.ChatMsg.Builder chatMsgBuilder() {
+        return Chat.ChatMsg.newBuilder();
+    }
+
+    public Long send(Chat.ChatMsg chat) {
+        checkLogin();
+
+        sendToConnector(chat, chat.getId());
+
+        return chat.getId();
+    }
+
     public Long text(String toId, String text) {
         checkLogin();
 

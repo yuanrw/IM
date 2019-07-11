@@ -54,7 +54,7 @@ public class OfflineServiceImpl extends ServiceImpl<OfflineMapper, Offline> impl
 
     @Override
     @Transactional
-    public List<Offline> pollOfflineMsg(Long userId) {
+    public List<Offline> pollOfflineMsg(String userId) {
         List<Offline> list = list(new LambdaQueryWrapper<Offline>()
             .eq(Offline::getToUserId, userId)
             .orderBy(true, true, Offline::getMsgId));

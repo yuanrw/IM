@@ -37,6 +37,9 @@ public class RelationServiceImpl extends ServiceImpl<RelationMapper, Relation> i
 
     @Override
     public Long saveRelation(String userId1, String userId2) {
+        if (userId1.equals(userId2)) {
+            throw new ImException("[rest] userId1 and userId2 can not be same");
+        }
         if (userSpi.getById(userId1 + "") == null || userSpi.getById(userId2 + "") == null) {
             throw new ImException("[rest] user not exist");
         }

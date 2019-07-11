@@ -31,15 +31,17 @@ public class ConnectorStarter {
     private static ConnectorConfig parseConfig() throws IOException {
         Properties properties = getProperties();
 
-        ConnectorConfig transferConfig = new ConnectorConfig();
-        transferConfig.setPort(Integer.parseInt((String) properties.get("port")));
-        transferConfig.setTransferHost((String) properties.get("transfer.host"));
-        transferConfig.setTransferPort(Integer.parseInt((String) properties.get("transfer.port")));
-        transferConfig.setLogPath((String) properties.get("log.path"));
+        ConnectorConfig connectorConfig = new ConnectorConfig();
+        connectorConfig.setPort(Integer.parseInt((String) properties.get("port")));
+        connectorConfig.setTransferHost((String) properties.get("transfer.host"));
+        connectorConfig.setTransferPort(Integer.parseInt((String) properties.get("transfer.port")));
+        connectorConfig.setLogPath((String) properties.get("log.path"));
+        connectorConfig.setLogLevel((String) properties.get("log.level"));
 
-        System.setProperty("log.path", transferConfig.getLogPath());
+        System.setProperty("log.path", connectorConfig.getLogPath());
+        System.setProperty("log.level", connectorConfig.getLogLevel());
 
-        return transferConfig;
+        return connectorConfig;
     }
 
     private static Properties getProperties() throws IOException {

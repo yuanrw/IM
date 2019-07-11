@@ -45,8 +45,10 @@ public class TransferStarter {
         transferConfig.setRabbitmqHost((String) properties.get("rabbitmq.host"));
         transferConfig.setRabbitmqPort(Integer.parseInt((String) properties.get("rabbitmq.port")));
         transferConfig.setLogPath((String) properties.get("log.path"));
+        transferConfig.setLogLevel((String) properties.get("log.level"));
 
         System.setProperty("log.path", transferConfig.getLogPath());
+        System.setProperty("log.level", transferConfig.getLogLevel());
 
         return transferConfig;
     }

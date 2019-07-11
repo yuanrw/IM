@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.ImmutableMap;
 import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.domain.po.Relation;
+import com.yrw.im.common.exception.ImException;
 import com.yrw.im.rest.web.service.RelationService;
 import com.yrw.im.rest.web.vo.RelationReq;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,6 @@ import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
-import static org.springframework.web.reactive.function.server.ServerResponse.notFound;
 
 /**
  * Date: 2019-02-11
@@ -54,15 +54,18 @@ public class RelationHandler {
 
         return relationMono.map(ResultWrapper::success)
             .flatMap(r -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(r)))
-            .switchIfEmpty(notFound().build());
+            .switchIfEmpty(Mono.error(new ImException("no relation")));
     }
 
     public Mono<ServerResponse> saveRelation(ServerRequest request) {
-        return request.bodyToMono(RelationReq.class)
-            .map(r -> relationService.saveRelation(r.getUserId1(), r.getUserId2()))
-            .map(id -> ImmutableMap.of("id", String.valueOf(id)))
-            .map(ResultWrapper::success)
-            .flatMap(r -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(r)));
+        return ValidHandler.requireValidBody(req ->
+
+                req.map(r -> relationService.saveRelation(r.getUserId1(), r.getUserId2()))
+                    .map(id -> ImmutableMap.of("id", String.valueOf(id)))
+                    .map(ResultWrapper::success)
+                    .flatMap(r -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(r)))
+
+            , request, RelationReq.class);
     }
 
     public Mono<ServerResponse> deleteRelation(ServerRequest request) {

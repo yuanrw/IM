@@ -58,11 +58,15 @@ public class UserHandler {
     public Mono<ServerResponse> login(ServerRequest request) {
         return ValidHandler.requireValidBody(req ->
 
-                req.map(login -> userSpi.getUser(login.getUsername(), login.getPwd()))
+                req.flatMap(login -> {
+                    UserBase user = userSpi.getUser(login.getUsername(), login.getPwd());
+                    return user != null ? Mono.just(user) : Mono.empty();
+                })
                     .flatMap(u -> tokenManager.createNewToken(u.getId())
                         .map(t -> {
                             UserInfo userInfo = new UserInfo();
                             userInfo.setId(u.getId());
+                            userInfo.setUsername(u.getUsername());
                             userInfo.setToken(t);
                             return userInfo;
                         }))

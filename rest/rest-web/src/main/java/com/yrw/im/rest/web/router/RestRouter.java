@@ -48,7 +48,7 @@ public class RestRouter {
     @Bean
     public RouterFunction<ServerResponse> offlineRoutes(OfflineHandler offlineHandler) {
         return RouterFunctions
-            .route(GET("/offline/poll").and(accept(APPLICATION_JSON)),
+            .route(GET("/offline/poll/{id}").and(accept(APPLICATION_JSON)),
                 offlineHandler::pollOfflineMsg);
     }
 }

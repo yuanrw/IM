@@ -20,6 +20,16 @@ public class TransferConfig {
 
     private String logPath;
 
+    private String logLevel;
+
+    public String getLogLevel() {
+        return logLevel;
+    }
+
+    public void setLogLevel(String logLevel) {
+        this.logLevel = logLevel;
+    }
+
     public Integer getPort() {
         return port;
     }

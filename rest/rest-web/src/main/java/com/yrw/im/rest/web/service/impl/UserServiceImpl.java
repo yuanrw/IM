@@ -33,8 +33,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return user != null ? verityPassword(pwd, user.getSalt(), user.getPwdHash()) ? user : null : null;
     }
 
-    private boolean verityPassword(String pwdSha, String salt, String pwdHash) {
-        String hashRes = DigestUtils.sha256Hex(pwdSha + salt);
+    private boolean verityPassword(String pwd, String salt, String pwdHash) {
+        String hashRes = DigestUtils.sha256Hex(pwd + salt);
         return hashRes.equals(pwdHash);
     }
 }

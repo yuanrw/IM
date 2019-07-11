@@ -1,7 +1,7 @@
 package com.yrw.im.client.test
 
 import com.google.protobuf.ByteString
-import com.yim.im.client.Client
+import com.yim.im.client.ImClient
 import com.yim.im.client.api.ClientMsgListener
 import com.yim.im.client.context.MemoryRelationCache
 import com.yim.im.client.context.UserContext
@@ -27,7 +27,7 @@ import java.time.Duration
  * Time: 14:30
  * @author yrw
  */
-class ClientConnectorTest extends Specification {
+class ImClientConnectorTest extends Specification {
 
     def "test get ack"() {
         given:
@@ -36,7 +36,7 @@ class ClientConnectorTest extends Specification {
         channel.pipeline()
                 .addLast("MsgEncoder", new MsgEncoder())
                 .addLast("AesEncoder", new AesEncoder(new UserContext()))
-                .addLast("MsgDecoder", Client.injector.getInstance(MsgDecoder.class))
+                .addLast("MsgDecoder", ImClient.injector.getInstance(MsgDecoder.class))
                 .addLast("AesDecoder", new AesDecoder())
                 .addLast("ClientConnectorHandler", new ClientConnectorHandler(clientMsgListener))
 
@@ -124,7 +124,7 @@ class ClientConnectorTest extends Specification {
         channel.pipeline()
                 .addLast("MsgEncoder", new MsgEncoder())
                 .addLast("AesEncoder", new AesEncoder(userContext))
-                .addLast("MsgDecoder", Client.injector.getInstance(MsgDecoder.class))
+                .addLast("MsgDecoder", ImClient.injector.getInstance(MsgDecoder.class))
                 .addLast("AesDecoder", new AesDecoder(userContext))
                 .addLast("ClientConnectorHandler", new ClientConnectorHandler(clientMsgListener))
 

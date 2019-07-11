@@ -3,6 +3,8 @@ package com.yrw.im.transfer.user.status.service.impl;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.yrw.im.transfer.user.status.service.UserStatusService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,6 +18,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author yrw
  */
 public class RedisUserStatusServiceImpl implements UserStatusService {
+    private static final Logger logger = LoggerFactory.getLogger(RedisUserStatusServiceImpl.class);
     private static final String USER_CONN_STATUS_KEY = "IM:USER_CONN_STATUS:USERID:";
 
     /**
@@ -35,6 +38,7 @@ public class RedisUserStatusServiceImpl implements UserStatusService {
 
     @Override
     public String online(String connectorId, String userId) {
+        logger.debug("[user status] user online: connectorId: {}, userID: {}", connectorId, userId);
         String oldConnectorId = jedis.hget(USER_CONN_STATUS_KEY, String.valueOf(userId));
         if (oldConnectorId != null) {
             return oldConnectorId;

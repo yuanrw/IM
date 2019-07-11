@@ -30,15 +30,15 @@ import java.util.concurrent.TimeoutException;
  *
  * @author yrw
  */
-public class Client {
-    private static Logger logger = LoggerFactory.getLogger(Client.class);
+public class ImClient {
+    private static Logger logger = LoggerFactory.getLogger(ImClient.class);
     public static Injector injector = Guice.createInjector(new ClientModule());
 
     private String connectorHost;
     private Integer connectorPort;
     private ClientMsgListener clientMsgListener;
 
-    public Client() {
+    public ImClient() {
     }
 
     public void start() {
@@ -71,7 +71,7 @@ public class Client {
             }).connect(connectorHost, connectorPort)
             .addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
-                    logger.info("Client connect to connector successfully");
+                    logger.info("ImClient connect to connector successfully");
                 } else {
                     throw new ImException("[client] connect to connector failed!");
                 }
@@ -84,17 +84,17 @@ public class Client {
         }
     }
 
-    public Client setConnectorHost(String connectorHost) {
+    public ImClient setConnectorHost(String connectorHost) {
         this.connectorHost = connectorHost;
         return this;
     }
 
-    public Client setConnectorPort(Integer connectorPort) {
+    public ImClient setConnectorPort(Integer connectorPort) {
         this.connectorPort = connectorPort;
         return this;
     }
 
-    public Client setClientMsgListener(ClientMsgListener clientMsgListener) {
+    public ImClient setClientMsgListener(ClientMsgListener clientMsgListener) {
         this.clientMsgListener = clientMsgListener;
         return this;
     }

@@ -3,7 +3,6 @@ package com.yrw.im.rest.web.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.exception.ImException;
-import com.yrw.im.rest.web.filter.TokenManager;
 import com.yrw.im.rest.web.service.OfflineService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -23,21 +22,18 @@ import static org.springframework.web.reactive.function.BodyInserters.fromObject
 public class OfflineHandler {
 
     private OfflineService offlineService;
-    private TokenManager tokenManager;
 
-    public OfflineHandler(OfflineService offlineService, TokenManager tokenManager) {
+    public OfflineHandler(OfflineService offlineService) {
         this.offlineService = offlineService;
-        this.tokenManager = tokenManager;
     }
 
     public Mono<ServerResponse> pollOfflineMsg(ServerRequest request) {
 
-        String token = request.headers().header("token").get(0);
-        Mono<Long> id = tokenManager.validateToken(token);
+        String id = request.pathVariable("id");
 
-        return id.map(i -> {
+        return Mono.fromSupplier(() -> {
             try {
-                return offlineService.pollOfflineMsg(i);
+                return offlineService.pollOfflineMsg(id);
             } catch (JsonProcessingException e) {
                 throw new ImException(e);
             }

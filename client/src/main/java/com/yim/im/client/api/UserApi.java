@@ -85,8 +85,8 @@ public class UserApi {
         return clientRestService.logout(token);
     }
 
-    public List<Friend> friends(String userId, String token) {
-        return getFriend(clientRestService.friends(userId, token), userId);
+    public List<Friend> friends(String token) {
+        return getFriend(clientRestService.friends(userContext.getUserId(), token), userContext.getUserId());
     }
 
     private static List<Friend> getFriend(List<Relation> relations, String userId) {

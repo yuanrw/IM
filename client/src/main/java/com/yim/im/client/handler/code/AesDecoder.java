@@ -43,7 +43,7 @@ public class AesDecoder extends MessageToMessageDecoder<Message> {
             Chat.ChatMsg decodeMsg = Chat.ChatMsg.newBuilder().mergeFrom(cm)
                 .setMsgBody(ByteString.copyFrom(decodeBody)).build();
 
-            logger.debug("[decode] decode message");
+            logger.debug("[decode] decode message: {}", decodeMsg.toString());
 
             out.add(decodeMsg);
         } else {

@@ -4,7 +4,7 @@ import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.domain.po.Offline;
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Query;
+import retrofit2.http.Path;
 
 import java.util.List;
 
@@ -16,6 +16,6 @@ import java.util.List;
  */
 public interface ConnectorRestClient {
 
-    @GET("/offline/poll")
-    Call<ResultWrapper<List<Offline>>> pollOfflineMsg(@Query("userId") String userId);
+    @GET("/offline/poll/{id}")
+    Call<ResultWrapper<List<Offline>>> pollOfflineMsg(@Path("id") String userId);
 }

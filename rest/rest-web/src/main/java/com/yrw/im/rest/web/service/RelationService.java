@@ -23,6 +23,9 @@ public interface RelationService extends IService<Relation> {
 
     /**
      * add an relation between user1 and user2
+     * insure that the same relation can only be saved once.
+     * by default, use mysql union unique index.
+     * if the db don't support a union unique index, then you need to check the exist relation
      *
      * @param userId1 id of user1l
      * @param userId2 id of user2
