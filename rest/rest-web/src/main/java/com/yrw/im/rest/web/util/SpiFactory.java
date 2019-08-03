@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * Date: 2019-07-03
@@ -30,7 +31,7 @@ public class SpiFactory implements ApplicationContextAware {
     }
 
     public UserSpi<? extends UserBase> getUserSpi() {
-        if (userSpiImplClassName == null) {
+        if (StringUtils.isEmpty(userSpiImplClassName)) {
             return applicationContext.getBean(DefaultUserSpiImpl.class);
         }
         try {

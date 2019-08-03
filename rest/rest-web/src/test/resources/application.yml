@@ -1,0 +1,38 @@
+server.port: 8080
+
+logging:
+  level.root: info
+log:
+  path: /Users/yrw/Desktop/logs/IM_logs
+
+spi:
+  user:
+    impl:
+      class:
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:im;INIT=runscript from 'src/test/resources/rest-test.sql';
+    driver-class-name: org.h2.Driver
+  application:
+    name: IM
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+
+  ldap:
+    base: dc=example,dc=org
+    username: cn=admin,dc=example,dc=org
+    password: admin
+    searchFilter:
+    urls: ldap://127.0.0.1:389
+
+ldap:
+  searchBase:
+  mapping:
+    objectClass: inetOrgPerson
+    loginId: uid
+    userDisplayName: gecos
+    email: mail

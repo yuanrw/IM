@@ -47,12 +47,8 @@ public class LdapUserSpiImpl implements UserSpi<LdapUser> {
         AndFilter filter = new AndFilter()
             .and(new EqualsFilter(emailAttrName, username));
         boolean authenticate = ldapTemplate.authenticate(searchBase, filter.encode(), pwd);
-        if (authenticate) {
-            return ldapTemplate.searchForObject(ldapQueryCriteria()
-                .and(emailAttrName).is(username), ldapUserInfoMapper);
-        } else {
-            return null;
-        }
+        return authenticate ? ldapTemplate.searchForObject(ldapQueryCriteria()
+            .and(emailAttrName).is(username), ldapUserInfoMapper) : null;
     }
 
     @Override

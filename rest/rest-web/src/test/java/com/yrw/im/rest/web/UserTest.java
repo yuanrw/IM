@@ -6,7 +6,6 @@ import com.yrw.im.rest.web.vo.UserReq;
 import io.netty.util.CharsetUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -44,19 +43,13 @@ public class UserTest {
     @MockBean
     private TokenManager tokenManager;
 
-    @BeforeClass
-    public static void setup() {
-        String propertiesPath = System.getProperty("user.dir") + "/target/test-classes/rest-test.properties";
-        System.setProperty("config", propertiesPath);
-    }
-
     @Before
     public void mock() {
         String token = UUID.randomUUID().toString();
 
         Mockito.when(tokenManager.createNewToken(anyString())).thenReturn(Mono.just(token));
         Mockito.when(tokenManager.expire(anyString())).thenReturn(Mono.just(true));
-        Mockito.when(tokenManager.validateToken(token)).thenReturn(Mono.just(123L));
+        Mockito.when(tokenManager.validateToken(token)).thenReturn(Mono.just("123"));
     }
 
     @Test

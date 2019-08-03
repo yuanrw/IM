@@ -17,7 +17,7 @@ public class ConnectorRestService extends AbstractRestService<ConnectorRestClien
         super(ConnectorRestClient.class);
     }
 
-    public List<Offline> offlines(String userId) {
-        return doRequest(() -> restClient.pollOfflineMsg(userId).execute());
+    public List<Offline> offlines(String token) {
+        return doRequest(() -> restClient.pollOfflineMsg(token).execute());
     }
 }

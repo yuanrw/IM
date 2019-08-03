@@ -78,7 +78,7 @@
 
     <build>
         <filters>
-            <filter>src/main/resources/rest-${env}.properties</filter>
+            <filter>src/main/resources/rest.properties</filter>
         </filters>
         <plugins>
             <plugin>

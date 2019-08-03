@@ -6,7 +6,6 @@ import com.yrw.im.rest.web.vo.UserReq;
 import io.netty.util.CharsetUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +35,6 @@ public class RelationTest {
     private WebTestClient webClient;
 
     private static String token;
-
-    @BeforeClass
-    public static void setup() {
-        String propertiesPath = System.getProperty("user.dir") + "/target/test-classes/rest-test.properties";
-        System.setProperty("config", propertiesPath);
-    }
 
     @Before
     public void setupMethod() {

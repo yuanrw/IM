@@ -23,10 +23,10 @@ public class TokenManager {
         this.template = template;
     }
 
-    public Mono<Long> validateToken(String token) {
+    public Mono<String> validateToken(String token) {
         return template.opsForValue().get(SESSION_KEY + token).map(id -> {
             template.expire(SESSION_KEY + token, Duration.ofMinutes(30));
-            return Long.parseLong(id);
+            return id;
         }).switchIfEmpty(Mono.empty());
     }
 

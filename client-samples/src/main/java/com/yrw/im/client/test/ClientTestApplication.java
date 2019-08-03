@@ -30,7 +30,7 @@ public class ClientTestApplication {
             clientTestList.add(new ClientTest("localhost", 9081, username, "123abc"));
         }
 
-        //print test result per second
+        //print test result every 5 seconds
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         printTestResult(executor, () -> System.out.println(String.format("sentMsg: %d, readMsg: %d, hasSentAck: %d, " +
                 "hasDeliveredAck: %d, hasReadAck: %d, hasException: %d",
@@ -39,7 +39,7 @@ public class ClientTestApplication {
 
         //start test
         clientTestList.forEach(clientTest -> executorService.submit(() -> {
-                for (int i = 0; i < 1000; i++) {
+                for (int i = 0; i < 10; i++) {
                     clientTest.randomSendTest();
                 }
             })
@@ -47,6 +47,6 @@ public class ClientTestApplication {
     }
 
     private static void printTestResult(ScheduledExecutorService executorService, Runnable doPrint) {
-        executorService.scheduleAtFixedRate(doPrint, 0, 1, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(doPrint, 0, 5, TimeUnit.SECONDS);
     }
 }

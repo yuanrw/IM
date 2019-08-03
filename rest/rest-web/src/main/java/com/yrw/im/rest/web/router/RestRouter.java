@@ -45,6 +45,7 @@ public class RestRouter {
 
     @Bean
     public RouterFunction<ServerResponse> offlineRoutes(OfflineHandler offlineHandler) {
+        //only for connector
         return RouterFunctions
             .route(GET("/offline/poll/{id}").and(accept(APPLICATION_JSON)),
                 offlineHandler::pollOfflineMsg);
