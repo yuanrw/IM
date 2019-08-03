@@ -18,10 +18,6 @@ import java.util.List;
 public interface ClientRestClient {
 
     @Headers("Content-Type: application/json")
-    @POST("/user/register")
-    Call<ResultWrapper<Long>> register(@Body UserReq user);
-
-    @Headers("Content-Type: application/json")
     @POST("/user/login")
     Call<ResultWrapper<UserInfo>> login(@Body UserReq user);
 

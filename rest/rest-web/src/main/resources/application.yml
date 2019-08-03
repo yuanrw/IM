@@ -24,23 +24,17 @@ spring:
     port: ${redis.port}
     password: ${redis.password}
 
-#  ldap:
-#    base: ${ldap.base}
-#    username: ${ldap.username}
-#    password: ${ldap.password}
-#    searchFilter: ${ldap.searchFilter}
-#    urls: ${ldap.urls}
-#
-#ldap:
-#  mapping:
-#    objectClass: ${ldap.mapping.objectClass}
-#    loginId: ${ldap.mapping.loginId}
-#    userDisplayName: ${ldap.mapping.userDisplayName}
-#    email: ${ldap.mapping.email}
-#  filter:
-#    memberOf: "cn=ServiceDEV,ou=DEV,dc=example,dc=org|cn=WebDEV,ou=DEV,dc=example,dc=org"
-#  group:
-#    objectClass: "groupOfNames" # 配置groupClassName
-#    groupBase: "ou=group" # group search base
-#    groupSearch: "(&(cn=dev))" # group filter
-#    groupMembership: "member" # group memberShip eg
+  ldap:
+    base: ${ldap.base}
+    username: ${ldap.username}
+    password: ${ldap.password}
+    searchFilter: ${ldap.searchFilter}
+    urls: ${ldap.urls}
+
+ldap:
+  searchBase: ${ldap.searchBase}
+  mapping:
+    objectClass: ${ldap.mapping.objectClass}
+    loginId: ${ldap.mapping.loginId}
+    userDisplayName: ${ldap.mapping.userDisplayName}
+    email: ${ldap.mapping.email}

@@ -6,7 +6,6 @@ import com.yrw.im.common.domain.po.User;
 import com.yrw.im.rest.web.mapper.UserMapper;
 import com.yrw.im.rest.web.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,15 +16,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-
-    @Override
-    public Long saveUser(String username, String pwd) {
-        User user = new User();
-        user.setUsername(username);
-        user.setSalt(RandomStringUtils.randomAscii(16));
-        user.setPwdHash(DigestUtils.sha256Hex(pwd + user.getSalt()));
-        return save(user) ? user.getId() : null;
-    }
 
     @Override
     public User verifyAndGet(String username, String pwd) {

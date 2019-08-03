@@ -13,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
 public class UserReq {
 
     @NotEmpty
-    @Length(min = 6, max = 30)
+//    @Length(min = 6, max = 30)
     private String username;
 
     @NotEmpty

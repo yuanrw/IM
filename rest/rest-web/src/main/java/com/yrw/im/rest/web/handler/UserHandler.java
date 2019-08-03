@@ -1,6 +1,5 @@
 package com.yrw.im.rest.web.handler;
 
-import com.google.common.collect.ImmutableMap;
 import com.yrw.im.common.domain.ResultWrapper;
 import com.yrw.im.common.domain.UserInfo;
 import com.yrw.im.common.exception.ImException;
@@ -8,7 +7,6 @@ import com.yrw.im.rest.spi.UserSpi;
 import com.yrw.im.rest.spi.domain.UserBase;
 import com.yrw.im.rest.web.filter.TokenManager;
 import com.yrw.im.rest.web.service.RelationService;
-import com.yrw.im.rest.web.service.UserService;
 import com.yrw.im.rest.web.util.SpiFactory;
 import com.yrw.im.rest.web.vo.UserReq;
 import org.springframework.stereotype.Component;
@@ -31,28 +29,13 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 public class UserHandler {
 
     private UserSpi<? extends UserBase> userSpi;
-    private UserService userService;
     private RelationService relationService;
     private TokenManager tokenManager;
 
-    public UserHandler(SpiFactory spiFactory, UserService userService, RelationService relationService, TokenManager tokenManager) {
+    public UserHandler(SpiFactory spiFactory, RelationService relationService, TokenManager tokenManager) {
         this.userSpi = spiFactory.getUserSpi();
-        this.userService = userService;
         this.relationService = relationService;
         this.tokenManager = tokenManager;
-    }
-
-    public Mono<ServerResponse> saveUser(ServerRequest request) {
-        return ValidHandler.requireValidBody(req ->
-
-                req.map(user -> userService.saveUser(user.getUsername(), user.getPwd()))
-                    .onErrorMap(e -> new ImException("[rest] username exist"))
-                    .switchIfEmpty(Mono.error(new ImException("[rest] save user info failed")))
-                    .map(id -> ImmutableMap.of("id", String.valueOf(id)))
-                    .map(ResultWrapper::success)
-                    .flatMap(id -> ok().contentType(APPLICATION_JSON).body(fromObject(id)))
-
-            , request, UserReq.class);
     }
 
     public Mono<ServerResponse> login(ServerRequest request) {

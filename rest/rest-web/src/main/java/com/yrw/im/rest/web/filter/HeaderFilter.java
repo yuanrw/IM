@@ -26,7 +26,7 @@ public class HeaderFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange serverWebExchange, WebFilterChain webFilterChain) {
         String path = serverWebExchange.getRequest().getPath().value();
 
-        if ("/user/register".equals(path) || "/user/login".equals(path) || path.startsWith("/offline")) {
+        if ("/user/login".equals(path) || path.startsWith("/offline")) {
             return webFilterChain.filter(serverWebExchange);
         }
         if (!serverWebExchange.getRequest().getHeaders().containsKey("token")) {

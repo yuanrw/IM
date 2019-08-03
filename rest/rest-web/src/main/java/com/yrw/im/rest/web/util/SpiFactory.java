@@ -4,11 +4,10 @@ import com.yrw.im.common.exception.ImException;
 import com.yrw.im.rest.spi.UserSpi;
 import com.yrw.im.rest.spi.domain.UserBase;
 import com.yrw.im.rest.web.spi.impl.DefaultUserSpiImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
-import java.util.Properties;
 
 /**
  * Date: 2019-07-03
@@ -21,11 +20,9 @@ public class SpiFactory implements ApplicationContextAware {
 
     private UserSpi<? extends UserBase> userSpi;
     private ApplicationContext applicationContext;
-    private Properties properties;
 
-    public SpiFactory(Properties properties) {
-        this.properties = properties;
-    }
+    @Value("${spi.user.impl.class}")
+    private String userSpiImplClassName;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -33,18 +30,17 @@ public class SpiFactory implements ApplicationContextAware {
     }
 
     public UserSpi<? extends UserBase> getUserSpi() {
-        String className = properties.getProperty("spi.user.impl.class");
-        if (className == null) {
+        if (userSpiImplClassName == null) {
             return applicationContext.getBean(DefaultUserSpiImpl.class);
         }
         try {
             if (userSpi == null) {
-                Class<?> userSpiImplClass = Class.forName(className);
+                Class<?> userSpiImplClass = Class.forName(userSpiImplClassName);
                 userSpi = (UserSpi<? extends UserBase>) applicationContext.getBean(userSpiImplClass);
             }
             return userSpi;
         } catch (ClassNotFoundException e) {
-            throw new ImException("can not find class: " + className);
+            throw new ImException("can not find class: " + userSpiImplClassName);
         }
     }
 }

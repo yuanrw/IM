@@ -60,39 +60,6 @@ public class UserTest {
     }
 
     @Test
-    public void testRegister() {
-        UserReq req = new UserReq();
-        req.setUsername("newUser");
-        req.setPwd(DigestUtils.sha256Hex("123abc".getBytes(CharsetUtil.UTF_8)));
-
-        webClient.post().uri("/user/register")
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(req))
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody()
-            .jsonPath("$.status").isEqualTo(200)
-            .jsonPath("$.msg").isEqualTo("SUCCESS")
-            .jsonPath("$.data.id").exists();
-    }
-
-    @Test
-    public void testRegisterUsernameExist() {
-        UserReq req = new UserReq();
-        req.setUsername("yuanrw");
-        req.setPwd(DigestUtils.sha256Hex("123abc".getBytes(CharsetUtil.UTF_8)));
-
-        webClient.post().uri("/user/register")
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromObject(req))
-            .exchange()
-            .expectStatus().isOk()
-            .expectBody()
-            .jsonPath("$.status").isEqualTo(500)
-            .jsonPath("$.msg").isEqualTo("[rest] username exist");
-    }
-
-    @Test
     public void testLogin() {
         UserReq req = new UserReq();
         req.setUsername("yuanrw");

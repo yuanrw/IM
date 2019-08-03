@@ -19,13 +19,4 @@ public interface UserService extends IService<User> {
      * @return
      */
     User verifyAndGet(String username, String pwd);
-
-    /**
-     * 保存用户
-     *
-     * @param username 用户名
-     * @param pwd      密码
-     * @return
-     */
-    Long saveUser(String username, String pwd);
 }

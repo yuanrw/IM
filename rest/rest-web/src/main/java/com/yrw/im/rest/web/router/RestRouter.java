@@ -24,9 +24,7 @@ public class RestRouter {
     @Bean
     public RouterFunction<ServerResponse> userRoutes(UserHandler userHandler) {
         return RouterFunctions
-            .route(POST("/user/register").and(contentType(APPLICATION_JSON)),
-                userHandler::saveUser)
-            .andRoute(POST("/user/login").and(contentType(APPLICATION_JSON)).and(accept(APPLICATION_JSON)),
+            .route(POST("/user/login").and(contentType(APPLICATION_JSON)).and(accept(APPLICATION_JSON)),
                 userHandler::login)
             .andRoute(GET("/user/logout").and(accept(APPLICATION_JSON)),
                 userHandler::logout);
