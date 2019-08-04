@@ -1,4 +1,4 @@
-package com.yrw.im.client.test;
+package com.yrw.im.client.sample;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +13,12 @@ import java.util.concurrent.TimeUnit;
  *
  * @author yrw
  */
-public class ClientTestApplication {
+public class MyClientApplication {
 
     public static void main(String[] args) {
 
         ExecutorService executorService = Executors.newFixedThreadPool(20);
-        List<ClientTest> clientTestList = new ArrayList<>();
+        List<MyClient> myClientList = new ArrayList<>();
         String[] usernameForTest = {
             "1YzhYNFc", "2Q6GHsza", "A44UXM3B", "CLr0niCL", "GfIbDo62", "Gqbk6cD7",
             "HUYnzlMK", "MeLg2cqn", "mfjIHgak", "NSBbHtC6", "PJ8KKC3b", "SIm3mNA3",
@@ -27,20 +27,20 @@ public class ClientTestApplication {
 
         //login all user
         for (String username : usernameForTest) {
-            clientTestList.add(new ClientTest("localhost", 9081, username, "123abc"));
+            myClientList.add(new MyClient("localhost", 9081, username, "123abc"));
         }
 
         //print test result every 5 seconds
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         printTestResult(executor, () -> System.out.println(String.format("sentMsg: %d, readMsg: %d, hasSentAck: %d, " +
                 "hasDeliveredAck: %d, hasReadAck: %d, hasException: %d",
-            ClientTest.sendMsg.get(), ClientTest.readMsg.get(), ClientTest.hasSentAck.get(),
-            ClientTest.hasDeliveredAck.get(), ClientTest.hasReadAck.get(), ClientTest.hasException.get())));
+            MyClient.sendMsg.get(), MyClient.readMsg.get(), MyClient.hasSentAck.get(),
+            MyClient.hasDeliveredAck.get(), MyClient.hasReadAck.get(), MyClient.hasException.get())));
 
-        //start test
-        clientTestList.forEach(clientTest -> executorService.submit(() -> {
-                for (int i = 0; i < 10; i++) {
-                    clientTest.randomSendTest();
+        //start simulate send
+        myClientList.forEach(myClient -> executorService.submit(() -> {
+                for (int i = 0; i < 100; i++) {
+                    myClient.randomSendTest();
                 }
             })
         );

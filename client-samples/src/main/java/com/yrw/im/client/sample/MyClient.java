@@ -1,4 +1,4 @@
-package com.yrw.im.client.test;
+package com.yrw.im.client.sample;
 
 import com.google.protobuf.ByteString;
 import com.yim.im.client.ImClient;
@@ -29,8 +29,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author yrw
  */
-class ClientTest {
-    private static Logger logger = LoggerFactory.getLogger(ClientTest.class);
+class MyClient {
+    private static Logger logger = LoggerFactory.getLogger(MyClient.class);
 
     private static ConcurrentMap<Long, CompletableFuture<Long>> hasSentFutureMap = new ConcurrentHashMap<>();
     private static ConcurrentMap<Long, CompletableFuture<Long>> hasDeliveredFutureMap = new ConcurrentHashMap<>();
@@ -51,7 +51,7 @@ class ClientTest {
     static AtomicInteger hasReadAck = new AtomicInteger(0);
     static AtomicInteger hasException = new AtomicInteger(0);
 
-    ClientTest(String host, Integer port, String username, String password) {
+    MyClient(String host, Integer port, String username, String password) {
         this.host = host;
         this.port = port;
         chatApi = ImClient.getApi(ChatApi.class);

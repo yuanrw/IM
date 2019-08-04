@@ -20,6 +20,14 @@
             <lineEnding>unix</lineEnding>
         </fileSet>
         <fileSet>
+            <directory>src/main/bin</directory>
+            <outputDirectory>/</outputDirectory>
+            <excludes>
+                <exclude>Dockerfile</exclude>
+            </excludes>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
+        <fileSet>
             <directory>target</directory>
             <outputDirectory>/</outputDirectory>
             <includes>

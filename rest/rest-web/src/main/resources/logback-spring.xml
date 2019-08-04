@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <springProperty name="log.path" source="log.path"/>
     <contextName>rest</contextName>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
