@@ -11,6 +11,10 @@
 
     <artifactId>client-samples</artifactId>
 
+    <properties>
+        <main.class>com.yrw.im.client.sample.MyClientApplication</main.class>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.yrw.im</groupId>
@@ -22,5 +26,16 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

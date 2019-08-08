@@ -32,24 +32,41 @@ import java.util.concurrent.TimeoutException;
  */
 public class ImClient {
     private static Logger logger = LoggerFactory.getLogger(ImClient.class);
-    public static Injector injector = Guice.createInjector(new ClientModule());
+
+    public Injector injector;
 
     private String connectorHost;
     private Integer connectorPort;
     private ClientMsgListener clientMsgListener;
 
-    public ImClient() {
+    public ImClient(String connectorHost, Integer connectorPort, String restUrl) {
+        this(connectorHost, connectorPort, restUrl, null);
+    }
+
+    public ImClient(String connectorHost, Integer connectorPort, String restUrl, ClientMsgListener clientMsgListener) {
+        assert connectorHost != null;
+        assert connectorPort != null;
+        assert restUrl != null;
+
+        this.connectorHost = connectorHost;
+        this.connectorPort = connectorPort;
+        this.clientMsgListener = clientMsgListener;
+
+        ClientRestServiceProvider.REST_URL = restUrl;
+        this.injector = Guice.createInjector(new ClientModule());
     }
 
     public void start() {
-        assert connectorHost != null;
-        assert connectorPort != null;
         assert clientMsgListener != null;
 
         UserContext userContext = injector.getInstance(UserContext.class);
         ClientConnectorHandler handler = new ClientConnectorHandler(clientMsgListener);
         userContext.setClientConnectorHandler(handler);
 
+        startImClient(handler);
+    }
+
+    private void startImClient(ClientConnectorHandler handler) {
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
         ChannelFuture f = b.group(group)
@@ -84,22 +101,23 @@ public class ImClient {
         }
     }
 
-    public ImClient setConnectorHost(String connectorHost) {
-        this.connectorHost = connectorHost;
-        return this;
+    public String getConnectorHost() {
+        return connectorHost;
     }
 
-    public ImClient setConnectorPort(Integer connectorPort) {
-        this.connectorPort = connectorPort;
-        return this;
+    public Integer getConnectorPort() {
+        return connectorPort;
     }
 
-    public ImClient setClientMsgListener(ClientMsgListener clientMsgListener) {
+    public ClientMsgListener getClientMsgListener() {
+        return clientMsgListener;
+    }
+
+    public void setClientMsgListener(ClientMsgListener clientMsgListener) {
         this.clientMsgListener = clientMsgListener;
-        return this;
     }
 
-    public static <T> T getApi(Class<T> clazz) {
+    public <T> T getApi(Class<T> clazz) {
         assert clazz == UserApi.class || clazz == ChatApi.class;
         return injector.getInstance(clazz);
     }

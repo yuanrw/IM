@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.yrw.im.common.code.MsgDecoder;
 import com.yrw.im.common.code.MsgEncoder;
 import com.yrw.im.common.exception.ImException;
+import com.yrw.im.connector.config.ConnectorModule;
 import com.yrw.im.connector.handler.ConnectorTransferHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -27,7 +28,7 @@ public class ConnectorClient {
 
     private static Logger logger = LoggerFactory.getLogger(ConnectorClient.class);
 
-    public static Injector injector = Guice.createInjector();
+    public static Injector injector = Guice.createInjector(new ConnectorModule());
 
     static void start(String host, int port) {
         EventLoopGroup group = new NioEventLoopGroup();

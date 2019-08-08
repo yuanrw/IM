@@ -1,4 +1,4 @@
-package com.yrw.im.connector.domain;
+package com.yrw.im.connector.config;
 
 /**
  * Date: 2019-06-14
@@ -11,6 +11,7 @@ public class ConnectorConfig {
     private Integer port;
     private String transferHost;
     private Integer transferPort;
+    private String restUrl;
     private String logPath;
     private String logLevel;
 
@@ -36,6 +37,14 @@ public class ConnectorConfig {
 
     public void setTransferHost(String transferHost) {
         this.transferHost = transferHost;
+    }
+
+    public String getRestUrl() {
+        return restUrl;
+    }
+
+    public void setRestUrl(String restUrl) {
+        this.restUrl = restUrl;
     }
 
     public Integer getTransferPort() {

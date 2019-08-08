@@ -1,5 +1,7 @@
 package com.yim.im.client.service;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import com.yim.im.client.domain.UserReq;
 import com.yrw.im.common.domain.UserInfo;
 import com.yrw.im.common.domain.po.Relation;
@@ -16,8 +18,9 @@ import java.util.List;
  */
 public class ClientRestService extends AbstractRestService<ClientRestClient> {
 
-    public ClientRestService() {
-        super(ClientRestClient.class);
+    @Inject
+    public ClientRestService(@Assisted String url) {
+        super(ClientRestClient.class, url);
     }
 
     public UserInfo login(String username, String password) {

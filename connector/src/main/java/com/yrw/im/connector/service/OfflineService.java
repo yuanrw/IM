@@ -5,7 +5,9 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.yrw.im.common.domain.po.Offline;
 import com.yrw.im.common.parse.ParseService;
+import com.yrw.im.connector.config.ConnectorRestServiceFactory;
 import com.yrw.im.connector.service.rest.ConnectorRestService;
+import com.yrw.im.connector.start.ConnectorStarter;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,8 +25,8 @@ public class OfflineService {
     private ParseService parseService;
 
     @Inject
-    public OfflineService(ConnectorRestService connectorRestService, ParseService parseService) {
-        this.connectorRestService = connectorRestService;
+    public OfflineService(ConnectorRestServiceFactory connectorRestServiceFactory, ParseService parseService) {
+        this.connectorRestService = connectorRestServiceFactory.createService(ConnectorStarter.CONNECTOR_CONFIG.getRestUrl());
         this.parseService = parseService;
     }
 

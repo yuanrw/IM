@@ -37,8 +37,9 @@ class MyClient {
     private static ConcurrentMap<Long, CompletableFuture<Long>> hasReadFutureMap = new ConcurrentHashMap<>();
 
     private ChatApi chatApi;
-    private String host;
-    private Integer port;
+    private String connectorHost;
+    private Integer connectorPort;
+    private String restUrl;
 
     private UserInfo userInfo;
 
@@ -51,61 +52,74 @@ class MyClient {
     static AtomicInteger hasReadAck = new AtomicInteger(0);
     static AtomicInteger hasException = new AtomicInteger(0);
 
-    MyClient(String host, Integer port, String username, String password) {
-        this.host = host;
-        this.port = port;
-        chatApi = ImClient.getApi(ChatApi.class);
-        UserApi userApi = ImClient.getApi(UserApi.class);
+    MyClient(String connectorHost, Integer connectorPort, String restUrl, String username, String password) {
+        this.connectorHost = connectorHost;
+        this.connectorPort = connectorPort;
+        this.restUrl = restUrl;
 
-        start();
+        ImClient imClient = start();
+        chatApi = imClient.getApi(ChatApi.class);
+        UserApi userApi = imClient.getApi(UserApi.class);
+
         //登录换取token
         userInfo = userApi.login(username, DigestUtils.sha256Hex(password.getBytes(CharsetUtil.UTF_8)));
         //获取好友列表
         friends = userApi.friends(userInfo.getToken());
     }
 
-    private void start() {
-        new ImClient()
-            .setConnectorHost(host)
-            .setConnectorPort(port)
-            .setClientMsgListener(new ClientMsgListener() {
-                @Override
-                public void online() {
-                    logger.info("[client] I am online!");
-                }
+    private ImClient start() {
+        ImClient imClient = new ImClient(connectorHost, connectorPort, restUrl);
+        imClient.setClientMsgListener(new ClientMsgListener() {
+            @Override
+            public void online() {
+                logger.info("[client] I am online!");
+            }
 
-                @Override
-                public void read(Chat.ChatMsg chatMsg) {
-                    //when it's confirmed that user has seen this msg
-                    readMsg.getAndIncrement();
-                    chatApi.confirmRead(chatMsg);
-                }
+            @Override
+            public void read(Chat.ChatMsg chatMsg) {
+                //when it's confirmed that user has seen this msg
+                readMsg.getAndIncrement();
+                chatApi.confirmRead(chatMsg);
+            }
 
-                @Override
-                public void hasSent(Long id) {
-                    hasSentFutureMap.get(id).complete(id);
+            @Override
+            public void hasSent(Long id) {
+                CompletableFuture<Long> future = hasSentFutureMap.get(id);
+                if (future != null) {
+                    future.complete(id);
                 }
+            }
 
-                @Override
-                public void hasDelivered(Long id) {
-                    hasDeliveredFutureMap.get(id).complete(id);
+            @Override
+            public void hasDelivered(Long id) {
+                CompletableFuture<Long> future = hasDeliveredFutureMap.get(id);
+                if (future != null) {
+                    future.complete(id);
                 }
+            }
 
-                @Override
-                public void hasRead(Long id) {
-                    hasReadFutureMap.get(id).complete(id);
+            @Override
+            public void hasRead(Long id) {
+                CompletableFuture<Long> future = hasReadFutureMap.get(id);
+                if (future != null) {
+                    future.complete(id);
                 }
+            }
 
-                @Override
-                public void offline() {
-                    logger.info("[client]{} I am offline!", userInfo.getId());
-                }
+            @Override
+            public void offline() {
+                logger.info("[client]{} I am offline!", userInfo.getId());
+            }
 
-                @Override
-                public void hasException(ChannelHandlerContext ctx, Throwable cause) {
-                    logger.error("[client] has error ", cause);
-                }
-            }).start();
+            @Override
+            public void hasException(ChannelHandlerContext ctx, Throwable cause) {
+                logger.error("[client] has error ", cause);
+            }
+        });
+
+        imClient.start();
+
+        return imClient;
     }
 
     void randomSendTest() {

@@ -1,0 +1,56 @@
+version: '1'
+
+services:
+  rest:
+    image: yuanrw/client-samples
+    container_name: client-samples
+    depends_on:
+      - im-db
+      - im-rabbit
+      - im-redis
+    ports:
+      - "8082:8082"
+    links:
+      - im-db
+
+  im-redis:
+    image: redis:alpine
+    container_name: im-redis
+    ports:
+      - "6379:6379"
+
+  im-rabbit:
+    image: "rabbitmq:3-management"
+    hostname: "rabbit1"
+    environment:
+      RABBITMQ_DEFAULT_USER: "admin"
+      RABBITMQ_DEFAULT_PASS: "admin"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      NAME: "im-rabbitmq"
+    volumes:
+      - "./enabled_plugins:/etc/rabbitmq/enabled_plugins"
+
+  im-db:
+    image: mysql:5.7
+    container_name: im-db
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    depends_on:
+      - im-dbdata
+    ports:
+      - "13306:3306"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+    volumes_from:
+      - im-dbdata
+
+  im-dbdata:
+    image: alpine:latest
+    container_name: im-dbdata
+    volumes:
+      - /var/lib/mysql

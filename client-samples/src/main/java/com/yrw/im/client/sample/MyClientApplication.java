@@ -27,7 +27,8 @@ public class MyClientApplication {
 
         //login all user
         for (String username : usernameForTest) {
-            myClientList.add(new MyClient("localhost", 9081, username, "123abc"));
+            myClientList.add(new MyClient("localhost", 9081,
+                "http://127.0.0.1:8082", username, "123abc"));
         }
 
         //print test result every 5 seconds
@@ -39,7 +40,7 @@ public class MyClientApplication {
 
         //start simulate send
         myClientList.forEach(myClient -> executorService.submit(() -> {
-                for (int i = 0; i < 100; i++) {
+                for (int i = 0; i < 1000; i++) {
                     myClient.randomSendTest();
                 }
             })

@@ -1,14 +1,12 @@
-# Dockerfile for rest-web
-# docker build -f Dockerfile -t rest-web target
-# docker run -p 8082:8082 -d -v /tmp/IM_Logs:/tmp/IM_Logs --name rest-web rest-web
+# Dockerfile for client-samples
+# docker build -f Dockerfile -t client-samples target
+# docker run --name client-samples client-samples
 
 FROM adoptopenjdk/openjdk11:alpine-jre
 MAINTAINER yuanrw <295415537@qq.com>
 
-ENV SERVICE_NAME rest-web
+ENV SERVICE_NAME client-samples
 ENV VERSION 1.0.0-SNAPSHOT
-
-EXPOSE 8082
 
 RUN echo "http://mirrors.aliyun.com/alpine/v3.8/main" > /etc/apk/repositories \
     && echo "http://mirrors.aliyun.com/alpine/v3.8/community" >> /etc/apk/repositories \

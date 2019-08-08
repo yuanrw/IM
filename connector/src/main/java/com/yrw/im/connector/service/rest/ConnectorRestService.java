@@ -1,5 +1,7 @@
 package com.yrw.im.connector.service.rest;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import com.yrw.im.common.domain.po.Offline;
 import com.yrw.im.common.rest.AbstractRestService;
 
@@ -13,8 +15,9 @@ import java.util.List;
  */
 public class ConnectorRestService extends AbstractRestService<ConnectorRestClient> {
 
-    public ConnectorRestService() {
-        super(ConnectorRestClient.class);
+    @Inject
+    public ConnectorRestService(@Assisted String url) {
+        super(ConnectorRestClient.class, url);
     }
 
     public List<Offline> offlines(String token) {

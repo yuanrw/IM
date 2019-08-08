@@ -1,5 +1,5 @@
 #!/bin/bash
-SERVICE_NAME="transfer"
+SERVICE_NAME="client-samples"
 VERSION="1.0.0-SNAPSHOT"
 
 LOG_DIR=/tmp/IM_logs
@@ -20,5 +20,5 @@ fi
 JAVA_OPTS="-Xms512m -Xmx512m -Xmn256m -XX:PermSize=128m -XX:MaxPermSize=128m"
 
 echo "JAVA_HOME: $JAVA_HOME"
-$java $JAVA_OPTS -Dconfig=transfer.properties -jar $SERVICE_NAME-$VERSION.jar
+$java $JAVA_OPTS -jar $SERVICE_NAME-$VERSION.jar
 echo "SERVICE_NAME started...."

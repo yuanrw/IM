@@ -1,7 +1,7 @@
 package com.yrw.im.connector.start;
 
 import com.yrw.im.common.exception.ImException;
-import com.yrw.im.connector.domain.ConnectorConfig;
+import com.yrw.im.connector.config.ConnectorConfig;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.Properties;
  * @author yrw
  */
 public class ConnectorStarter {
-    private static ConnectorConfig CONNECTOR_CONFIG = new ConnectorConfig();
+    public static ConnectorConfig CONNECTOR_CONFIG = new ConnectorConfig();
 
     public static void main(String[] args) throws IOException {
         //parse start parameter
@@ -35,6 +35,7 @@ public class ConnectorStarter {
         connectorConfig.setPort(Integer.parseInt((String) properties.get("port")));
         connectorConfig.setTransferHost((String) properties.get("transfer.host"));
         connectorConfig.setTransferPort(Integer.parseInt((String) properties.get("transfer.port")));
+        connectorConfig.setRestUrl((String) properties.get("rest.url"));
         connectorConfig.setLogPath((String) properties.get("log.path"));
         connectorConfig.setLogLevel((String) properties.get("log.level"));
 

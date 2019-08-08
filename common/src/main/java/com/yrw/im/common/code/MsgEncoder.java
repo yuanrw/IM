@@ -33,7 +33,7 @@ public class MsgEncoder extends MessageToByteEncoder<Message> {
 
             logger.debug("send message, remoteAddress: {}, content length {}, msgTypeCode: {}", ctx.channel().remoteAddress(), length, code);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[client] msg encode has error", e);
         }
     }
 }

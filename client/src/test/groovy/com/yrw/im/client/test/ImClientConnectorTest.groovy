@@ -36,7 +36,8 @@ class ImClientConnectorTest extends Specification {
         channel.pipeline()
                 .addLast("MsgEncoder", new MsgEncoder())
                 .addLast("AesEncoder", new AesEncoder(new UserContext()))
-                .addLast("MsgDecoder", ImClient.injector.getInstance(MsgDecoder.class))
+                .addLast("MsgDecoder", new ImClient("localhost", 9082, "http://127.0.0.1:8080")
+                .injector.getInstance(MsgDecoder.class))
                 .addLast("AesDecoder", new AesDecoder())
                 .addLast("ClientConnectorHandler", new ClientConnectorHandler(clientMsgListener))
 
@@ -124,7 +125,8 @@ class ImClientConnectorTest extends Specification {
         channel.pipeline()
                 .addLast("MsgEncoder", new MsgEncoder())
                 .addLast("AesEncoder", new AesEncoder(userContext))
-                .addLast("MsgDecoder", ImClient.injector.getInstance(MsgDecoder.class))
+                .addLast("MsgDecoder", new ImClient("localhost", 9082, "http://127.0.0.1:8080")
+                .injector.getInstance(MsgDecoder.class))
                 .addLast("AesDecoder", new AesDecoder(userContext))
                 .addLast("ClientConnectorHandler", new ClientConnectorHandler(clientMsgListener))
 

@@ -21,7 +21,7 @@ public abstract class AbstractRestService<R> {
 
     protected R restClient;
 
-    public AbstractRestService(Class<R> clazz) {
+    public AbstractRestService(Class<R> clazz, String url) {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -30,8 +30,7 @@ public abstract class AbstractRestService<R> {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://127.0.0.1:8080")
-            //            .client(new OkHttpClient.Builder().addInterceptor(logging).build())
+            .baseUrl(url)
             .addConverterFactory(JacksonConverterFactory.create(objectMapper))
             .build();
 

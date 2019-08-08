@@ -7,6 +7,7 @@ import com.yrw.im.common.domain.ResponseCollector
 import com.yrw.im.common.domain.conn.Conn
 import com.yrw.im.common.parse.ParseService
 import com.yrw.im.common.util.IdWorker
+import com.yrw.im.connector.config.ConnectorRestServiceFactory
 import com.yrw.im.connector.domain.ClientConnContext
 import com.yrw.im.connector.handler.ConnectorTransferHandler
 import com.yrw.im.connector.service.ConnectorService
@@ -55,7 +56,12 @@ class ConnectorTransferTest extends Specification {
     @Shared
     def connectorRestService = Mock(ConnectorRestService)
     @Shared
-    def userStatusService = new UserStatusService(new OfflineService(connectorRestService, new ParseService()), clientConnContext)
+    def connectorRestServiceFactory = Mock(ConnectorRestServiceFactory) {
+        createService() >> connectorRestService
+    }
+    @Shared
+    def userStatusService = new UserStatusService(
+            new OfflineService(connectorRestServiceFactory, new ParseService()), clientConnContext)
 
     def setupSpec() {
         channel.pipeline()

@@ -7,6 +7,7 @@ import com.yrw.im.common.domain.ResponseCollector
 import com.yrw.im.common.domain.conn.Conn
 import com.yrw.im.common.parse.ParseService
 import com.yrw.im.common.util.IdWorker
+import com.yrw.im.connector.config.ConnectorRestServiceFactory
 import com.yrw.im.connector.domain.ClientConnContext
 import com.yrw.im.connector.handler.ConnectorClientHandler
 import com.yrw.im.connector.handler.ConnectorTransferHandler
@@ -56,7 +57,12 @@ class ConnectorClientTest extends Specification {
     @Shared
     def clientConnContext = ConnectorClient.injector.getInstance(ClientConnContext.class)
     @Shared
-    def userStatusService = new UserStatusService(new OfflineService(connectorRestService, new ParseService()), clientConnContext)
+    def connectorRestServiceFactory = Mock(ConnectorRestServiceFactory) {
+        createService() >> connectorRestService
+    }
+    @Shared
+    def userStatusService = new UserStatusService(
+            new OfflineService(connectorRestServiceFactory, new ParseService()), clientConnContext)
 
     def setupSpec() {
         ch.pipeline()

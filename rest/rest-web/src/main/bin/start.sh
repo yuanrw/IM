@@ -1,5 +1,6 @@
 #!/bin/bash
-SERVICE_NAME="rest"
+SERVICE_NAME="rest-web"
+VERSION="1.0.0-SNAPSHOT"
 
 LOG_DIR=/tmp/IM_logs
 mkdir -p $LOG_DIR
@@ -19,5 +20,5 @@ fi
 JAVA_OPTS="-Xms512m -Xmx512m -Xmn256m -XX:PermSize=128m -XX:MaxPermSize=128m"
 
 echo "JAVA_HOME: $JAVA_HOME"
-$java $JAVA_OPTS -jar rest-web-1.0.0-SNAPSHOT.jar --spring.config.location=application.properties
+$java $JAVA_OPTS -jar $SERVICE_NAME-$VERSION.jar --spring.config.location=application.properties
 echo "SERVICE_NAME started...."

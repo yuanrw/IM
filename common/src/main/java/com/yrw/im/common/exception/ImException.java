@@ -19,4 +19,11 @@ public class ImException extends RuntimeException {
     public ImException(String message) {
         super(message);
     }
+
+    @Override
+    public String toString() {
+        String s = getClass().getName();
+        String message = getLocalizedMessage();
+        return (message != null) ? (s + ": " + message) : s;
+    }
 }
