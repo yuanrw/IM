@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <contextName>rest</contextName>
-    <property name="log.path" value="/Users/yrw/Desktop/logs/IM_logs"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

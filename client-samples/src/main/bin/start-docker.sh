@@ -1,6 +1,6 @@
 #!/bin/bash
-SERVICE_NAME="connector"
-VERSION="1.0.0-SNAPSHOT
+SERVICE_NAME="client-samples"
+VERSION="1.0.0-SNAPSHOT"
 
 LOG_DIR=/tmp/IM_logs
 mkdir -p $LOG_DIR
@@ -20,5 +20,5 @@ fi
 JAVA_OPTS="-Xms512m -Xmx512m -Xmn256m -XX:PermSize=128m -XX:MaxPermSize=128m"
 
 echo "JAVA_HOME: $JAVA_HOME"
-$java $JAVA_OPTS -Dconfig=connector.properties -jar $SERVICE_NAME-$VERSION.jar
+$java $JAVA_OPTS -jar $SERVICE_NAME-$VERSION.jar connector http://rest-web:8082
 echo "SERVICE_NAME started...."

@@ -1,3 +1,4 @@
+CREATE DATABASE im;
 DROP TABLE IF EXISTS `im_user`;
 CREATE TABLE `im_user` (
                          `id` bigint(20) NOT NULL,

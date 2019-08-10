@@ -25,8 +25,9 @@ public class TransferStarter {
             TransferStarter.TRANSFER_CONFIG = parseConfig();
 
             //start rabbitmq server
-            TransferMqProducer.startProducer(TRANSFER_CONFIG.getRabbitmqHost(),
-                TRANSFER_CONFIG.getRabbitmqPort(), MqConstant.EXCHANGE, MqConstant.OFFLINE_QUEUE, MqConstant.ROUTING_KEY);
+            TransferMqProducer.startProducer(TRANSFER_CONFIG.getRabbitmqHost(), TRANSFER_CONFIG.getRabbitmqPort(),
+                TRANSFER_CONFIG.getRabbitmqUsername(), TRANSFER_CONFIG.getRabbitmqPassword(),
+                MqConstant.EXCHANGE, MqConstant.OFFLINE_QUEUE, MqConstant.ROUTING_KEY);
 
             //start transfer server
             TransferServer.startTransferServer(TRANSFER_CONFIG.getPort());
@@ -43,6 +44,8 @@ public class TransferStarter {
         transferConfig.setRedisHost((String) properties.get("redis.host"));
         transferConfig.setRedisPort(Integer.parseInt((String) properties.get("redis.port")));
         transferConfig.setRabbitmqHost((String) properties.get("rabbitmq.host"));
+        transferConfig.setRabbitmqUsername((String) properties.get("rabbitmq.username"));
+        transferConfig.setRabbitmqPassword((String) properties.get("rabbitmq.password"));
         transferConfig.setRabbitmqPort(Integer.parseInt((String) properties.get("rabbitmq.port")));
         transferConfig.setLogPath((String) properties.get("log.path"));
         transferConfig.setLogLevel((String) properties.get("log.level"));

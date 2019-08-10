@@ -52,7 +52,6 @@ public class TransferService {
 
     public void doGreet(Internal.InternalMsg msg, ChannelHandlerContext ctx) {
         ctx.channel().attr(Conn.NET_ID).set(msg.getMsgBody());
-        System.out.println("greet: " + msg.getMsgBody());
         InternalConn conn = new InternalConn(ctx);
         connContext.addConn(conn);
     }

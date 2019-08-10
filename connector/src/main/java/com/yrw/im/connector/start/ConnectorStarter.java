@@ -21,11 +21,11 @@ public class ConnectorStarter {
         //parse start parameter
         ConnectorStarter.CONNECTOR_CONFIG = parseConfig();
 
-        //start connector server
-        ConnectorServer.start(CONNECTOR_CONFIG.getPort());
-
         //connector to transfer
         ConnectorClient.start(CONNECTOR_CONFIG.getTransferHost(), CONNECTOR_CONFIG.getTransferPort());
+
+        //start connector server
+        ConnectorServer.start(CONNECTOR_CONFIG.getPort());
     }
 
     private static ConnectorConfig parseConfig() throws IOException {

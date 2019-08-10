@@ -67,9 +67,10 @@ public class MemoryConnContext<C extends Conn> implements ConnContext<C> {
     public void removeConn(ChannelHandlerContext ctx) {
         Serializable netId = ctx.channel().attr(Conn.NET_ID).get();
         if (netId == null) {
-            logger.warn("[MemoryConnContext] channel id is null");
+            logger.warn("[MemoryConnContext] can't find a netId for the ctx");
+        } else {
+            removeConn(netId);
         }
-        removeConn(netId);
     }
 
     @Override

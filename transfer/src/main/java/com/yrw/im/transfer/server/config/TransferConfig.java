@@ -18,6 +18,10 @@ public class TransferConfig {
 
     private Integer rabbitmqPort;
 
+    private String rabbitmqUsername;
+
+    private String rabbitmqPassword;
+
     private String logPath;
 
     private String logLevel;
@@ -68,6 +72,22 @@ public class TransferConfig {
 
     public void setRabbitmqPort(Integer rabbitmqPort) {
         this.rabbitmqPort = rabbitmqPort;
+    }
+
+    public String getRabbitmqUsername() {
+        return rabbitmqUsername;
+    }
+
+    public void setRabbitmqUsername(String rabbitmqUsername) {
+        this.rabbitmqUsername = rabbitmqUsername;
+    }
+
+    public String getRabbitmqPassword() {
+        return rabbitmqPassword;
+    }
+
+    public void setRabbitmqPassword(String rabbitmqPassword) {
+        this.rabbitmqPassword = rabbitmqPassword;
     }
 
     public String getLogPath() {

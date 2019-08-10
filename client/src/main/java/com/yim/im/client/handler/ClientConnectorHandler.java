@@ -3,6 +3,7 @@ package com.yim.im.client.handler;
 import com.google.protobuf.Message;
 import com.yim.im.client.api.ClientMsgListener;
 import com.yrw.im.common.domain.ResponseCollector;
+import com.yrw.im.common.exception.ImException;
 import com.yrw.im.common.parse.AbstractMsgParser;
 import com.yrw.im.common.parse.AckParser;
 import com.yrw.im.common.parse.InternalParser;
@@ -74,6 +75,9 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
     }
 
     public static ChannelHandlerContext getCtx() {
+        if (ctx == null) {
+            throw new ImException("client is not connected to connector!");
+        }
         return ctx;
     }
 

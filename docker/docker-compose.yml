@@ -1,17 +1,47 @@
-version: '1'
+version: '3'
 
 services:
-  rest:
-    image: yuanrw/client-samples
+  client-samples:
+    image: yuanrw/client-samples:1.0.0-SNAPSHOT
     container_name: client-samples
     depends_on:
-      - im-db
-      - im-rabbit
+      - rest-web
+      - connector
+      - transfer
+    volumes:
+      - /tmp/IM_logs/client-samples.log:/tmp/IM_logs/client-samples.log
+
+  rest-web:
+    image: yuanrw/rest-web:1.0.0-SNAPSHOT
+    container_name: rest-web
+    depends_on:
+      - im-mysql
       - im-redis
+      - im-rabbit
     ports:
       - "8082:8082"
-    links:
-      - im-db
+    volumes:
+      - /tmp/IM_logs/rest.log:/tmp/IM_logs/rest.log
+
+  connector:
+    image: yuanrw/connector:1.0.0-SNAPSHOT
+    container_name: connector
+    depends_on:
+      - transfer
+    ports:
+      - "9081:9081"
+    volumes:
+      - /tmp/IM_logs/connector.log:/tmp/IM_logs/connector.log
+
+  transfer:
+    image: yuanrw/transfer:1.0.0-SNAPSHOT
+    container_name: transfer
+    depends_on:
+      - rest-web
+    ports:
+      - "9082:9082"
+    volumes:
+      - /tmp/IM_logs/transfer.log:/tmp/IM_logs/transfer.log
 
   im-redis:
     image: redis:alpine
@@ -20,37 +50,28 @@ services:
       - "6379:6379"
 
   im-rabbit:
-    image: "rabbitmq:3-management"
-    hostname: "rabbit1"
-    environment:
-      RABBITMQ_DEFAULT_USER: "admin"
-      RABBITMQ_DEFAULT_PASS: "admin"
-      RABBITMQ_DEFAULT_VHOST: "/"
+    image: rabbitmq:3-management
+    container_name: im-rabbit
     ports:
       - "15672:15672"
       - "5672:5672"
-    labels:
-      NAME: "im-rabbitmq"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: 6085e2412b6fa88647466c6a81c0cea0
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+      RABBITMQ_DEFAULT_VHOST: /
     volumes:
-      - "./enabled_plugins:/etc/rabbitmq/enabled_plugins"
+      - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@app-rabbitmq:cached
 
-  im-db:
-    image: mysql:5.7
-    container_name: im-db
+  im-mysql:
+    container_name: im-mysql
+    image: mysql/mysql-server:5.7
     environment:
       TZ: Asia/Shanghai
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-    depends_on:
-      - im-dbdata
+      MYSQL_DATABASE: im
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_ROOT_HOST: '%'
     ports:
       - "13306:3306"
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
-    volumes_from:
-      - im-dbdata
-
-  im-dbdata:
-    image: alpine:latest
-    container_name: im-dbdata
-    volumes:
-      - /var/lib/mysql

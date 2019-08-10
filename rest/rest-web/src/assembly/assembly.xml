@@ -15,15 +15,7 @@
             <outputDirectory>/</outputDirectory>
             <excludes>
                 <exclude>logback*.xml</exclude>
-                <exclude>application.yml</exclude>
-            </excludes>
-            <lineEnding>unix</lineEnding>
-        </fileSet>
-        <fileSet>
-            <directory>src/main/bin</directory>
-            <outputDirectory>/</outputDirectory>
-            <excludes>
-                <exclude>Dockerfile</exclude>
+                <exclude>*-docker.*</exclude>
             </excludes>
             <lineEnding>unix</lineEnding>
         </fileSet>

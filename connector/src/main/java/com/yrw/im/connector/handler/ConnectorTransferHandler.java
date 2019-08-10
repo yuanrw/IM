@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.protobuf.Message;
 import com.yrw.im.common.domain.ResponseCollector;
+import com.yrw.im.common.exception.ImException;
 import com.yrw.im.common.parse.AbstractMsgParser;
 import com.yrw.im.common.parse.InternalParser;
 import com.yrw.im.common.util.IdWorker;
@@ -84,6 +85,9 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
     }
 
     public static ChannelHandlerContext getCtx() {
+        if (ctx == null) {
+            throw new ImException("connector is not connected to transfer!");
+        }
         return ctx;
     }
 

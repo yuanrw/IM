@@ -1,6 +1,6 @@
 # Dockerfile for client-samples
-# docker build -f Dockerfile -t client-samples target
-# docker run --name client-samples client-samples
+# docker build -t yuanrw/client-samples:$VERSION .
+# docker run -d --name client-samples client-samples
 
 FROM adoptopenjdk/openjdk11:alpine-jre
 MAINTAINER yuanrw <295415537@qq.com>
@@ -15,12 +15,17 @@ RUN echo "http://mirrors.aliyun.com/alpine/v3.8/main" > /etc/apk/repositories \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone
 
-COPY ${SERVICE_NAME}-${VERSION}-bin.zip /${SERVICE_NAME}/${SERVICE_NAME}-${VERSION}-bin.zip
+COPY target/${SERVICE_NAME}-${VERSION}-bin.zip /${SERVICE_NAME}/${SERVICE_NAME}-${VERSION}-bin.zip
 
 RUN unzip /${SERVICE_NAME}/${SERVICE_NAME}-${VERSION}-bin.zip -d /${SERVICE_NAME} \
     && rm -rf /${SERVICE_NAME}/${SERVICE_NAME}-${VERSION}-bin.zip \
     && cd /${SERVICE_NAME}/${SERVICE_NAME}-${VERSION} \
-    && sed -i '$d' start.sh \
-    && echo "tail -f /dev/null" >> /start.sh
+    && echo "tail -f /dev/null" >> start.sh
 
-CMD ["/bin/sh", "start.sh"]
+WORKDIR /${SERVICE_NAME}/${SERVICE_NAME}-${VERSION}
+
+COPY src/main/bin/start-docker.sh .
+COPY src/main/bin/wait-for-it.sh .
+
+CMD /bin/bash wait-for-it.sh -t 0 connector:9081 --strict -- \
+    /bin/bash start-docker.sh

@@ -20,10 +20,13 @@ public class TransferMqProducer {
 
     private static Channel channel;
 
-    static void startProducer(String host, int port, String exchange, String queue, String routingKey) throws IOException, TimeoutException {
+    static void startProducer(String host, int port, String username, String password,
+                              String exchange, String queue, String routingKey) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(host);
         factory.setPort(port);
+        factory.setUsername(username);
+        factory.setPassword(password);
 
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();

@@ -72,7 +72,7 @@ class MyClient {
         imClient.setClientMsgListener(new ClientMsgListener() {
             @Override
             public void online() {
-                logger.info("[client] I am online!");
+                logger.info("[client] i have connected to server!");
             }
 
             @Override
@@ -108,12 +108,12 @@ class MyClient {
 
             @Override
             public void offline() {
-                logger.info("[client]{} I am offline!", userInfo.getId());
+                logger.info("[{}] I am offline!", userInfo != null ? userInfo.getUsername() : "client");
             }
 
             @Override
             public void hasException(ChannelHandlerContext ctx, Throwable cause) {
-                logger.error("[client] has error ", cause);
+                logger.error("[" + userInfo.getUsername() + "] has error ", cause);
             }
         });
 
@@ -148,10 +148,10 @@ class MyClient {
         hasSentFuture.whenComplete((id, e) -> {
             if (e != null) {
                 hasException.getAndIncrement();
-                logger.error("[client] has error", e);
+                logger.error("[" + userInfo.getUsername() + "] has error", e);
             } else {
                 hasSentAck.getAndIncrement();
-                logger.info("[client]{} msg: {} has been sent", userInfo.getUsername(), id);
+                logger.info("[{}]get a msg: {} has been sent", userInfo.getUsername(), id);
             }
         });
 
@@ -161,10 +161,10 @@ class MyClient {
         hasDeliveredFuture.whenComplete((id, e) -> {
             if (e != null) {
                 hasException.getAndIncrement();
-                logger.error("[client] has error", e);
+                logger.error("[" + userInfo.getUsername() + "] has error", e);
             } else {
                 hasDeliveredAck.getAndIncrement();
-                logger.info("[client]{} msg: {} has been delivered", userInfo.getUsername(), id);
+                logger.info("[{}] get a msg: {} has been delivered", userInfo.getUsername(), id);
             }
         });
         hasDeliveredFutureMap.put(msgId, hasDeliveredFuture);
@@ -173,10 +173,10 @@ class MyClient {
         hasReadFuture.whenComplete((id, e) -> {
             if (e != null) {
                 hasException.getAndIncrement();
-                logger.error("[client] has error", e);
+                logger.error("[" + userInfo.getUsername() + "] has error", e);
             } else {
                 hasReadAck.getAndIncrement();
-                logger.info("[client]{} msg: {} has been read", userInfo.getUsername(), id);
+                logger.info("[{}] get a msg: {} has been read", userInfo.getUsername(), id);
             }
         });
         hasReadFutureMap.put(msgId, hasReadFuture);
