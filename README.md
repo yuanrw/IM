@@ -75,8 +75,8 @@ Here are the steps for start rest-web,transfer and connector are similar with it
 1. Unzip
 
 ```
-unzip rest-web-1.0.0-RELEASE-bin.zip
-cd rest-web-1.0.0-RELEASE
+unzip rest-web-$VERSION-bin.zip
+cd rest-web-$VERSION
 ```
 
 2. Update the config file
@@ -105,17 +105,17 @@ spring.rabbitmq.host=
 4. start server
 
 ```
-java -jar rest-web-1.0.0-RELEASE.jar --spring.config.location=application.properties
+java -jar rest-web-$VERSION.jar --spring.config.location=application.properties
 ```
 
 #### transfer
 ```
-java -jar -Dconfig=transfer.properties transfer-1.0.0-RELEASE.jar
+java -jar -Dconfig=transfer.properties transfer-$VERSION.jar
 ```
 
 #### connector
 ```
-java -jar -Dconfig=connector.properties connector-1.0.0-RELEASE.jar
+java -jar -Dconfig=connector.properties connector-$VERSION.jar
 ```
 
 ## Nginx Config
@@ -151,7 +151,7 @@ ldap.mapping.userDisplayName=gecos
 ldap.mapping.email=mail
 ```
 ```
-java -jar rest-web-1.0.0-RELEASE.jar --spring.config.location=application.properties
+java -jar rest-web-$VERSION.jar --spring.config.location=application.properties
 ```
 ## Login with individual login system
 1. Implement the spi in `com.yrw.im.rest.spi.UserSpi`
