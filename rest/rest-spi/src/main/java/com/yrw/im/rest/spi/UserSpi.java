@@ -14,7 +14,7 @@ public interface UserSpi<T extends UserBase> {
      * get user by username and password, return user(id can not be null)
      * if username and password are right, else return null.
      * <p>
-     * be sure that your password has been properly encoded
+     * be sure that your password has been properly encrypted
      *
      * @param username
      * @param pwd

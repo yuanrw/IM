@@ -12,45 +12,45 @@ import io.netty.channel.ChannelHandlerContext;
 public interface ClientMsgListener {
 
     /**
-     * 上线成功
+     * do when the client connect to connector successfully
      */
     void online();
 
     /**
-     * 消费消息
+     * read a msg
      *
      * @param chatMsg
      */
     void read(Chat.ChatMsg chatMsg);
 
     /**
-     * 已发送
+     * do when a msg has been sent
      *
-     * @param id chatMsg id
+     * @param id chatMsg msg id
      */
     void hasSent(Long id);
 
     /**
-     * 已送达
+     * do when a msg has been delivered
      *
-     * @param id chatMsg id
+     * @param id chatMsg msg id
      */
     void hasDelivered(Long id);
 
     /**
-     * 已读
+     * do when a msg has been read
      *
-     * @param id chatMsg id
+     * @param id chatMsg msg id
      */
     void hasRead(Long id);
 
     /**
-     * 下线
+     * do when the client disconnect to connector
      */
     void offline();
 
     /**
-     * 捕获异常
+     * a exception is occurred
      *
      * @param ctx
      * @param cause

@@ -61,9 +61,9 @@ class MyClient {
         chatApi = imClient.getApi(ChatApi.class);
         UserApi userApi = imClient.getApi(UserApi.class);
 
-        //登录换取token
+        //login and get a token
         userInfo = userApi.login(username, DigestUtils.sha256Hex(password.getBytes(CharsetUtil.UTF_8)));
-        //获取好友列表
+        //get friends list
         friends = userApi.friends(userInfo.getToken());
     }
 

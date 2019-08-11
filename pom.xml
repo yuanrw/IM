@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.yrw.im</groupId>
+    <groupId>com.github.yuanrw.im</groupId>
     <artifactId>IM</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
@@ -21,7 +21,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <netty.version>4.1.33.Final</netty.version>
+        <netty.version>4.1.38.Final</netty.version>
         <slf4j.api.version>1.7.7</slf4j.api.version>
         <logback.version>1.1.3</logback.version>
         <spring.boot.version>2.1.2.RELEASE</spring.boot.version>
@@ -168,17 +168,17 @@
             </dependency>
 
             <dependency>
-                <groupId>com.yrw.im</groupId>
+                <groupId>com.github.yuanrw.im</groupId>
                 <artifactId>common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.yrw.im</groupId>
+                <groupId>com.github.yuanrw.im</groupId>
                 <artifactId>rest-spi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.yrw.im</groupId>
+                <groupId>com.github.yuanrw.im</groupId>
                 <artifactId>protobuf</artifactId>
                 <version>${project.version}</version>
             </dependency>
