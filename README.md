@@ -196,4 +196,5 @@ mvn clean package -DskipTests
 
 ## Use client jar
 A client demo:
-[MyClient.java](https://github.com/yuanrw/IM/blob/master/client-samples/src/main/java/com/yrw/im/client/sample/MyClient.java)
+
+[MyClient.java](https://github.com/yuanrw/IM/blob/master/client-samples/src/main/java/com/github/yuanrw/im/client/sample/MyClient.java)
