@@ -12,7 +12,7 @@
     <artifactId>connector</artifactId>
 
     <properties>
-        <main.class>com.yrw.im.connector.start.ConnectorStarter</main.class>
+        <main.class>com.github.yuanrw.im.connector.start.ConnectorStarter</main.class>
     </properties>
 
     <dependencies>

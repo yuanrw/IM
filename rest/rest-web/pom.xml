@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <main.class>com.yrw.im.rest.web.RestStarter</main.class>
+        <main.class>com.github.yuanrw.im.rest.web.RestStarter</main.class>
     </properties>
 
     <artifactId>rest-web</artifactId>

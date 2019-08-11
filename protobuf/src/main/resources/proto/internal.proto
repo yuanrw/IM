@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package com.yrw.im.proto.generate;
+package com.github.yuanrw.im.protobuf.generate;
 option java_outer_classname = "Internal";
 
 message InternalMsg {

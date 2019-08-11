@@ -12,7 +12,7 @@
     <artifactId>transfer</artifactId>
 
     <properties>
-        <main.class>com.yrw.im.transfer.server.start.TransferStarter</main.class>
+        <main.class>com.github.yuanrw.im.transfer.start.TransferStarter</main.class>
     </properties>
 
     <dependencies>
