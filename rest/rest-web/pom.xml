@@ -77,6 +77,9 @@
     </dependencies>
 
     <build>
+        <filters>
+            <filter>src/main/resources/application.properties</filter>
+        </filters>
         <plugins>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
