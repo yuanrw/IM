@@ -1,8 +1,8 @@
 package com.github.yuanrw.im.user.status.service.impl;
 
+import com.github.yuanrw.im.user.status.service.UserStatusService;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import com.github.yuanrw.im.user.status.service.UserStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
@@ -39,13 +39,13 @@ public class RedisUserStatusServiceImpl implements UserStatusService {
     @Override
     public String online(String connectorId, String userId) {
         logger.debug("[user status] user online: connectorId: {}, userID: {}", connectorId, userId);
-        String oldConnectorId = jedis.hget(USER_CONN_STATUS_KEY, String.valueOf(userId));
+        String oldConnectorId = jedis.hget(USER_CONN_STATUS_KEY, userId);
         if (oldConnectorId != null) {
             return oldConnectorId;
         }
         userIdToNetId.put(userId, connectorId);
 
-        jedis.hset(USER_CONN_STATUS_KEY, String.valueOf(userId), connectorId);
+        jedis.hset(USER_CONN_STATUS_KEY, userId, connectorId);
         return null;
     }
 
@@ -53,14 +53,14 @@ public class RedisUserStatusServiceImpl implements UserStatusService {
     public void offline(String userId) {
         userIdToNetId.remove(userId);
 
-        jedis.hdel(USER_CONN_STATUS_KEY, String.valueOf(userId));
+        jedis.hdel(USER_CONN_STATUS_KEY, userId);
     }
 
     @Override
     public String getConnectorId(String userId) {
         String connectorId = userIdToNetId.get(userId);
         if (connectorId == null) {
-            connectorId = jedis.hget(USER_CONN_STATUS_KEY, userId + "");
+            connectorId = jedis.hget(USER_CONN_STATUS_KEY, userId);
             if (connectorId != null) {
                 userIdToNetId.put(userId, connectorId);
             }

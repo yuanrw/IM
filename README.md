@@ -119,11 +119,24 @@ java -jar -Dconfig=connector.properties connector-$VERSION.jar
 ```
 
 ## Nginx Config
-All services are avaiable to expand horizontally,connections need to be kept alive between each client and connector server, each connector server and each transfer server.
+All services are avaiable to expand horizontally,connections need to be kept alive between each client and connector server.
 A sample nginx config:
 
 ```
+stream {
+	upstream backend {
+	    # connector services port
+        server 127.0.0.1:9081         max_fails=3 fail_timeout=30s;
+		server 127.0.0.1:19081			max_fails=3 fail_timeout=30s;
+	}
 
+    server {
+        # to keep a persistent connection
+        listen 9999 so_keepalive=on;
+        proxy_timeout 1d;
+        proxy_pass backend;
+    }
+}
 ```
 
 ## Login
