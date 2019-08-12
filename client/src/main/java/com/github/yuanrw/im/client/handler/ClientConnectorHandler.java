@@ -1,6 +1,5 @@
 package com.github.yuanrw.im.client.handler;
 
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.client.api.ClientMsgListener;
 import com.github.yuanrw.im.common.domain.ResponseCollector;
 import com.github.yuanrw.im.common.exception.ImException;
@@ -10,6 +9,7 @@ import com.github.yuanrw.im.common.parse.InternalParser;
 import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.github.yuanrw.im.protobuf.generate.Internal;
+import com.google.protobuf.Message;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -82,7 +82,8 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
     }
 
     public static ResponseCollector<Internal.InternalMsg> createCollector(Duration timeout) {
-        ResponseCollector<Internal.InternalMsg> collector = new ResponseCollector<>(timeout);
+        ResponseCollector<Internal.InternalMsg> collector = new ResponseCollector<>(timeout,
+            "time out waiting for msg from connector");
         boolean success = respCollector.compareAndSet(null, collector);
         if (!success) {
             ResponseCollector<Internal.InternalMsg> previousCollector = respCollector.get();

@@ -9,8 +9,7 @@ package com.github.yuanrw.im.connector.config;
 public class ConnectorConfig {
 
     private Integer port;
-    private String transferHost;
-    private Integer transferPort;
+    private String[] transferUrls;
     private String restUrl;
     private String logPath;
     private String logLevel;
@@ -31,12 +30,12 @@ public class ConnectorConfig {
         this.port = port;
     }
 
-    public String getTransferHost() {
-        return transferHost;
+    public String[] getTransferUrls() {
+        return transferUrls;
     }
 
-    public void setTransferHost(String transferHost) {
-        this.transferHost = transferHost;
+    public void setTransferUrls(String[] transferUrls) {
+        this.transferUrls = transferUrls;
     }
 
     public String getRestUrl() {
@@ -45,14 +44,6 @@ public class ConnectorConfig {
 
     public void setRestUrl(String restUrl) {
         this.restUrl = restUrl;
-    }
-
-    public Integer getTransferPort() {
-        return transferPort;
-    }
-
-    public void setTransferPort(Integer transferPort) {
-        this.transferPort = transferPort;
     }
 
     public String getLogPath() {

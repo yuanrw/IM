@@ -1,12 +1,12 @@
 package com.github.yuanrw.im.connector.start;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.github.yuanrw.im.common.code.MsgDecoder;
 import com.github.yuanrw.im.common.code.MsgEncoder;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.connector.config.ConnectorModule;
 import com.github.yuanrw.im.connector.handler.ConnectorTransferHandler;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -30,32 +30,36 @@ public class ConnectorClient {
 
     public static Injector injector = Guice.createInjector(new ConnectorModule());
 
-    static void start(String host, int port) {
-        EventLoopGroup group = new NioEventLoopGroup();
-        Bootstrap b = new Bootstrap();
-        ChannelFuture f = b.group(group)
-            .channel(NioSocketChannel.class)
-            .handler(new ChannelInitializer<NioSocketChannel>() {
-                @Override
-                protected void initChannel(NioSocketChannel ch) throws Exception {
-                    ChannelPipeline p = ch.pipeline();
-                    p.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
-                    p.addLast("MsgEncoder", injector.getInstance(MsgEncoder.class));
-                    p.addLast("ConnectorTransferHandler", injector.getInstance(ConnectorTransferHandler.class));
-                }
-            }).connect(host, port)
-            .addListener((ChannelFutureListener) future -> {
-                if (future.isSuccess()) {
-                    logger.info("[connector] connect to transfer successfully");
-                } else {
-                    throw new ImException("[connector] connect to transfer failed!");
-                }
-            });
+    static void start(String[] transferUrls) {
+        for (String transferUrl : transferUrls) {
+            String[] url = transferUrl.split(":");
 
-        try {
-            f.get(10, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new ImException("[connector] connect to transfer failed!", e);
+            EventLoopGroup group = new NioEventLoopGroup();
+            Bootstrap b = new Bootstrap();
+            ChannelFuture f = b.group(group)
+                .channel(NioSocketChannel.class)
+                .handler(new ChannelInitializer<NioSocketChannel>() {
+                    @Override
+                    protected void initChannel(NioSocketChannel ch) throws Exception {
+                        ChannelPipeline p = ch.pipeline();
+                        p.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
+                        p.addLast("MsgEncoder", injector.getInstance(MsgEncoder.class));
+                        p.addLast("ConnectorTransferHandler", injector.getInstance(ConnectorTransferHandler.class));
+                    }
+                }).connect(url[0], Integer.parseInt(url[1]))
+                .addListener((ChannelFutureListener) future -> {
+                    if (future.isSuccess()) {
+                        logger.info("[connector] connect to transfer successfully");
+                    } else {
+                        throw new ImException("[connector] connect to transfer failed! transfer url: " + transferUrl);
+                    }
+                });
+
+            try {
+                f.get(10, TimeUnit.SECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                throw new ImException("[connector] connect to transfer failed! transfer url: " + transferUrl, e);
+            }
         }
     }
 }

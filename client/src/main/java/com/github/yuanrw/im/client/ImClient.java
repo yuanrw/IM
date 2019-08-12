@@ -1,7 +1,5 @@
 package com.github.yuanrw.im.client;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.github.yuanrw.im.client.api.ChatApi;
 import com.github.yuanrw.im.client.api.ClientMsgListener;
 import com.github.yuanrw.im.client.api.UserApi;
@@ -12,6 +10,8 @@ import com.github.yuanrw.im.client.handler.code.AesEncoder;
 import com.github.yuanrw.im.common.code.MsgDecoder;
 import com.github.yuanrw.im.common.code.MsgEncoder;
 import com.github.yuanrw.im.common.exception.ImException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -90,7 +90,8 @@ public class ImClient {
                 if (future.isSuccess()) {
                     logger.info("ImClient connect to connector successfully");
                 } else {
-                    throw new ImException("[client] connect to connector failed!");
+                    throw new ImException("[client] connect to connector failed! connector url: "
+                        + connectorHost + ":" + connectorPort);
                 }
             });
 

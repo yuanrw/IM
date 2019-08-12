@@ -1,8 +1,5 @@
 package com.github.yuanrw.im.connector.handler;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.common.domain.ResponseCollector;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.common.parse.AbstractMsgParser;
@@ -14,30 +11,34 @@ import com.github.yuanrw.im.connector.service.UserStatusService;
 import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.github.yuanrw.im.protobuf.generate.Internal;
+import com.google.inject.Inject;
+import com.google.protobuf.Message;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkDest;
 import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkFrom;
 
 /**
- * 将消息发送给transfer
+ * send msg to transfer
+ * has state, not shareable
  * Date: 2019-02-12
  * Time: 12:17
  *
  * @author yrw
  */
-@Singleton
 public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Message> {
     private static Logger logger = LoggerFactory.getLogger(ConnectorTransferHandler.class);
 
     private static String connectorId = TokenGenerator.generate();
-    private static ChannelHandlerContext ctx;
+    private static List<ChannelHandlerContext> ctxList = new ArrayList<>();
 
     private FromTransferParser fromTransferParser;
     private ConnectorService connectorService;
@@ -54,7 +55,7 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("[ConnectorTransfer] connect success");
-        ConnectorTransferHandler.ctx = ctx;
+        ConnectorTransferHandler.ctxList.add(ctx);
 
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
             .setId(IdWorker.genId())
@@ -84,15 +85,16 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
         //todo: reconnect
     }
 
-    public static ChannelHandlerContext getCtx() {
-        if (ctx == null) {
-            throw new ImException("connector is not connected to transfer!");
+    public static List<ChannelHandlerContext> getCtxList() {
+        if (ctxList.size() == 0) {
+            throw new ImException("connector is not connected to a transfer!");
         }
-        return ctx;
+        return ctxList;
     }
 
     public static ResponseCollector<Internal.InternalMsg> createUserStatusMsgCollector(Duration timeout) {
-        ResponseCollector<Internal.InternalMsg> collector = new ResponseCollector<>(timeout);
+        ResponseCollector<Internal.InternalMsg> collector = new ResponseCollector<>(timeout,
+            "time out waiting for msg from transfer");
         boolean success = userStatusMsgCollector.compareAndSet(null, collector);
         if (!success) {
             ResponseCollector<Internal.InternalMsg> previousCollector = userStatusMsgCollector.get();

@@ -22,7 +22,7 @@ public class ConnectorStarter {
         ConnectorStarter.CONNECTOR_CONFIG = parseConfig();
 
         //connector to transfer
-        ConnectorClient.start(CONNECTOR_CONFIG.getTransferHost(), CONNECTOR_CONFIG.getTransferPort());
+        ConnectorClient.start(CONNECTOR_CONFIG.getTransferUrls());
 
         //start connector server
         ConnectorServer.start(CONNECTOR_CONFIG.getPort());
@@ -32,12 +32,15 @@ public class ConnectorStarter {
         Properties properties = getProperties();
 
         ConnectorConfig connectorConfig = new ConnectorConfig();
-        connectorConfig.setPort(Integer.parseInt((String) properties.get("port")));
-        connectorConfig.setTransferHost((String) properties.get("transfer.host"));
-        connectorConfig.setTransferPort(Integer.parseInt((String) properties.get("transfer.port")));
-        connectorConfig.setRestUrl((String) properties.get("rest.url"));
-        connectorConfig.setLogPath((String) properties.get("log.path"));
-        connectorConfig.setLogLevel((String) properties.get("log.level"));
+        try {
+            connectorConfig.setPort(Integer.parseInt((String) properties.get("port")));
+            connectorConfig.setTransferUrls(((String) properties.get("transfer.url")).split(","));
+            connectorConfig.setRestUrl((String) properties.get("rest.url"));
+            connectorConfig.setLogPath((String) properties.get("log.path"));
+            connectorConfig.setLogLevel((String) properties.get("log.level"));
+        } catch (Exception e) {
+            throw new ImException("there's a parse error, check your config properties");
+        }
 
         System.setProperty("log.path", connectorConfig.getLogPath());
         System.setProperty("log.level", connectorConfig.getLogLevel());

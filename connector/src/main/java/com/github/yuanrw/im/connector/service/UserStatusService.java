@@ -2,8 +2,6 @@ package com.github.yuanrw.im.connector.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.common.domain.UserStatus;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.common.util.IdWorker;
@@ -12,6 +10,8 @@ import com.github.yuanrw.im.connector.domain.ClientConnContext;
 import com.github.yuanrw.im.connector.handler.ConnectorTransferHandler;
 import com.github.yuanrw.im.protobuf.constant.UserStatusEnum;
 import com.github.yuanrw.im.protobuf.generate.Internal;
+import com.google.inject.Inject;
+import com.google.protobuf.Message;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.time.Duration;
@@ -70,7 +70,7 @@ public class UserStatusService {
                 }
             });
 
-        ConnectorTransferHandler.getCtx().writeAndFlush(status);
+        ConnectorTransferHandler.getCtxList().forEach(c -> c.writeAndFlush(status));
 
         future.get();
     }
@@ -100,7 +100,9 @@ public class UserStatusService {
         userStatus.setUserId(conn.getUserId());
         userStatus.setStatus(UserStatusEnum.OFFLINE.getCode());
 
-        ConnectorTransferHandler.getCtx().writeAndFlush(statusMsg(userStatus));
+        for (ChannelHandlerContext c : ConnectorTransferHandler.getCtxList()) {
+            c.writeAndFlush(statusMsg(userStatus));
+        }
 
         //remove the connection
         clientConnContext.removeConn(ctx);

@@ -126,9 +126,11 @@ A sample nginx config:
 
 ```
 
-Thers is a simple usable login system in IM. 
+## Login
+There is a simple usable login system in IM. 
 IM also support the following two ways to authenticate.
-## Login with ldap
+
+### ldap
 We use open ldap as an example.
 update application.properties
 ```
@@ -153,7 +155,7 @@ ldap.mapping.email=mail
 ```
 java -jar rest-web-$VERSION.jar --spring.config.location=application.properties
 ```
-## Login with individual login system
+### individual login system
 1. Implement the spi in `com.yrw.im.rest.spi.UserSpi`
 
 ```

@@ -1,12 +1,12 @@
 package com.github.yuanrw.im.rest.web.handler;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.google.common.collect.ImmutableMap;
 import com.github.yuanrw.im.common.domain.ResultWrapper;
 import com.github.yuanrw.im.common.domain.po.Relation;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.rest.web.service.RelationService;
 import com.github.yuanrw.im.rest.web.vo.RelationReq;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -42,8 +42,8 @@ public class RelationHandler {
     }
 
     public Mono<ServerResponse> getRelation(ServerRequest request) {
-        String u1 = request.queryParam("userId1").orElseThrow();
-        String u2 = request.queryParam("userId2").orElseThrow();
+        String u1 = request.queryParam("userId1").orElseThrow(() -> new ImException("parameter userId1 can not be null"));
+        String u2 = request.queryParam("userId2").orElseThrow(() -> new ImException("parameter userId2 can not be null"));
 
         Long userId1 = Long.parseLong(u1);
         Long userId2 = Long.parseLong(u2);

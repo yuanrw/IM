@@ -22,22 +22,23 @@ public class ResponseCollector<M extends Message> {
 
     private final Duration responseTimeout;
 
+    private final String debugMsg;
+
     private static final HashedWheelTimer TIMER = new HashedWheelTimer(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("response-timer-%d").build());
 
-    public ResponseCollector(Duration responseTimeout) {
+    public ResponseCollector(Duration responseTimeout, String debugMsg) {
         this.responseTimeout = responseTimeout;
         this.future = new CompletableFuture<>();
+        this.debugMsg = debugMsg;
         applyResponseTimeout(future, responseTimeout);
     }
 
     private void applyResponseTimeout(CompletableFuture<M> responseFuture, Duration duration) {
         Duration durationTime = duration != null ? duration : responseTimeout;
 
-        Timeout hwtTimeout = TIMER.newTimeout(ignored -> {
-            String message = "Time out waiting for init response from server";
-
-            responseFuture.completeExceptionally(new TimeoutException(message));
-        }, durationTime.toMillis(), TimeUnit.MILLISECONDS);
+        Timeout hwtTimeout = TIMER.newTimeout(ignored ->
+                responseFuture.completeExceptionally(new TimeoutException(debugMsg))
+            , durationTime.toMillis(), TimeUnit.MILLISECONDS);
 
         responseFuture.whenComplete((ignored1, ignored2) -> hwtTimeout.cancel());
     }

@@ -1,13 +1,13 @@
 package com.github.yuanrw.im.connector.service;
 
-import com.google.inject.Inject;
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.common.domain.conn.Conn;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.connector.domain.ClientConnContext;
 import com.github.yuanrw.im.connector.handler.ConnectorTransferHandler;
 import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
+import com.google.inject.Inject;
+import com.google.protobuf.Message;
 
 /**
  * process msg the connector received
@@ -49,7 +49,7 @@ public class ConnectorService {
     private boolean send(String destId, Message msg) {
         Conn conn = clientConnContext.getConnByUserId(destId);
         if (conn == null) {
-            ConnectorTransferHandler.getCtx().writeAndFlush(msg);
+            ConnectorTransferHandler.getCtxList().forEach(ctx -> ctx.writeAndFlush(msg));
             return false;
         } else {
             //the user is connected to this machine
