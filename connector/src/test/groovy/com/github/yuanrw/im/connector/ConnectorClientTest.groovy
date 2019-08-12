@@ -18,6 +18,7 @@ import com.github.yuanrw.im.connector.start.ConnectorClient
 import com.github.yuanrw.im.protobuf.generate.Ack
 import com.github.yuanrw.im.protobuf.generate.Chat
 import com.github.yuanrw.im.protobuf.generate.Internal
+import com.google.common.collect.Lists
 import com.google.protobuf.ByteString
 import io.netty.channel.Channel
 import io.netty.channel.ChannelHandlerContext
@@ -79,7 +80,7 @@ class ConnectorClientTest extends Specification {
         given:
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
-        when(ConnectorTransferHandler.getCtx()).thenReturn(connectorTransferCtx)
+        when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
         when(ConnectorTransferHandler.createUserStatusMsgCollector(Duration.ofSeconds(10))).thenReturn(Mock(ResponseCollector) {
             getFuture() >> Mock(CompletableFuture) {
                 whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
@@ -107,7 +108,7 @@ class ConnectorClientTest extends Specification {
         given:
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
-        when(ConnectorTransferHandler.getCtx()).thenReturn(connectorTransferCtx)
+        when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
         when(ConnectorTransferHandler.createUserStatusMsgCollector(Duration.ofSeconds(10))).thenReturn(Mock(ResponseCollector) {
             getFuture() >> Mock(CompletableFuture) {
                 whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
@@ -158,7 +159,7 @@ class ConnectorClientTest extends Specification {
         given:
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
-        when(ConnectorTransferHandler.getCtx()).thenReturn(connectorTransferCtx)
+        when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
         when(ConnectorTransferHandler.createUserStatusMsgCollector(Duration.ofSeconds(10))).thenReturn(Mock(ResponseCollector) {
             getFuture() >> Mock(CompletableFuture) {
                 whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)

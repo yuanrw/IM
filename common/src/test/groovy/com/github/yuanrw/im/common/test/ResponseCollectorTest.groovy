@@ -20,7 +20,7 @@ class ResponseCollectorTest extends Specification {
     @Timeout(value = 4500, unit = TimeUnit.MILLISECONDS)
     def "test wait time out"() {
         given:
-        def msgResponseCollector = new ResponseCollector(Duration.ofSeconds(2))
+        def msgResponseCollector = new ResponseCollector(Duration.ofSeconds(2), "test")
 
         when:
         def timeStart = System.currentTimeMillis()
@@ -38,7 +38,7 @@ class ResponseCollectorTest extends Specification {
     def "test when completed"() {
         given:
         def collector = new ArrayList<Internal.InternalMsg>()
-        def msgResponseCollector = new ResponseCollector<Internal.InternalMsg>(Duration.ofSeconds(2))
+        def msgResponseCollector = new ResponseCollector<Internal.InternalMsg>(Duration.ofSeconds(2), "test")
         msgResponseCollector.getFuture().whenComplete({ m, e -> collector.add(m) })
 
         when:
