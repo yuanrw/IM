@@ -3,7 +3,7 @@ package com.github.yuanrw.im.client.service;
 import com.github.yuanrw.im.client.domain.UserReq;
 import com.github.yuanrw.im.common.domain.ResultWrapper;
 import com.github.yuanrw.im.common.domain.UserInfo;
-import com.github.yuanrw.im.common.domain.po.Relation;
+import com.github.yuanrw.im.common.domain.po.RelationDetail;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -25,10 +25,10 @@ public interface ClientRestClient {
     Call<ResultWrapper<Void>> logout(@Header("token") String token);
 
     @GET("/relation/{id}")
-    Call<ResultWrapper<List<Relation>>> friends(@Path("id") String userId, @Header("token") String token);
+    Call<ResultWrapper<List<RelationDetail>>> friends(@Path("id") String userId, @Header("token") String token);
 
     @GET("/relation")
-    Call<ResultWrapper<Relation>> relation(
+    Call<ResultWrapper<RelationDetail>> relation(
         @Query("userId1") String userId1, @Query("userId2") String userId2,
         @Header("token") String token);
 }

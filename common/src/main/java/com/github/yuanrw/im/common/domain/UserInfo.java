@@ -1,6 +1,6 @@
 package com.github.yuanrw.im.common.domain;
 
-import com.github.yuanrw.im.common.domain.po.Relation;
+import com.github.yuanrw.im.common.domain.po.RelationDetail;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class UserInfo {
 
     private String token;
 
-    private List<Relation> relations;
+    private List<RelationDetail> relations;
 
     public String getUsername() {
         return username;
@@ -44,11 +44,11 @@ public class UserInfo {
         this.token = token;
     }
 
-    public List<Relation> getRelations() {
+    public List<RelationDetail> getRelations() {
         return relations;
     }
 
-    public void setRelations(List<Relation> relations) {
+    public void setRelations(List<RelationDetail> relations) {
         this.relations = relations;
     }
 }

@@ -1,6 +1,7 @@
 package com.github.yuanrw.im.client.context;
 
 import com.github.yuanrw.im.common.domain.po.Relation;
+import com.github.yuanrw.im.common.domain.po.RelationDetail;
 
 import java.util.List;
 
@@ -17,14 +18,14 @@ public interface RelationCache {
      *
      * @param relations
      */
-    void addRelations(List<Relation> relations);
+    void addRelations(List<RelationDetail> relations);
 
     /**
      * add a relation
      *
      * @param relation
      */
-    void addRelation(Relation relation);
+    void addRelation(RelationDetail relation);
 
     /**
      * get relation by userId
@@ -34,5 +35,5 @@ public interface RelationCache {
      * @param token
      * @return
      */
-    Relation getRelation(String userId1, String userId2, String token);
+    RelationDetail getRelation(String userId1, String userId2, String token);
 }

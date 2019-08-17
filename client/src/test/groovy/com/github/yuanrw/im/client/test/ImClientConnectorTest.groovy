@@ -9,7 +9,7 @@ import com.github.yuanrw.im.client.handler.code.AesDecoder
 import com.github.yuanrw.im.client.handler.code.AesEncoder
 import com.github.yuanrw.im.common.code.MsgDecoder
 import com.github.yuanrw.im.common.code.MsgEncoder
-import com.github.yuanrw.im.common.domain.po.Relation
+import com.github.yuanrw.im.common.domain.po.RelationDetail
 import com.github.yuanrw.im.common.util.Encryption
 import com.github.yuanrw.im.common.util.IdWorker
 import com.github.yuanrw.im.protobuf.generate.Ack
@@ -111,7 +111,7 @@ class ImClientConnectorTest extends Specification {
 
         def channel = new EmbeddedChannel()
 
-        def r = new Relation()
+        def r = new RelationDetail()
         r.setUserId1("123")
         r.setUserId2("456")
         r.setEncryptKey("HvxZFa7B1dBlKwP7|9302073163544974")

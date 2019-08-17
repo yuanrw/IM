@@ -1,5 +1,6 @@
 package com.github.yuanrw.im.client.service;
 
+import com.github.yuanrw.im.common.domain.po.RelationDetail;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.github.yuanrw.im.client.domain.UserReq;
@@ -32,11 +33,11 @@ public class ClientRestService extends AbstractRestService<ClientRestClient> {
         return doRequest(() -> restClient.logout(token).execute());
     }
 
-    public List<Relation> friends(String userId, String token) {
+    public List<RelationDetail> friends(String userId, String token) {
         return doRequest(() -> restClient.friends(userId, token).execute());
     }
 
-    public Relation relation(String userId1, String userId2, String token) {
+    public RelationDetail relation(String userId1, String userId2, String token) {
         return doRequest(() -> restClient.relation(userId1, userId2, token).execute());
     }
 }

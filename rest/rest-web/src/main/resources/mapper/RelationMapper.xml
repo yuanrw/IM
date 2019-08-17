@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.github.yuanrw.im.rest.web.mapper.RelationMapper">
+    <resultMap id="BaseResultMap" type="com.github.yuanrw.im.common.domain.po.RelationDetail">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_Id1" jdbcType="VARCHAR" property="userId1"/>
+        <result column="username1" jdbcType="VARCHAR" property="username1"/>
+        <result column="user_Id2" jdbcType="VARCHAR" property="userId2"/>
+        <result column="username2" jdbcType="VARCHAR" property="username2"/>
+        <result column="encrypt_key" jdbcType="CHAR" property="encryptKey"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="deleted" jdbcType="BIT" property="deleted"/>
+    </resultMap>
+
+    <select id="listFriends" resultMap="BaseResultMap">
+      select r.id, user_id1, user_id2, encrypt_key, r.gmt_create, u1.username as username2, u2.username as username1
+      from im_relation r
+      inner join im_user u1 on r.user_id1 = u1.id
+      inner join im_user u2 on r.user_id2 = u2.id
+      where user_id1 = #{userId} or user_id2 = #{userId}
+    </select>
+</mapper>

@@ -2,6 +2,7 @@ package com.github.yuanrw.im.client.context;
 
 import com.github.yuanrw.im.client.handler.ClientConnectorHandler;
 import com.github.yuanrw.im.common.domain.po.Relation;
+import com.github.yuanrw.im.common.domain.po.RelationDetail;
 import com.google.inject.Inject;
 
 import java.util.List;
@@ -60,11 +61,11 @@ public class UserContext {
         return token;
     }
 
-    public void addRelations(List<Relation> relations) {
+    public void addRelations(List<RelationDetail> relations) {
         relationCache.addRelations(relations);
     }
 
-    public void addRelation(Relation relation) {
+    public void addRelation(RelationDetail relation) {
         relationCache.addRelation(relation);
     }
 

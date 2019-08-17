@@ -2,6 +2,7 @@ package com.github.yuanrw.im.rest.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.yuanrw.im.common.domain.po.Relation;
+import com.github.yuanrw.im.common.domain.po.RelationDetail;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface RelationService extends IService<Relation> {
      * @param id userId
      * @return
      */
-    List<Relation> friends(String id);
+    List<RelationDetail> friends(String id);
 
     /**
      * add an relation between user1 and user2

@@ -1,8 +1,8 @@
 package com.github.yuanrw.im.rest.web.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.yuanrw.im.common.domain.po.Relation;
+import com.github.yuanrw.im.common.domain.po.RelationDetail;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.rest.spi.UserSpi;
 import com.github.yuanrw.im.rest.spi.domain.UserBase;
@@ -30,9 +30,8 @@ public class RelationServiceImpl extends ServiceImpl<RelationMapper, Relation> i
     }
 
     @Override
-    public List<Relation> friends(String id) {
-        return list(new LambdaQueryWrapper<Relation>()
-            .eq(Relation::getUserId1, id).or().eq(Relation::getUserId2, id));
+    public List<RelationDetail> friends(String id) {
+        return baseMapper.listFriends(id);
     }
 
     @Override

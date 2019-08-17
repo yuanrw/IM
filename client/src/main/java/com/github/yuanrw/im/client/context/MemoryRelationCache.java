@@ -1,9 +1,10 @@
 package com.github.yuanrw.im.client.context;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.github.yuanrw.im.client.service.ClientRestService;
 import com.github.yuanrw.im.common.domain.po.Relation;
+import com.github.yuanrw.im.common.domain.po.RelationDetail;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 @Singleton
 public class MemoryRelationCache implements RelationCache {
 
-    private ConcurrentMap<String, Relation> relationMap;
+    private ConcurrentMap<String, RelationDetail> relationMap;
     private ClientRestService clientRestService;
 
     @Inject
@@ -30,7 +31,7 @@ public class MemoryRelationCache implements RelationCache {
     }
 
     @Override
-    public void addRelations(List<Relation> relations) {
+    public void addRelations(List<RelationDetail> relations) {
         relationMap.putAll(relations.stream().collect(Collectors.toMap(
             r -> generateKey(r.getUserId1(), r.getUserId2()),
             r -> r)
@@ -38,13 +39,13 @@ public class MemoryRelationCache implements RelationCache {
     }
 
     @Override
-    public void addRelation(Relation relation) {
+    public void addRelation(RelationDetail relation) {
         relationMap.put(generateKey(relation.getUserId1(), relation.getUserId2()), relation);
     }
 
     @Override
-    public Relation getRelation(String userId1, String userId2, String token) {
-        Relation relation = relationMap.get(generateKey(userId1, userId2));
+    public RelationDetail getRelation(String userId1, String userId2, String token) {
+        RelationDetail relation = relationMap.get(generateKey(userId1, userId2));
         if (relation == null) {
             relation = getRelationFromRest(userId1, userId2, token);
             relationMap.put(generateKey(userId1, userId2), relation);
@@ -52,7 +53,7 @@ public class MemoryRelationCache implements RelationCache {
         return relation;
     }
 
-    private Relation getRelationFromRest(String userId1, String userId2, String token) {
+    private RelationDetail getRelationFromRest(String userId1, String userId2, String token) {
         return clientRestService.relation(userId1, userId2, token);
     }
 

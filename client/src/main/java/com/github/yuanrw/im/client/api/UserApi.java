@@ -5,7 +5,7 @@ import com.github.yuanrw.im.client.domain.Friend;
 import com.github.yuanrw.im.client.handler.ClientConnectorHandler;
 import com.github.yuanrw.im.client.service.ClientRestService;
 import com.github.yuanrw.im.common.domain.UserInfo;
-import com.github.yuanrw.im.common.domain.po.Relation;
+import com.github.yuanrw.im.common.domain.po.RelationDetail;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.protobuf.generate.Internal;
@@ -89,11 +89,16 @@ public class UserApi {
         return getFriend(clientRestService.friends(userContext.getUserId(), token), userContext.getUserId());
     }
 
-    private static List<Friend> getFriend(List<Relation> relations, String userId) {
+    private static List<Friend> getFriend(List<RelationDetail> relations, String userId) {
         return relations.stream().map(r -> {
             Friend friend = new Friend();
-            String friendId = !r.getUserId1().equals(userId) ? r.getUserId1() : r.getUserId2();
-            friend.setUserId(friendId);
+            if (r.getUserId1().equals(userId)) {
+                friend.setUserId(r.getUserId2());
+                friend.setUsername(r.getUsername2());
+            } else {
+                friend.setUserId(r.getUserId1());
+                friend.setUsername(r.getUsername1());
+            }
             friend.setEncryptKey(r.getEncryptKey());
             return friend;
         }).collect(Collectors.toList());
