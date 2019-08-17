@@ -24,13 +24,8 @@ public class MyClientApplication {
 
         //login all user
         for (int i = 0; i < 17; i++) {
-            if (i < 10) {
-                myClientList.add(new MyClient("127.0.0.1", 9081,
-                    "http://127.0.0.1:8082", usernameForTest[i], "123abc"));
-            } else {
-                myClientList.add(new MyClient("127.0.0.1", 19081,
-                    "http://127.0.0.1:8082", usernameForTest[i], "123abc"));
-            }
+            myClientList.add(new MyClient(args[0], 9081,
+                args[1], usernameForTest[i], "123abc"));
         }
 
         //print test result every 5 seconds
