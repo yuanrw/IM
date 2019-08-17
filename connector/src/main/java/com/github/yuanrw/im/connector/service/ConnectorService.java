@@ -30,14 +30,12 @@ public class ConnectorService {
 
     public void doChatToClientAndFlush(Chat.ChatMsg msg) {
         Conn conn = clientConnContext.getConnByUserId(msg.getDestId());
-        conn.getCtx().write(msg);
-        conn.getCtx().flush();
+        conn.getCtx().writeAndFlush(msg);
     }
 
     public void doSendAckToClientAndFlush(Ack.AckMsg ackMsg) {
         Conn conn = clientConnContext.getConnByUserId(ackMsg.getDestId());
-        conn.getCtx().write(ackMsg);
-        conn.getCtx().flush();
+        conn.getCtx().writeAndFlush(ackMsg);
     }
 
     public void doChatToClientOrTransferAndFlush(Chat.ChatMsg msg) {
@@ -46,14 +44,13 @@ public class ConnectorService {
         sendMsg(conn, msg, (c, m) -> {
             conn.getCtx().write(msg);
             conn.getCtx().write(getDelivered(msg));
+            conn.getCtx().flush();
         });
     }
 
     public void doSendAckToClientOrTransferAndFlush(Ack.AckMsg ackMsg) {
         Conn conn = clientConnContext.getConnByUserId(ackMsg.getDestId());
-        sendMsg(conn, ackMsg, (c, m) -> {
-            conn.getCtx().write(ackMsg);
-        });
+        sendMsg(conn, ackMsg, (c, m) -> conn.getCtx().writeAndFlush(ackMsg));
     }
 
     public Ack.AckMsg getDelivered(Chat.ChatMsg msg) {
@@ -76,7 +73,6 @@ public class ConnectorService {
             //the user is connected to this machine
             //won 't save chat histories
             ifOnTheMachine.accept(conn, msg);
-            conn.getCtx().flush();
         }
     }
 }
