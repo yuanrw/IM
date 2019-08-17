@@ -1,7 +1,7 @@
 package com.github.yuanrw.im.connector.domain;
 
-import com.google.inject.Singleton;
 import com.github.yuanrw.im.common.domain.conn.MemoryConnContext;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ public class ClientConnContext extends MemoryConnContext<ClientConn> {
         if (userIdToNetId.containsKey(userId)) {
             removeConn(userIdToNetId.containsKey(userId));
         }
-        logger.debug("[ClientConn] user: {} is online", userId);
+        logger.debug("[ClientConn] user: {} is online, netId", userId, conn.getNetId());
 
         connMap.putIfAbsent(conn.getNetId(), conn);
         userIdToNetId.put(conn.getUserId(), conn.getNetId());

@@ -1,8 +1,6 @@
 package com.github.yuanrw.im.transfer.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.common.domain.UserStatus;
 import com.github.yuanrw.im.common.parse.AbstractMsgParser;
 import com.github.yuanrw.im.common.parse.InternalParser;
@@ -13,6 +11,9 @@ import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.github.yuanrw.im.protobuf.generate.Internal;
 import com.github.yuanrw.im.transfer.domain.ConnectorConnContext;
 import com.github.yuanrw.im.transfer.service.TransferService;
+import com.github.yuanrw.im.user.status.service.UserStatusService;
+import com.google.inject.Inject;
+import com.google.protobuf.Message;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -55,7 +56,6 @@ public class TransferConnectorHandler extends SimpleChannelInboundHandler<Messag
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        //删除连接并更新用户状态
         connectorConnContext.removeConn(ctx);
     }
 

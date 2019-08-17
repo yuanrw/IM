@@ -12,7 +12,6 @@ public interface UserStatusServiceFactory {
 
     /**
      * create a userStatusService
-     * //todo: need to be singleton
      *
      * @param host
      * @param port

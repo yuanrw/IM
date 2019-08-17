@@ -30,13 +30,13 @@ public class MemoryConnContext<C extends Conn> implements ConnContext<C> {
     public C getConn(ChannelHandlerContext ctx) {
         Serializable netId = ctx.channel().attr(Conn.NET_ID).get();
         if (netId == null) {
-            logger.warn("ClientConn netId not found in ctx, ctx: {}", ctx.toString());
+            logger.warn("Conn netId not found in ctx, ctx: {}", ctx.toString());
             return null;
         }
 
         C conn = connMap.get(netId);
         if (conn == null) {
-            logger.warn("ClientConn not found, netId: {}", netId);
+            logger.warn("Conn not found, netId: {}", netId);
         }
         return conn;
     }
@@ -45,14 +45,15 @@ public class MemoryConnContext<C extends Conn> implements ConnContext<C> {
     public C getConn(Serializable netId) {
         C conn = connMap.get(netId);
         if (conn == null) {
-            logger.warn("ClientConn not found, netId: {}", netId);
+            logger.warn("Conn not found, netId: {}", netId);
         }
         return conn;
     }
 
     @Override
     public void addConn(C conn) {
-        connMap.putIfAbsent(conn.getNetId(), conn);
+        logger.debug("add a conn, netId: {}", conn.getNetId());
+        connMap.put(conn.getNetId(), conn);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class MemoryConnContext<C extends Conn> implements ConnContext<C> {
     public void removeConn(ChannelHandlerContext ctx) {
         Serializable netId = ctx.channel().attr(Conn.NET_ID).get();
         if (netId == null) {
-            logger.warn("[MemoryConnContext] can't find a netId for the ctx");
+            logger.warn("Can't find a netId for the ctx");
         } else {
             removeConn(netId);
         }

@@ -1,11 +1,10 @@
 package com.github.yuanrw.im.transfer.config;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.github.yuanrw.im.user.status.factory.UserStatusServiceFactory;
 import com.github.yuanrw.im.user.status.service.UserStatusService;
 import com.github.yuanrw.im.user.status.service.impl.RedisUserStatusServiceImpl;
+import com.google.inject.AbstractModule;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 /**
  * Date: 2019-06-09
@@ -13,11 +12,11 @@ import com.github.yuanrw.im.user.status.service.impl.RedisUserStatusServiceImpl;
  *
  * @author yrw
  */
-public class TransferModule implements Module {
+public class TransferModule extends AbstractModule {
 
     @Override
-    public void configure(Binder binder) {
-        binder.install(new FactoryModuleBuilder()
+    protected void configure() {
+        install(new FactoryModuleBuilder()
             .implement(UserStatusService.class, RedisUserStatusServiceImpl.class)
             .build(UserStatusServiceFactory.class));
     }

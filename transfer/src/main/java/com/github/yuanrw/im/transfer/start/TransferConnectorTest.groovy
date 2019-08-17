@@ -148,7 +148,7 @@ class TransferConnectorTest extends Specification {
 //                }
 //            }
 //        }
-//        InternalConn conn = new InternalConn(ctx)
+//        ConnectorConn conn = new ConnectorConn(ctx)
 //        connectorConnContext.addConn(conn)
 //
 //        Internal.InternalMsg forceOffline = Internal.InternalMsg.newBuilder()

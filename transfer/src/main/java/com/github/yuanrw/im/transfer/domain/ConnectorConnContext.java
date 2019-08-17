@@ -1,13 +1,13 @@
 package com.github.yuanrw.im.transfer.domain;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.github.yuanrw.im.common.domain.conn.InternalConn;
+import com.github.yuanrw.im.common.domain.conn.ConnectorConn;
 import com.github.yuanrw.im.common.domain.conn.MemoryConnContext;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.protobuf.generate.Internal;
 import com.github.yuanrw.im.user.status.factory.UserStatusServiceFactory;
 import com.github.yuanrw.im.user.status.service.UserStatusService;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import io.netty.channel.ChannelHandlerContext;
 
 import static com.github.yuanrw.im.transfer.start.TransferStarter.TRANSFER_CONFIG;
@@ -21,20 +21,20 @@ import static com.github.yuanrw.im.transfer.start.TransferStarter.TRANSFER_CONFI
  * @author yrw
  */
 @Singleton
-public class ConnectorConnContext extends MemoryConnContext<InternalConn> {
+public class ConnectorConnContext extends MemoryConnContext<ConnectorConn> {
 
     private UserStatusService userStatusService;
 
     @Inject
     public ConnectorConnContext(UserStatusServiceFactory userStatusServiceFactory) {
-        this.userStatusService = userStatusServiceFactory
-            .createService(TRANSFER_CONFIG.getRedisHost(), TRANSFER_CONFIG.getRedisPort());
+        this.userStatusService = userStatusServiceFactory.createService(TRANSFER_CONFIG.getRedisHost(), TRANSFER_CONFIG.getRedisPort());
     }
 
     public void online(ChannelHandlerContext ctx, String userId) {
         String oldConnectorId = userStatusService.online(getConn(ctx).getNetId().toString(), userId);
         if (oldConnectorId != null) {
-            InternalConn conn = getConn(oldConnectorId);
+            //if the user is online, make him offline
+            ConnectorConn conn = getConn(oldConnectorId);
             if (conn != null) {
                 Internal.InternalMsg forceOffline = Internal.InternalMsg.newBuilder()
                     .setVersion(1)
@@ -55,10 +55,10 @@ public class ConnectorConnContext extends MemoryConnContext<InternalConn> {
         userStatusService.offline(userId);
     }
 
-    public InternalConn getConnByUserId(String userId) {
+    public ConnectorConn getConnByUserId(String userId) {
         String connectorId = userStatusService.getConnectorId(userId);
         if (connectorId != null) {
-            InternalConn conn = getConn(connectorId);
+            ConnectorConn conn = getConn(connectorId);
             if (conn != null) {
                 return conn;
             } else {

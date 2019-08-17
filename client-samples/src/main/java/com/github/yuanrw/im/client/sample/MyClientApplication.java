@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 public class MyClientApplication {
 
     public static void main(String[] args) {
-
         List<MyClient> myClientList = new ArrayList<>();
         String[] usernameForTest = {
             "Adela", "Alice", "Bella", "Cynthia", "Freda", "Honey",
@@ -24,9 +23,14 @@ public class MyClientApplication {
         };
 
         //login all user
-        for (String username : usernameForTest) {
-            myClientList.add(new MyClient(args[0], 9081,
-                args[1], username, "123abc"));
+        for (int i = 0; i < 17; i++) {
+            if (i < 10) {
+                myClientList.add(new MyClient("127.0.0.1", 9081,
+                    "http://127.0.0.1:8082", usernameForTest[i], "123abc"));
+            } else {
+                myClientList.add(new MyClient("127.0.0.1", 19081,
+                    "http://127.0.0.1:8082", usernameForTest[i], "123abc"));
+            }
         }
 
         //print test result every 5 seconds

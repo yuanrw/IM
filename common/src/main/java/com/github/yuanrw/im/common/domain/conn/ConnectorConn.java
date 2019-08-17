@@ -9,9 +9,9 @@ import java.io.Serializable;
  * Time: 23:42
  * @author yrw
  */
-public class InternalConn extends AbstractConn {
+public class ConnectorConn extends AbstractConn {
 
-    public InternalConn(ChannelHandlerContext ctx) {
+    public ConnectorConn(ChannelHandlerContext ctx) {
         super(ctx);
     }
 

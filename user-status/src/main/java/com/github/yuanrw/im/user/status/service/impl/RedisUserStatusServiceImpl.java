@@ -39,21 +39,17 @@ public class RedisUserStatusServiceImpl implements UserStatusService {
     @Override
     public String online(String connectorId, String userId) {
         logger.debug("[user status] user online: connectorId: {}, userID: {}", connectorId, userId);
-        String oldConnectorId = jedis.hget(USER_CONN_STATUS_KEY, userId);
-        if (oldConnectorId != null) {
-            return oldConnectorId;
-        }
+        String oldConnectorId = jedis.hget(USER_CONN_STATUS_KEY, String.valueOf(userId));
         userIdToNetId.put(userId, connectorId);
-
-        jedis.hset(USER_CONN_STATUS_KEY, userId, connectorId);
-        return null;
+        jedis.hset(USER_CONN_STATUS_KEY, String.valueOf(userId), connectorId);
+        return oldConnectorId;
     }
 
     @Override
     public void offline(String userId) {
         userIdToNetId.remove(userId);
 
-        jedis.hdel(USER_CONN_STATUS_KEY, userId);
+        jedis.hdel(USER_CONN_STATUS_KEY, String.valueOf(userId));
     }
 
     @Override

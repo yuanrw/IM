@@ -1,11 +1,8 @@
 package com.github.yuanrw.im.connector.start;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.github.yuanrw.im.common.code.MsgDecoder;
 import com.github.yuanrw.im.common.code.MsgEncoder;
 import com.github.yuanrw.im.common.exception.ImException;
-import com.github.yuanrw.im.connector.config.ConnectorModule;
 import com.github.yuanrw.im.connector.handler.ConnectorClientHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -29,8 +26,6 @@ import java.util.concurrent.TimeoutException;
 public class ConnectorServer {
     private static final Logger logger = LoggerFactory.getLogger(ConnectorServer.class);
 
-    private static Injector injector = Guice.createInjector(new ConnectorModule());
-
     static void start(int port) {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
@@ -42,9 +37,9 @@ public class ConnectorServer {
                 @Override
                 protected void initChannel(SocketChannel channel) throws Exception {
                     ChannelPipeline pipeline = channel.pipeline();
-                    pipeline.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
-                    pipeline.addLast("MsgEncoder", injector.getInstance(MsgEncoder.class));
-                    pipeline.addLast("ConnectorClientHandler", injector.getInstance(ConnectorClientHandler.class));
+                    pipeline.addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class));
+                    pipeline.addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class));
+                    pipeline.addLast("ConnectorClientHandler", ConnectorStarter.injector.getInstance(ConnectorClientHandler.class));
                 }
             });
 

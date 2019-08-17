@@ -1,7 +1,7 @@
 package com.github.yuanrw.im.common.test
 
 import com.github.yuanrw.im.common.domain.conn.Conn
-import com.github.yuanrw.im.common.domain.conn.InternalConn
+import com.github.yuanrw.im.common.domain.conn.ConnectorConn
 import com.github.yuanrw.im.common.domain.conn.MemoryConnContext
 import io.netty.channel.Channel
 import io.netty.channel.ChannelHandlerContext
@@ -24,7 +24,7 @@ class ConnContextTest extends Specification {
                 }
             }
         }
-        InternalConn conn = new InternalConn(ctx)
+        ConnectorConn conn = new ConnectorConn(ctx)
 
         expect:
         conn.getCtx() == ctx
@@ -46,10 +46,10 @@ class ConnContextTest extends Specification {
                 }
             }
         }
-        def context = new MemoryConnContext<InternalConn>()
+        def context = new MemoryConnContext<ConnectorConn>()
 
         when:
-        InternalConn conn = new InternalConn(ctx)
+        ConnectorConn conn = new ConnectorConn(ctx)
         context.addConn(conn)
 
         then:

@@ -9,6 +9,7 @@ import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.github.yuanrw.im.rest.web.mapper.OfflineMapper;
 import com.github.yuanrw.im.rest.web.service.OfflineService;
+import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +62,7 @@ public class OfflineServiceImpl extends ServiceImpl<OfflineMapper, Offline> impl
 
         if (list.size() > 0) {
             List<Long> ids = list.stream().map(Offline::getId).collect(Collectors.toList());
-            removeByIds(ids);
+            Lists.partition(ids, 1000).forEach(this::removeByIds);
         }
 
         return list;

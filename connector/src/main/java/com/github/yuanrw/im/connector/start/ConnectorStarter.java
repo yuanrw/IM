@@ -2,6 +2,9 @@ package com.github.yuanrw.im.connector.start;
 
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.connector.config.ConnectorConfig;
+import com.github.yuanrw.im.connector.config.ConnectorModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,6 +19,7 @@ import java.util.Properties;
  */
 public class ConnectorStarter {
     public static ConnectorConfig CONNECTOR_CONFIG = new ConnectorConfig();
+    public static Injector injector = Guice.createInjector(new ConnectorModule());
 
     public static void main(String[] args) throws IOException {
         //parse start parameter

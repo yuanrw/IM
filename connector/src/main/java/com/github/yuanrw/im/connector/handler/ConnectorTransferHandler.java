@@ -1,7 +1,6 @@
 package com.github.yuanrw.im.connector.handler;
 
 import com.github.yuanrw.im.common.domain.ResponseCollector;
-import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.common.parse.AbstractMsgParser;
 import com.github.yuanrw.im.common.parse.InternalParser;
 import com.github.yuanrw.im.common.util.IdWorker;
@@ -20,15 +19,17 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkDest;
 import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkFrom;
 
 /**
  * send msg to transfer
- * has state, not shareable
+ * stateless, shareable
  * Date: 2019-02-12
  * Time: 12:17
  *
@@ -38,12 +39,13 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
     private static Logger logger = LoggerFactory.getLogger(ConnectorTransferHandler.class);
 
     private static String connectorId = TokenGenerator.generate();
+
+    private static ConcurrentMap<Long, ResponseCollector<Internal.InternalMsg>> userStatusMsgCollectorMap = new ConcurrentHashMap<>();
     private static List<ChannelHandlerContext> ctxList = new ArrayList<>();
 
     private FromTransferParser fromTransferParser;
     private ConnectorService connectorService;
     private UserStatusService userStatusService;
-    private static AtomicReference<ResponseCollector<Internal.InternalMsg>> userStatusMsgCollector = new AtomicReference<>();
 
     @Inject
     public ConnectorTransferHandler(ConnectorService connectorService, UserStatusService userStatusService) {
@@ -54,8 +56,9 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("[ConnectorTransfer] connect success");
-        ConnectorTransferHandler.ctxList.add(ctx);
+        logger.info("[ConnectorTransfer] connect to transfer");
+
+        ctxList.add(ctx);
 
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
             .setId(IdWorker.genId())
@@ -85,28 +88,19 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
         //todo: reconnect
     }
 
-    public static List<ChannelHandlerContext> getCtxList() {
+    public static Collection<ChannelHandlerContext> getCtxList() {
         if (ctxList.size() == 0) {
-            throw new ImException("connector is not connected to a transfer!");
+            logger.warn("connector is not connected to a transfer!");
         }
         return ctxList;
     }
 
-    public static ResponseCollector<Internal.InternalMsg> createUserStatusMsgCollector(Duration timeout) {
+    public static ResponseCollector<Internal.InternalMsg> createUserStatusMsgCollector(Long msgId, Duration timeout) {
         ResponseCollector<Internal.InternalMsg> collector = new ResponseCollector<>(timeout,
             "time out waiting for msg from transfer");
-        boolean success = userStatusMsgCollector.compareAndSet(null, collector);
-        if (!success) {
-            ResponseCollector<Internal.InternalMsg> previousCollector = userStatusMsgCollector.get();
-            if (previousCollector == null) {
-                return createUserStatusMsgCollector(timeout);
-            }
-
-            throw new IllegalStateException("Still waiting for init response from server");
-        }
+        userStatusMsgCollectorMap.put(msgId, collector);
         return collector;
     }
-
 
     class FromTransferParser extends AbstractMsgParser {
 
@@ -118,15 +112,17 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
             parser.register(Internal.InternalMsg.MsgType.FORCE_OFFLINE,
                 (m, ctx) -> userStatusService.forceOffline(m.getMsgBody()));
 
-            register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChat((m)));
-            register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAck(m));
+            register(Chat.ChatMsg.class, (m, ctx) -> {
+                connectorService.doChatToClientAndFlush(m);
+                connectorService.doSendAckToClientOrTransferAndFlush(connectorService.getDelivered(m));
+            });
+            register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAckToClientAndFlush(m));
             register(Internal.InternalMsg.class, parser.generateFun());
         }
 
         private void userStatusSyncDone(Internal.InternalMsg msg) {
-            ResponseCollector<Internal.InternalMsg> collector = userStatusMsgCollector.get();
+            ResponseCollector<Internal.InternalMsg> collector = userStatusMsgCollectorMap.remove(Long.parseLong(msg.getMsgBody()));
             if (collector != null) {
-                userStatusMsgCollector.set(null);
                 collector.getFuture().complete(msg);
             } else {
                 logger.error("Unexpected response received: {}", msg);

@@ -1,6 +1,5 @@
 package com.github.yuanrw.im.client.api;
 
-import com.google.inject.Inject;
 import com.github.yuanrw.im.client.context.UserContext;
 import com.github.yuanrw.im.client.domain.Friend;
 import com.github.yuanrw.im.client.handler.ClientConnectorHandler;
@@ -30,11 +29,12 @@ public class UserApi {
 
     private ClientRestService clientRestService;
     private UserContext userContext;
+    private ClientConnectorHandler handler;
 
-    @Inject
-    public UserApi(ClientRestService clientRestService, UserContext userContext) {
+    public UserApi(ClientRestService clientRestService, UserContext userContext, ClientConnectorHandler handler) {
         this.clientRestService = clientRestService;
         this.userContext = userContext;
+        this.handler = handler;
     }
 
     public UserInfo login(String username, String password) {
@@ -62,7 +62,7 @@ public class UserApi {
             .build();
 
 
-        CompletableFuture<Internal.InternalMsg> future = ClientConnectorHandler.createCollector(Duration.ofSeconds(10)).getFuture()
+        CompletableFuture<Internal.InternalMsg> future = handler.createCollector(Duration.ofSeconds(10)).getFuture()
             .whenComplete((m, e) -> {
                 if (!m.getMsgBody().equals(greet.getId() + "")) {
                     throw new ImException("[client] user connected to server failed, " +
@@ -72,7 +72,7 @@ public class UserApi {
                 }
             });
 
-        ClientConnectorHandler.getCtx().writeAndFlush(greet);
+        handler.getCtx().writeAndFlush(greet);
 
         try {
             future.get();

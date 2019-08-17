@@ -1,7 +1,5 @@
 package com.github.yuanrw.im.connector.handler;
 
-import com.google.inject.Inject;
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.common.parse.AbstractMsgParser;
 import com.github.yuanrw.im.common.parse.InternalParser;
 import com.github.yuanrw.im.connector.domain.ClientConnContext;
@@ -10,6 +8,8 @@ import com.github.yuanrw.im.connector.service.UserStatusService;
 import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.github.yuanrw.im.protobuf.generate.Internal;
+import com.google.inject.Inject;
+import com.google.protobuf.Message;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -72,8 +72,8 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
             parser.register(Internal.InternalMsg.MsgType.GREET,
                 (m, ctx) -> userStatusService.userOnline(m.getId(), m.getMsgBody(), ctx));
 
-            register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChat(m));
-            register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAck(m));
+            register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChatToClientOrTransferAndFlush(m));
+            register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAckToClientOrTransferAndFlush(m));
             register(Internal.InternalMsg.class, parser.generateFun());
         }
     }

@@ -1,9 +1,8 @@
 package com.github.yuanrw.im.client.context;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.github.yuanrw.im.client.handler.ClientConnectorHandler;
 import com.github.yuanrw.im.common.domain.po.Relation;
+import com.google.inject.Inject;
 
 import java.util.List;
 
@@ -14,7 +13,6 @@ import java.util.List;
  *
  * @author yrw
  */
-@Singleton
 public class UserContext {
 
     private String userId;

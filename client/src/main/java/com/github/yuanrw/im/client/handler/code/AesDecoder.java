@@ -1,13 +1,12 @@
 package com.github.yuanrw.im.client.handler.code;
 
-import com.google.inject.Inject;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.client.context.UserContext;
 import com.github.yuanrw.im.common.code.MsgDecoder;
 import com.github.yuanrw.im.common.domain.po.Relation;
 import com.github.yuanrw.im.common.util.Encryption;
 import com.github.yuanrw.im.protobuf.generate.Chat;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.Message;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import org.slf4j.Logger;
@@ -22,11 +21,10 @@ import java.util.List;
  * @author yrw
  */
 public class AesDecoder extends MessageToMessageDecoder<Message> {
-
     private static final Logger logger = LoggerFactory.getLogger(MsgDecoder.class);
+
     private UserContext userContext;
 
-    @Inject
     public AesDecoder(UserContext userContext) {
         this.userContext = userContext;
     }

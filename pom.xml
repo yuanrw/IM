@@ -27,6 +27,8 @@
         <spring.boot.version>2.1.2.RELEASE</spring.boot.version>
         <protobuf.version>3.7.1</protobuf.version>
         <guice.version>4.2.2</guice.version>
+        <rocksdb.version>5.5.1</rocksdb.version>
+        <ratis.version>0.3.0</ratis.version>
     </properties>
 
     <dependencyManagement>
@@ -94,9 +96,9 @@
                 <version>3.8.1</version>
             </dependency>
             <dependency>
-                <groupId>redis.clients</groupId>
-                <artifactId>jedis</artifactId>
-                <version>3.0.1</version>
+                <groupId>org.rocksdb</groupId>
+                <artifactId>rocksdbjni</artifactId>
+                <version>${rocksdb.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.protobuf</groupId>
@@ -181,6 +183,16 @@
                 <groupId>com.github.yuanrw.im</groupId>
                 <artifactId>protobuf</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ratis</groupId>
+                <artifactId>ratis-server</artifactId>
+                <version>${ratis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ratis</groupId>
+                <artifactId>ratis-netty</artifactId>
+                <version>${ratis.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

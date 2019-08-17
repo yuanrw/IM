@@ -1,14 +1,13 @@
 package com.github.yuanrw.im.client.api;
 
-import com.google.inject.Inject;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.client.context.UserContext;
 import com.github.yuanrw.im.client.handler.ClientConnectorHandler;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.Message;
 import io.netty.util.CharsetUtil;
 
 /**
@@ -20,10 +19,11 @@ import io.netty.util.CharsetUtil;
 public class ChatApi {
 
     private UserContext userContext;
+    private ClientConnectorHandler handler;
 
-    @Inject
-    public ChatApi(UserContext userContext) {
+    public ChatApi(UserContext userContext, ClientConnectorHandler handler) {
         this.userContext = userContext;
+        this.handler = handler;
     }
 
     public Chat.ChatMsg.Builder chatMsgBuilder() {
@@ -84,6 +84,6 @@ public class ChatApi {
             .setAckMsgId(msg.getId())
             .build();
 
-        ClientConnectorHandler.getCtx().writeAndFlush(read);
+        handler.getCtx().writeAndFlush(read);
     }
 }

@@ -2,7 +2,6 @@ package com.github.yuanrw.im.client.handler;
 
 import com.github.yuanrw.im.client.api.ClientMsgListener;
 import com.github.yuanrw.im.common.domain.ResponseCollector;
-import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.common.parse.AbstractMsgParser;
 import com.github.yuanrw.im.common.parse.AckParser;
 import com.github.yuanrw.im.common.parse.InternalParser;
@@ -30,11 +29,10 @@ import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkFrom;
 public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message> {
     private Logger logger = LoggerFactory.getLogger(ClientConnectorHandler.class);
 
-    private static ChannelHandlerContext ctx;
-    private static AtomicReference<ResponseCollector<Internal.InternalMsg>> respCollector = new AtomicReference<>();
-
+    private AtomicReference<ResponseCollector<Internal.InternalMsg>> respCollector = new AtomicReference<>();
     private ClientMsgListener clientMsgListener;
     private FromConnectorParser fromConnectorParser;
+    private ChannelHandlerContext ctx;
 
     public ClientConnectorHandler(ClientMsgListener clientMsgListener) {
         assert clientMsgListener != null;
@@ -44,7 +42,7 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ClientConnectorHandler.ctx = ctx;
+        this.ctx = ctx;
         clientMsgListener.online();
     }
 
@@ -70,18 +68,15 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
     }
 
     public void writeAndFlush(Message message, Long id) {
-        ClientConnectorHandler.ctx.writeAndFlush(message);
+        ctx.writeAndFlush(message);
         clientMsgListener.hasSent(id);
     }
 
-    public static ChannelHandlerContext getCtx() {
-        if (ctx == null) {
-            throw new ImException("client is not connected to connector!");
-        }
+    public ChannelHandlerContext getCtx() {
         return ctx;
     }
 
-    public static ResponseCollector<Internal.InternalMsg> createCollector(Duration timeout) {
+    public ResponseCollector<Internal.InternalMsg> createCollector(Duration timeout) {
         ResponseCollector<Internal.InternalMsg> collector = new ResponseCollector<>(timeout,
             "time out waiting for msg from connector");
         boolean success = respCollector.compareAndSet(null, collector);
@@ -91,7 +86,7 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
                 return createCollector(timeout);
             }
 
-            throw new IllegalStateException("Still waiting for init response from server");
+            throw new IllegalStateException("Still waiting for init response from connector");
         }
         return collector;
     }

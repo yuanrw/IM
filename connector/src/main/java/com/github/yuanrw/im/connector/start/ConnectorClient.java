@@ -3,10 +3,7 @@ package com.github.yuanrw.im.connector.start;
 import com.github.yuanrw.im.common.code.MsgDecoder;
 import com.github.yuanrw.im.common.code.MsgEncoder;
 import com.github.yuanrw.im.common.exception.ImException;
-import com.github.yuanrw.im.connector.config.ConnectorModule;
 import com.github.yuanrw.im.connector.handler.ConnectorTransferHandler;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -28,8 +25,6 @@ public class ConnectorClient {
 
     private static Logger logger = LoggerFactory.getLogger(ConnectorClient.class);
 
-    public static Injector injector = Guice.createInjector(new ConnectorModule());
-
     static void start(String[] transferUrls) {
         for (String transferUrl : transferUrls) {
             String[] url = transferUrl.split(":");
@@ -42,9 +37,9 @@ public class ConnectorClient {
                     @Override
                     protected void initChannel(NioSocketChannel ch) throws Exception {
                         ChannelPipeline p = ch.pipeline();
-                        p.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
-                        p.addLast("MsgEncoder", injector.getInstance(MsgEncoder.class));
-                        p.addLast("ConnectorTransferHandler", injector.getInstance(ConnectorTransferHandler.class));
+                        p.addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class));
+                        p.addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class));
+                        p.addLast("ConnectorTransferHandler", ConnectorStarter.injector.getInstance(ConnectorTransferHandler.class));
                     }
                 }).connect(url[0], Integer.parseInt(url[1]))
                 .addListener((ChannelFutureListener) future -> {

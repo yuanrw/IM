@@ -7,6 +7,7 @@ import com.github.yuanrw.im.client.context.UserContext;
 import com.github.yuanrw.im.client.handler.ClientConnectorHandler;
 import com.github.yuanrw.im.client.handler.code.AesDecoder;
 import com.github.yuanrw.im.client.handler.code.AesEncoder;
+import com.github.yuanrw.im.client.service.ClientRestService;
 import com.github.yuanrw.im.common.code.MsgDecoder;
 import com.github.yuanrw.im.common.code.MsgEncoder;
 import com.github.yuanrw.im.common.exception.ImException;
@@ -38,6 +39,8 @@ public class ImClient {
     private String connectorHost;
     private Integer connectorPort;
     private ClientMsgListener clientMsgListener;
+    private UserContext userContext;
+    private ClientConnectorHandler handler;
 
     public ImClient(String connectorHost, Integer connectorPort, String restUrl) {
         this(connectorHost, connectorPort, restUrl, null);
@@ -59,8 +62,8 @@ public class ImClient {
     public void start() {
         assert clientMsgListener != null;
 
-        UserContext userContext = injector.getInstance(UserContext.class);
-        ClientConnectorHandler handler = new ClientConnectorHandler(clientMsgListener);
+        userContext = injector.getInstance(UserContext.class);
+        handler = new ClientConnectorHandler(clientMsgListener);
         userContext.setClientConnectorHandler(handler);
 
         startImClient(handler);
@@ -77,12 +80,12 @@ public class ImClient {
                     ChannelPipeline p = ch.pipeline();
 
                     //out
-                    p.addLast("MsgEncoder", injector.getInstance(MsgEncoder.class));
-                    p.addLast("AesEncoder", injector.getInstance(AesEncoder.class));
+                    p.addLast("MsgEncoder", new MsgEncoder());
+                    p.addLast("AesEncoder", new AesEncoder(userContext));
 
                     //in
-                    p.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
-                    p.addLast("AesDecoder", injector.getInstance(AesDecoder.class));
+                    p.addLast("MsgDecoder", new MsgDecoder());
+                    p.addLast("AesDecoder", new AesDecoder(userContext));
                     p.addLast("ClientConnectorHandler", handler);
                 }
             }).connect(connectorHost, connectorPort)
@@ -118,8 +121,11 @@ public class ImClient {
         this.clientMsgListener = clientMsgListener;
     }
 
-    public <T> T getApi(Class<T> clazz) {
-        assert clazz == UserApi.class || clazz == ChatApi.class;
-        return injector.getInstance(clazz);
+    public ChatApi chatApi() {
+        return new ChatApi(userContext, handler);
+    }
+
+    public UserApi userApi() {
+        return new UserApi(injector.getInstance(ClientRestService.class), userContext, handler);
     }
 }
