@@ -8,6 +8,8 @@ import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.google.inject.Inject;
 import com.google.protobuf.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
@@ -20,6 +22,7 @@ import java.util.function.BiConsumer;
  * @author yrw
  */
 public class ConnectorService {
+    private static Logger logger = LoggerFactory.getLogger(ConnectorService.class);
 
     private ClientConnContext clientConnContext;
 
@@ -41,14 +44,14 @@ public class ConnectorService {
     public void doChatToClientOrTransferAndFlush(Chat.ChatMsg msg) {
         Conn conn = clientConnContext.getConnByUserId(msg.getDestId());
 
-        sendMsg(conn, msg, (c, m) -> {
-            conn.getCtx().write(msg);
-            conn.getCtx().write(getDelivered(msg));
-            conn.getCtx().flush();
-        });
+        sendMsg(conn, msg, (c, m) -> conn.getCtx().writeAndFlush(msg));
+
+        doSendAckToClientOrTransferAndFlush(getDelivered(msg));
     }
 
     public void doSendAckToClientOrTransferAndFlush(Ack.AckMsg ackMsg) {
+        logger.debug("[send ack] {}", ackMsg.toString());
+
         Conn conn = clientConnContext.getConnByUserId(ackMsg.getDestId());
         sendMsg(conn, ackMsg, (c, m) -> conn.getCtx().writeAndFlush(ackMsg));
     }

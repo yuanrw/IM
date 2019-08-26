@@ -1,53 +1,40 @@
 package com.github.yuanrw.im.client.sample;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Scanner;
 
 /**
- * Date: 2019-05-15
- * Time: 13:57
+ * Date: 2019-08-26
+ * Time: 13:24
  *
  * @author yrw
  */
 public class MyClientApplication {
 
+    private final static String CONNECTOR_HOST = "172.25.49.165";
+    private final static Integer CONNECTOR_PORT = 9999;
+    private final static String REST_URL = "http://127.0.0.1:8082";
+
     public static void main(String[] args) {
-        List<MyClient> myClientList = new ArrayList<>();
-        String[] usernameForTest = {
-            "Adela", "Alice", "Bella", "Cynthia", "Freda", "Honey",
-            "Irene", "Iris", "Joa", "Juliet", "Lisa", "Mandy", "Nora",
-            "Olive", "Tom", "xianyy", "yuanrw",
-        };
+        System.out.println("please login");
 
-        //login all user
-        for (int i = 0; i < 17; i++) {
-            myClientList.add(new MyClient(args[0], 9081,
-                args[1], usernameForTest[i], "123abc"));
+        Scanner scan = new Scanner(System.in);
+
+        String username = scan.next();
+        String password = scan.next();
+
+        MyClient myClient = new MyClient(CONNECTOR_HOST, CONNECTOR_PORT, REST_URL, username, password);
+
+        System.out.println("\r\nlogin successfully (^_^)\r\n");
+
+        myClient.printUserInfo();
+
+        System.out.println("\r\nnow send msg to your friends\r\n\r\n");
+
+        while (scan.hasNext()) {
+            String userId = scan.next();
+            String text = scan.next();
+            myClient.send(userId, text);
         }
-
-        //print test result every 5 seconds
-        ScheduledExecutorService printExecutor = Executors.newScheduledThreadPool(1);
-
-        doInExecutor(printExecutor, 5, () -> {
-            System.out.println("\n\n");
-            System.out.println(String.format("sentMsg: %d, readMsg: %d, hasSentAck: %d, " +
-                    "hasDeliveredAck: %d, hasReadAck: %d, hasException: %d",
-                MyClient.sendMsg.get(), MyClient.readMsg.get(), MyClient.hasSentAck.get(),
-                MyClient.hasDeliveredAck.get(), MyClient.hasReadAck.get(), MyClient.hasException.get()));
-            System.out.println("\n\n");
-        });
-
-
-        //start simulate send
-        ScheduledExecutorService clientExecutor = Executors.newScheduledThreadPool(20);
-
-        myClientList.forEach(myClient -> doInExecutor(clientExecutor, 2, myClient::randomSendTest));
-    }
-
-    private static void doInExecutor(ScheduledExecutorService executorService, int period, Runnable doFunction) {
-        executorService.scheduleAtFixedRate(doFunction, 0, period, TimeUnit.SECONDS);
+        scan.close();
     }
 }

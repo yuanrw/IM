@@ -86,10 +86,10 @@ public class UserApi {
     }
 
     public List<Friend> friends(String token) {
-        return getFriend(clientRestService.friends(userContext.getUserId(), token), userContext.getUserId());
+        return getFriends(clientRestService.friends(userContext.getUserId(), token), userContext.getUserId());
     }
 
-    private static List<Friend> getFriend(List<RelationDetail> relations, String userId) {
+    private static List<Friend> getFriends(List<RelationDetail> relations, String userId) {
         return relations.stream().map(r -> {
             Friend friend = new Friend();
             if (r.getUserId1().equals(userId)) {

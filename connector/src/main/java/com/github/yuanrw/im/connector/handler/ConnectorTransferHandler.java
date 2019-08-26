@@ -113,6 +113,7 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
                 (m, ctx) -> userStatusService.forceOffline(m.getMsgBody()));
 
             register(Chat.ChatMsg.class, (m, ctx) -> {
+                //todo: if not on the machine
                 connectorService.doChatToClientAndFlush(m);
                 connectorService.doSendAckToClientOrTransferAndFlush(connectorService.getDelivered(m));
             });

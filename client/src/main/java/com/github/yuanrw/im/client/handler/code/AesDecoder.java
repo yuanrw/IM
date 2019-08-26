@@ -1,7 +1,6 @@
 package com.github.yuanrw.im.client.handler.code;
 
 import com.github.yuanrw.im.client.context.UserContext;
-import com.github.yuanrw.im.common.code.MsgDecoder;
 import com.github.yuanrw.im.common.domain.po.Relation;
 import com.github.yuanrw.im.common.util.Encryption;
 import com.github.yuanrw.im.protobuf.generate.Chat;
@@ -9,8 +8,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -21,7 +18,6 @@ import java.util.List;
  * @author yrw
  */
 public class AesDecoder extends MessageToMessageDecoder<Message> {
-    private static final Logger logger = LoggerFactory.getLogger(MsgDecoder.class);
 
     private UserContext userContext;
 
@@ -40,8 +36,6 @@ public class AesDecoder extends MessageToMessageDecoder<Message> {
 
             Chat.ChatMsg decodeMsg = Chat.ChatMsg.newBuilder().mergeFrom(cm)
                 .setMsgBody(ByteString.copyFrom(decodeBody)).build();
-
-            logger.debug("[decode] decode message: {}", decodeMsg.toString());
 
             out.add(decodeMsg);
         } else {

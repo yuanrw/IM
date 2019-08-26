@@ -14,7 +14,7 @@
     </resultMap>
 
     <select id="listFriends" resultMap="BaseResultMap">
-      select r.id, user_id1, user_id2, encrypt_key, r.gmt_create, u1.username as username2, u2.username as username1
+      select r.id, user_id1, user_id2, encrypt_key, r.gmt_create, u1.username as username1, u2.username as username2
       from im_relation r
       inner join im_user u1 on r.user_id1 = u1.id
       inner join im_user u2 on r.user_id2 = u2.id

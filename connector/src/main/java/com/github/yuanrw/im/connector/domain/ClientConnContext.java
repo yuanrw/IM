@@ -28,13 +28,19 @@ public class ClientConnContext extends MemoryConnContext<ClientConn> {
     }
 
     public ClientConn getConnByUserId(String userId) {
+        logger.debug("[get conn on this machine] userId: {}", userId);
+
         Serializable netId = userIdToNetId.get(userId);
         if (netId == null) {
+            logger.debug("[get conn this machine] netId not found");
             return null;
         }
         ClientConn conn = connMap.get(netId);
         if (conn == null) {
+            logger.debug("[get conn this machine] conn not found");
             userIdToNetId.remove(userId);
+        } else {
+            logger.debug("[get conn this machine] found conn, userId:{}, connId: {}", userId, conn.getNetId());
         }
         return conn;
     }
@@ -46,7 +52,7 @@ public class ClientConnContext extends MemoryConnContext<ClientConn> {
         if (userIdToNetId.containsKey(userId)) {
             removeConn(userIdToNetId.containsKey(userId));
         }
-        logger.debug("[ClientConn] user: {} is online, netId", userId, conn.getNetId());
+        logger.debug("[add conn on this machine] user: {} is online, netId", userId, conn.getNetId());
 
         connMap.putIfAbsent(conn.getNetId(), conn);
         userIdToNetId.put(conn.getUserId(), conn.getNetId());

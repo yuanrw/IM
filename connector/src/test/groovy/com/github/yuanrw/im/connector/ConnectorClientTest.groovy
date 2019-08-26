@@ -197,9 +197,7 @@ class ConnectorClientTest extends Specification {
         ch.writeInbound(chat)
 
         then:
-        1 * ctx.write(chat)
-        1 * ctx.write(_ as Ack.AckMsg)
-        1 * ctx.flush()
+        1 * ctx.writeAndFlush(chat)
         0 * connectorTransferCtx.writeAndFlush(_ as Chat.ChatMsg)
 
         //offline

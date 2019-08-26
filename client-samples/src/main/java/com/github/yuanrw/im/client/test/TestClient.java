@@ -1,4 +1,4 @@
-package com.github.yuanrw.im.client.sample;
+package com.github.yuanrw.im.client.test;
 
 import com.github.yuanrw.im.client.ImClient;
 import com.github.yuanrw.im.client.api.ChatApi;
@@ -12,12 +12,13 @@ import com.google.protobuf.ByteString;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.CharsetUtil;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Date: 2019-07-09
@@ -25,15 +26,22 @@ import java.util.stream.Collectors;
  *
  * @author yrw
  */
-public class MyClient {
-    private static Logger logger = LoggerFactory.getLogger(MyClient.class);
+class TestClient {
+    private static Logger logger = LoggerFactory.getLogger(TestClient.class);
 
     private ChatApi chatApi;
     private UserInfo userInfo;
 
-    private Map<String, Friend> friendMap;
+    private List<Friend> friends;
 
-    public MyClient(String connectorHost, Integer connectorPort, String restUrl, String username, String password) {
+    static AtomicInteger sendMsg = new AtomicInteger(0);
+    static AtomicInteger readMsg = new AtomicInteger(0);
+    static AtomicInteger hasSentAck = new AtomicInteger(0);
+    static AtomicInteger hasDeliveredAck = new AtomicInteger(0);
+    static AtomicInteger hasReadAck = new AtomicInteger(0);
+    static AtomicInteger hasException = new AtomicInteger(0);
+
+    TestClient(String connectorHost, Integer connectorPort, String restUrl, String username, String password) {
         ImClient imClient = start(connectorHost, connectorPort, restUrl);
         chatApi = imClient.chatApi();
         UserApi userApi = imClient.userApi();
@@ -41,13 +49,7 @@ public class MyClient {
         //login and get a token
         userInfo = userApi.login(username, DigestUtils.sha256Hex(password.getBytes(CharsetUtil.UTF_8)));
         //get friends list
-        List<Friend> friends = userApi.friends(userInfo.getToken());
-        friendMap = friends.stream().collect(Collectors.toMap(Friend::getUserId, f -> f));
-
-        System.out.println("Here are my friends!");
-        for (Friend friend : friends) {
-            System.out.println(friend.getUserId() + ": " + friend.getUsername());
-        }
+        friends = userApi.friends(userInfo.getToken());
     }
 
     private ImClient start(String connectorHost, Integer connectorPort, String restUrl) {
@@ -60,25 +62,28 @@ public class MyClient {
 
             @Override
             public void read(Chat.ChatMsg chatMsg) {
-                //when it's confirmed that user has read this msg
-                System.out.println(friendMap.get(chatMsg.getFromId()).getUsername() + ": "
-                    + chatMsg.getMsgBody().toStringUtf8());
+                //when it's confirmed that user has seen this msg
+                logger.info("[{}] get a msg: {}", userInfo.getUsername(), chatMsg.toString());
+                readMsg.getAndIncrement();
                 chatApi.confirmRead(chatMsg);
             }
 
             @Override
             public void hasSent(Long id) {
-                System.out.println(String.format("msg {%d} has been sent", id));
+                hasSentAck.getAndIncrement();
+                logger.info("[{}] get a msg: {} has been sent", userInfo.getUsername(), id);
             }
 
             @Override
             public void hasDelivered(Long id) {
-                System.out.println(String.format("msg {%d} has been delivered", id));
+                hasDeliveredAck.getAndIncrement();
+                logger.info("[{}] get a msg: {} has been delivered", userInfo.getUsername(), id);
             }
 
             @Override
             public void hasRead(Long id) {
-                System.out.println(String.format("msg {%d} has been read", id));
+                hasReadAck.getAndIncrement();
+                logger.info("[{}] get a msg: {} has been read", userInfo.getUsername(), id);
             }
 
             @Override
@@ -88,6 +93,7 @@ public class MyClient {
 
             @Override
             public void hasException(ChannelHandlerContext ctx, Throwable cause) {
+                hasException.getAndIncrement();
                 logger.error("[" + userInfo.getUsername() + "] has error ", cause);
             }
         });
@@ -97,25 +103,39 @@ public class MyClient {
         return imClient;
     }
 
-    public void printUserInfo() {
-        System.out.println("id: " + userInfo.getId());
-        System.out.println("username: " + userInfo.getUsername());
-    }
+    public void send(String id) {
+        String randomText = RandomStringUtils.random(20, true, true);
+        Long msgId = IdWorker.genId();
 
-    public void send(String id, String text) {
-        if (!friendMap.containsKey(id)) {
-            System.out.println("friend " + id + " not found!");
-            return;
-        }
         Chat.ChatMsg chat = chatApi.chatMsgBuilder()
-            .setId(IdWorker.genId())
+            .setId(msgId)
             .setFromId(userInfo.getId())
             .setDestId(id)
             .setDestType(Chat.ChatMsg.DestType.SINGLE)
             .setCreateTime(System.currentTimeMillis())
             .setMsgType(Chat.ChatMsg.MsgType.TEXT)
             .setVersion(1)
-            .setMsgBody(ByteString.copyFrom(text, CharsetUtil.UTF_8))
+            .setMsgBody(ByteString.copyFrom(randomText, CharsetUtil.UTF_8))
+            .build();
+
+        chatApi.send(chat);
+    }
+
+    void randomSendTest() {
+        sendMsg.getAndIncrement();
+        int index = ThreadLocalRandom.current().nextInt(0, friends.size());
+        String randomText = RandomStringUtils.random(20, true, true);
+        Long msgId = IdWorker.genId();
+
+        Chat.ChatMsg chat = chatApi.chatMsgBuilder()
+            .setId(msgId)
+            .setFromId(userInfo.getId())
+            .setDestId(friends.get(index).getUserId())
+            .setDestType(Chat.ChatMsg.DestType.SINGLE)
+            .setCreateTime(System.currentTimeMillis())
+            .setMsgType(Chat.ChatMsg.MsgType.TEXT)
+            .setVersion(1)
+            .setMsgBody(ByteString.copyFrom(randomText, CharsetUtil.UTF_8))
             .build();
 
         chatApi.send(chat);

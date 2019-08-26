@@ -12,7 +12,7 @@
     <artifactId>client-samples</artifactId>
 
     <properties>
-        <main.class>com.github.yuanrw.im.client.sample.MyClientApplication</main.class>
+        <main.class>com.github.yuanrw.im.client.test.TestClientApplication</main.class>
     </properties>
 
     <dependencies>

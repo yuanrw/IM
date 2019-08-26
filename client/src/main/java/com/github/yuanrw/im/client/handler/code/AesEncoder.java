@@ -49,7 +49,7 @@ public class AesEncoder extends MessageToMessageEncoder<Message> {
                 out.add(msg);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("[encode] has error", e);
         }
     }
 }
