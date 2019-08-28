@@ -10,6 +10,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.util.Properties;
+
 import static com.github.yuanrw.im.transfer.start.TransferStarter.TRANSFER_CONFIG;
 
 /**
@@ -27,7 +29,11 @@ public class ConnectorConnContext extends MemoryConnContext<ConnectorConn> {
 
     @Inject
     public ConnectorConnContext(UserStatusServiceFactory userStatusServiceFactory) {
-        this.userStatusService = userStatusServiceFactory.createService(TRANSFER_CONFIG.getRedisHost(), TRANSFER_CONFIG.getRedisPort());
+        Properties properties = new Properties();
+        properties.put("host", TRANSFER_CONFIG.getRedisHost());
+        properties.put("port", TRANSFER_CONFIG.getRedisPort());
+        properties.put("password", TRANSFER_CONFIG.getRedisPassword());
+        this.userStatusService = userStatusServiceFactory.createService(properties);
     }
 
     public void online(ChannelHandlerContext ctx, String userId) {

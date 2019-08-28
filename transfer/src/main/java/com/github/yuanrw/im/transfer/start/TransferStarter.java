@@ -1,6 +1,5 @@
 package com.github.yuanrw.im.transfer.start;
 
-import com.github.yuanrw.im.common.domain.constant.MqConstant;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.transfer.config.TransferConfig;
 import org.slf4j.LoggerFactory;
@@ -26,8 +25,7 @@ public class TransferStarter {
 
             //start rabbitmq server
             TransferMqProducer.startProducer(TRANSFER_CONFIG.getRabbitmqHost(), TRANSFER_CONFIG.getRabbitmqPort(),
-                TRANSFER_CONFIG.getRabbitmqUsername(), TRANSFER_CONFIG.getRabbitmqPassword(),
-                MqConstant.EXCHANGE, MqConstant.OFFLINE_QUEUE, MqConstant.ROUTING_KEY);
+                TRANSFER_CONFIG.getRabbitmqUsername(), TRANSFER_CONFIG.getRabbitmqPassword());
 
             //start transfer server
             TransferServer.startTransferServer(TRANSFER_CONFIG.getPort());
@@ -40,18 +38,21 @@ public class TransferStarter {
         Properties properties = getProperties();
 
         TransferConfig transferConfig = new TransferConfig();
-        transferConfig.setPort(Integer.parseInt((String) properties.get("port")));
-        transferConfig.setRedisHost((String) properties.get("redis.host"));
-        transferConfig.setRedisPort(Integer.parseInt((String) properties.get("redis.port")));
-        transferConfig.setRabbitmqHost((String) properties.get("rabbitmq.host"));
-        transferConfig.setRabbitmqUsername((String) properties.get("rabbitmq.username"));
-        transferConfig.setRabbitmqPassword((String) properties.get("rabbitmq.password"));
-        transferConfig.setRabbitmqPort(Integer.parseInt((String) properties.get("rabbitmq.port")));
-        transferConfig.setLogPath((String) properties.get("log.path"));
-        transferConfig.setLogLevel((String) properties.get("log.level"));
+        try {
+            transferConfig.setPort(Integer.parseInt((String) properties.get("port")));
+            transferConfig.setRedisHost(properties.getProperty("redis.host"));
+            transferConfig.setRedisPort(Integer.parseInt(properties.getProperty("redis.port")));
+            transferConfig.setRedisPassword(properties.getProperty("redis.password"));
+            transferConfig.setRabbitmqHost(properties.getProperty("rabbitmq.host"));
+            transferConfig.setRabbitmqUsername(properties.getProperty("rabbitmq.username"));
+            transferConfig.setRabbitmqPassword(properties.getProperty("rabbitmq.password"));
+            transferConfig.setRabbitmqPort(Integer.parseInt(properties.getProperty("rabbitmq.port")));
+        } catch (Exception e) {
+            throw new ImException("there's a parse error, check your config properties");
+        }
 
-        System.setProperty("log.path", transferConfig.getLogPath());
-        System.setProperty("log.level", transferConfig.getLogLevel());
+        System.setProperty("log.path", properties.getProperty("log.path"));
+        System.setProperty("log.level", properties.getProperty("log.level"));
 
         return transferConfig;
     }

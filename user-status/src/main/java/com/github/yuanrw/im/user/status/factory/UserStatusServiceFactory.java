@@ -2,6 +2,8 @@ package com.github.yuanrw.im.user.status.factory;
 
 import com.github.yuanrw.im.user.status.service.UserStatusService;
 
+import java.util.Properties;
+
 /**
  * Date: 2019-06-09
  * Time: 15:51
@@ -13,9 +15,8 @@ public interface UserStatusServiceFactory {
     /**
      * create a userStatusService
      *
-     * @param host
-     * @param port
+     * @param properties
      * @return
      */
-    UserStatusService createService(String host, int port);
+    UserStatusService createService(Properties properties);
 }

@@ -6,12 +6,13 @@ import com.google.inject.assistedinject.Assisted;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Properties;
 
 /**
- * 管理用户状态，有缓存
+ * manage user status in redis
  * Date: 2019-05-19
  * Time: 21:14
  *
@@ -21,46 +22,44 @@ public class RedisUserStatusServiceImpl implements UserStatusService {
     private static final Logger logger = LoggerFactory.getLogger(RedisUserStatusServiceImpl.class);
     private static final String USER_CONN_STATUS_KEY = "IM:USER_CONN_STATUS:USERID:";
 
-    /**
-     * 缓存
-     */
-    private ConcurrentMap<String, String> userIdToNetId;
-    private Jedis jedis;
+    private JedisPool jedisPool;
 
-    /**
-     * 初始化，获取用户在线数据放入内存
-     */
     @Inject
-    public RedisUserStatusServiceImpl(@Assisted String host, @Assisted Integer port) {
-        this.jedis = new Jedis(host, port);
-        this.userIdToNetId = new ConcurrentHashMap<>(100);
+    public RedisUserStatusServiceImpl(@Assisted Properties properties) {
+        JedisPoolConfig config = new JedisPoolConfig();
+        config.setMaxWaitMillis(2 * 1000);
+        jedisPool = new JedisPool(config, properties.getProperty("host"), (Integer) properties.get("port"),
+            2 * 1000, properties.getProperty("password"));
     }
 
     @Override
     public String online(String connectorId, String userId) {
-        logger.debug("[user status] user online: connectorId: {}, userID: {}", connectorId, userId);
-        String oldConnectorId = jedis.hget(USER_CONN_STATUS_KEY, String.valueOf(userId));
-        userIdToNetId.put(userId, connectorId);
-        jedis.hset(USER_CONN_STATUS_KEY, String.valueOf(userId), connectorId);
-        return oldConnectorId;
+        logger.debug("[user status] user online: connectorId: {}, userId: {}", connectorId, userId);
+
+        try (Jedis jedis = jedisPool.getResource()) {
+            String oldConnectorId = jedis.hget(USER_CONN_STATUS_KEY, String.valueOf(userId));
+            jedis.hset(USER_CONN_STATUS_KEY, String.valueOf(userId), connectorId);
+            return oldConnectorId;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
     }
 
     @Override
     public void offline(String userId) {
-        userIdToNetId.remove(userId);
+        logger.debug("[user status] user offline: userId: {}", userId);
 
-        jedis.hdel(USER_CONN_STATUS_KEY, String.valueOf(userId));
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.hdel(USER_CONN_STATUS_KEY, String.valueOf(userId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     @Override
     public String getConnectorId(String userId) {
-        String connectorId = userIdToNetId.get(userId);
-        if (connectorId == null) {
-            connectorId = jedis.hget(USER_CONN_STATUS_KEY, userId);
-            if (connectorId != null) {
-                userIdToNetId.put(userId, connectorId);
-            }
-        }
-        return connectorId;
+        Jedis jedis = jedisPool.getResource();
+        return jedis.hget(USER_CONN_STATUS_KEY, userId);
     }
 }

@@ -1,5 +1,3 @@
-package com.github.yuanrw.im.transfer.start
-
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.yuanrw.im.common.code.MsgDecoder
 import com.github.yuanrw.im.common.code.MsgEncoder
@@ -11,6 +9,8 @@ import com.github.yuanrw.im.transfer.config.TransferConfig
 import com.github.yuanrw.im.transfer.domain.ConnectorConnContext
 import com.github.yuanrw.im.transfer.handler.TransferConnectorHandler
 import com.github.yuanrw.im.transfer.service.TransferService
+import com.github.yuanrw.im.transfer.start.TransferServer
+import com.github.yuanrw.im.transfer.start.TransferStarter
 import com.github.yuanrw.im.user.status.factory.UserStatusServiceFactory
 import com.github.yuanrw.im.user.status.service.UserStatusService
 import io.netty.channel.embedded.EmbeddedChannel
@@ -36,7 +36,7 @@ class TransferConnectorTest extends Specification {
             online(_ as String, _ as String) >> null
         }
         def userStatusServiceFactory = Mock(UserStatusServiceFactory) {
-            createService(_ as String, _ as Integer) >> userStatusService
+            createService(_ as String, _ as Integer, _ as String) >> userStatusService
         }
 
         def connectorConnContext = new ConnectorConnContext(userStatusServiceFactory)

@@ -1,8 +1,9 @@
 package com.github.yuanrw.im.transfer.start;
 
+import com.github.yuanrw.im.common.domain.constant.MqConstant;
+import com.github.yuanrw.im.protobuf.constant.MsgTypeEnum;
 import com.google.protobuf.Message;
 import com.rabbitmq.client.*;
-import com.github.yuanrw.im.protobuf.constant.MsgTypeEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +21,8 @@ public class TransferMqProducer {
 
     private static Channel channel;
 
-    static void startProducer(String host, int port, String username, String password,
-                              String exchange, String queue, String routingKey) throws IOException, TimeoutException {
+    static void startProducer(String host, int port, String username, String password)
+        throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(host);
         factory.setPort(port);
@@ -31,9 +32,9 @@ public class TransferMqProducer {
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.exchangeDeclare(exchange, BuiltinExchangeType.DIRECT, true, false, null);
-        channel.queueDeclare(queue, true, false, false, null);
-        channel.queueBind(queue, exchange, routingKey);
+        channel.exchangeDeclare(MqConstant.EXCHANGE, BuiltinExchangeType.DIRECT, true, false, null);
+        channel.queueDeclare(MqConstant.OFFLINE_QUEUE, true, false, false, null);
+        channel.queueBind(MqConstant.OFFLINE_QUEUE, MqConstant.EXCHANGE, MqConstant.ROUTING_KEY);
 
         TransferMqProducer.channel = channel;
         logger.info("[transfer] producer start success");

@@ -14,6 +14,8 @@ public class TransferConfig {
 
     private Integer redisPort;
 
+    private String redisPassword;
+
     private String rabbitmqHost;
 
     private Integer rabbitmqPort;
@@ -21,18 +23,6 @@ public class TransferConfig {
     private String rabbitmqUsername;
 
     private String rabbitmqPassword;
-
-    private String logPath;
-
-    private String logLevel;
-
-    public String getLogLevel() {
-        return logLevel;
-    }
-
-    public void setLogLevel(String logLevel) {
-        this.logLevel = logLevel;
-    }
 
     public Integer getPort() {
         return port;
@@ -56,6 +46,14 @@ public class TransferConfig {
 
     public void setRedisPort(Integer redisPort) {
         this.redisPort = redisPort;
+    }
+
+    public String getRedisPassword() {
+        return redisPassword;
+    }
+
+    public void setRedisPassword(String redisPassword) {
+        this.redisPassword = redisPassword;
     }
 
     public String getRabbitmqHost() {
@@ -88,13 +86,5 @@ public class TransferConfig {
 
     public void setRabbitmqPassword(String rabbitmqPassword) {
         this.rabbitmqPassword = rabbitmqPassword;
-    }
-
-    public String getLogPath() {
-        return logPath;
-    }
-
-    public void setLogPath(String logPath) {
-        this.logPath = logPath;
     }
 }
