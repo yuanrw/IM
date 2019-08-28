@@ -9,7 +9,6 @@ import com.github.yuanrw.im.transfer.config.TransferConfig
 import com.github.yuanrw.im.transfer.domain.ConnectorConnContext
 import com.github.yuanrw.im.transfer.handler.TransferConnectorHandler
 import com.github.yuanrw.im.transfer.service.TransferService
-import com.github.yuanrw.im.transfer.start.TransferServer
 import com.github.yuanrw.im.transfer.start.TransferStarter
 import com.github.yuanrw.im.user.status.factory.UserStatusServiceFactory
 import com.github.yuanrw.im.user.status.service.UserStatusService
@@ -32,19 +31,23 @@ class TransferConnectorTest extends Specification {
 
     def "test get internal greet"() {
         given:
+        TransferStarter.TRANSFER_CONFIG.setRedisHost("redisHost")
+        TransferStarter.TRANSFER_CONFIG.setRedisPort(123)
+        TransferStarter.TRANSFER_CONFIG.setRedisPassword("redisPassword")
+
         def userStatusService = Mock(UserStatusService) {
             online(_ as String, _ as String) >> null
         }
         def userStatusServiceFactory = Mock(UserStatusServiceFactory) {
-            createService(_ as String, _ as Integer, _ as String) >> userStatusService
+            createService(_ as Properties) >> userStatusService
         }
 
         def connectorConnContext = new ConnectorConnContext(userStatusServiceFactory)
 
         def channel = new EmbeddedChannel()
         channel.pipeline()
-                .addLast("MsgDecoder", TransferServer.injector.getInstance(MsgDecoder.class))
-                .addLast("MsgEncoder", TransferServer.injector.getInstance(MsgEncoder.class))
+                .addLast("MsgDecoder", new MsgDecoder())
+                .addLast("MsgEncoder", new MsgEncoder())
                 .addLast("TransferConnectorHandler", new TransferConnectorHandler(new TransferService(connectorConnContext), connectorConnContext))
 
         when:
@@ -65,18 +68,22 @@ class TransferConnectorTest extends Specification {
 
     def "test get internal user status"() {
         given:
+        TransferStarter.TRANSFER_CONFIG.setRedisHost("redisHost")
+        TransferStarter.TRANSFER_CONFIG.setRedisPort(123)
+        TransferStarter.TRANSFER_CONFIG.setRedisPassword("redisPassword")
+
         def userStatusService = Mock(UserStatusService) {
             online(_ as String, _ as String) >> null
         }
         def userStatusServiceFactory = Mock(UserStatusServiceFactory) {
-            createService(_ as String, _ as Integer) >> userStatusService
+            createService(_ as Properties) >> userStatusService
         }
         def connectorConnContext = new ConnectorConnContext(userStatusServiceFactory)
 
         def channel = new EmbeddedChannel()
         channel.pipeline()
-                .addLast("MsgDecoder", TransferServer.injector.getInstance(MsgDecoder.class))
-                .addLast("MsgEncoder", TransferServer.injector.getInstance(MsgEncoder.class))
+                .addLast("MsgDecoder", new MsgDecoder())
+                .addLast("MsgEncoder", new MsgEncoder())
                 .addLast("TransferConnectorHandler", new TransferConnectorHandler(new TransferService(connectorConnContext), connectorConnContext))
 
         when:
