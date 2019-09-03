@@ -1,4 +1,4 @@
-package com.github.yuanrw.im.rest.web.impl;
+package com.github.yuanrw.im.rest.web.spi.impl;
 
 import com.github.yuanrw.im.common.domain.po.User;
 import com.github.yuanrw.im.rest.spi.UserSpi;

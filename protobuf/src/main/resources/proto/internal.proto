@@ -33,8 +33,7 @@ message InternalMsg {
 
     enum MsgType {
         GREET = 0;
-        USER_STATUS = 1;
-        ACK = 2;
-        FORCE_OFFLINE = 3;
+        ACK = 1;
+        ERROR = 2;
     }
 }

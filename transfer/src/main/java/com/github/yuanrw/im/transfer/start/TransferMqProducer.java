@@ -1,7 +1,8 @@
 package com.github.yuanrw.im.transfer.start;
 
-import com.github.yuanrw.im.common.domain.constant.MqConstant;
+import com.github.yuanrw.im.common.domain.constant.ImConstant;
 import com.github.yuanrw.im.protobuf.constant.MsgTypeEnum;
+import com.google.inject.Singleton;
 import com.google.protobuf.Message;
 import com.rabbitmq.client.*;
 import org.slf4j.Logger;
@@ -16,12 +17,13 @@ import java.util.concurrent.TimeoutException;
  *
  * @author yrw
  */
+@Singleton
 public class TransferMqProducer {
     private static Logger logger = LoggerFactory.getLogger(TransferMqProducer.class);
 
-    private static Channel channel;
+    private Channel channel;
 
-    static void startProducer(String host, int port, String username, String password)
+    public TransferMqProducer(String host, int port, String username, String password)
         throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(host);
@@ -32,15 +34,15 @@ public class TransferMqProducer {
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.exchangeDeclare(MqConstant.EXCHANGE, BuiltinExchangeType.DIRECT, true, false, null);
-        channel.queueDeclare(MqConstant.OFFLINE_QUEUE, true, false, false, null);
-        channel.queueBind(MqConstant.OFFLINE_QUEUE, MqConstant.EXCHANGE, MqConstant.ROUTING_KEY);
+        channel.exchangeDeclare(ImConstant.MQ_EXCHANGE, BuiltinExchangeType.DIRECT, true, false, null);
+        channel.queueDeclare(ImConstant.MQ_OFFLINE_QUEUE, true, false, false, null);
+        channel.queueBind(ImConstant.MQ_OFFLINE_QUEUE, ImConstant.MQ_EXCHANGE, ImConstant.MQ_ROUTING_KEY);
 
-        TransferMqProducer.channel = channel;
+        this.channel = channel;
         logger.info("[transfer] producer start success");
     }
 
-    public static void basicPublish(String exchange, String routingKey, AMQP.BasicProperties properties, Message message) throws IOException {
+    public void basicPublish(String exchange, String routingKey, AMQP.BasicProperties properties, Message message) throws IOException {
         int code = MsgTypeEnum.getByClass(message.getClass()).getCode();
 
         byte[] srcB = message.toByteArray();
@@ -52,7 +54,7 @@ public class TransferMqProducer {
         channel.basicPublish(exchange, routingKey, properties, destB);
     }
 
-    public static Channel getChannel() {
+    public Channel getChannel() {
         return channel;
     }
 }

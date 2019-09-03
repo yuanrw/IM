@@ -8,7 +8,7 @@ import com.github.yuanrw.im.rest.spi.UserSpi;
 import com.github.yuanrw.im.rest.spi.domain.UserBase;
 import com.github.yuanrw.im.rest.web.mapper.RelationMapper;
 import com.github.yuanrw.im.rest.web.service.RelationService;
-import com.github.yuanrw.im.rest.web.util.SpiFactory;
+import com.github.yuanrw.im.rest.web.spi.SpiFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 

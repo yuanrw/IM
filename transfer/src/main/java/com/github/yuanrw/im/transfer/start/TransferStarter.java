@@ -2,6 +2,9 @@ package com.github.yuanrw.im.transfer.start;
 
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.transfer.config.TransferConfig;
+import com.github.yuanrw.im.transfer.config.TransferModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
@@ -16,7 +19,10 @@ import java.util.Properties;
  * @author yrw
  */
 public class TransferStarter {
-    public static TransferConfig TRANSFER_CONFIG;
+    public static TransferConfig TRANSFER_CONFIG = new TransferConfig();
+    static Injector injector = Guice.createInjector(new TransferModule());
+
+    public static TransferMqProducer producer;
 
     public static void main(String[] args) {
         try {
@@ -24,7 +30,7 @@ public class TransferStarter {
             TransferStarter.TRANSFER_CONFIG = parseConfig();
 
             //start rabbitmq server
-            TransferMqProducer.startProducer(TRANSFER_CONFIG.getRabbitmqHost(), TRANSFER_CONFIG.getRabbitmqPort(),
+            producer = new TransferMqProducer(TRANSFER_CONFIG.getRabbitmqHost(), TRANSFER_CONFIG.getRabbitmqPort(),
                 TRANSFER_CONFIG.getRabbitmqUsername(), TRANSFER_CONFIG.getRabbitmqPassword());
 
             //start transfer server

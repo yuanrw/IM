@@ -27,3 +27,4 @@ hs_err_pid*
 target/
 *.iml
 .mvn/
+docker/

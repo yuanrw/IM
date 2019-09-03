@@ -22,6 +22,8 @@ import spock.lang.Specification
 
 import java.time.Duration
 
+import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION
+
 /**
  * Date: 2019-06-06
  * Time: 14:30
@@ -43,7 +45,7 @@ class ImClientConnectorTest extends Specification {
 
         when:
         def delivered = Ack.AckMsg.newBuilder()
-                .setVersion(1)
+                .setVersion(MSG_VERSION)
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
@@ -86,7 +88,7 @@ class ImClientConnectorTest extends Specification {
         def collector = handler.createCollector(Duration.ofSeconds(2))
 
         def internal = Internal.InternalMsg.newBuilder()
-                .setVersion(1)
+                .setVersion(MSG_VERSION)
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFrom(Internal.InternalMsg.Module.CONNECTOR)
@@ -131,7 +133,7 @@ class ImClientConnectorTest extends Specification {
                 .addLast("ClientConnectorHandler", new ClientConnectorHandler(clientMsgListener))
 
         def chat = Chat.ChatMsg.newBuilder()
-                .setVersion(1)
+                .setVersion(MSG_VERSION)
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")

@@ -1,11 +1,8 @@
 package com.github.yuanrw.im.transfer.start;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.github.yuanrw.im.common.code.MsgDecoder;
 import com.github.yuanrw.im.common.code.MsgEncoder;
 import com.github.yuanrw.im.common.exception.ImException;
-import com.github.yuanrw.im.transfer.config.TransferModule;
 import com.github.yuanrw.im.transfer.handler.TransferConnectorHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -29,8 +26,6 @@ import java.util.concurrent.TimeoutException;
 public class TransferServer {
     private static Logger logger = LoggerFactory.getLogger(TransferServer.class);
 
-    static Injector injector = Guice.createInjector(new TransferModule());
-
     static void startTransferServer(int port) {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workGroup = new NioEventLoopGroup();
@@ -42,9 +37,9 @@ public class TransferServer {
                 @Override
                 protected void initChannel(SocketChannel channel) throws Exception {
                     ChannelPipeline pipeline = channel.pipeline();
-                    pipeline.addLast("MsgDecoder", injector.getInstance(MsgDecoder.class));
-                    pipeline.addLast("MsgEncoder", injector.getInstance(MsgEncoder.class));
-                    pipeline.addLast("TransferClientHandler", injector.getInstance(TransferConnectorHandler.class));
+                    pipeline.addLast("MsgDecoder", TransferStarter.injector.getInstance(MsgDecoder.class));
+                    pipeline.addLast("MsgEncoder", TransferStarter.injector.getInstance(MsgEncoder.class));
+                    pipeline.addLast("TransferClientHandler", TransferStarter.injector.getInstance(TransferConnectorHandler.class));
                 }
             });
 

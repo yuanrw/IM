@@ -4,6 +4,7 @@ import com.github.yuanrw.im.common.code.MsgDecoder
 import com.github.yuanrw.im.common.code.MsgEncoder
 import com.github.yuanrw.im.common.domain.ResponseCollector
 import com.github.yuanrw.im.common.domain.conn.Conn
+import com.github.yuanrw.im.common.domain.po.Offline
 import com.github.yuanrw.im.common.parse.ParseService
 import com.github.yuanrw.im.common.util.IdWorker
 import com.github.yuanrw.im.connector.config.ConnectorRestServiceFactory
@@ -11,12 +12,14 @@ import com.github.yuanrw.im.connector.domain.ClientConnContext
 import com.github.yuanrw.im.connector.handler.ConnectorTransferHandler
 import com.github.yuanrw.im.connector.service.ConnectorService
 import com.github.yuanrw.im.connector.service.OfflineService
-import com.github.yuanrw.im.connector.service.UserStatusService
+import com.github.yuanrw.im.connector.service.UserOnlineService
 import com.github.yuanrw.im.connector.service.rest.ConnectorRestService
 import com.github.yuanrw.im.connector.start.ConnectorStarter
 import com.github.yuanrw.im.protobuf.generate.Ack
 import com.github.yuanrw.im.protobuf.generate.Chat
 import com.github.yuanrw.im.protobuf.generate.Internal
+import com.github.yuanrw.im.user.status.factory.UserStatusServiceFactory
+import com.github.yuanrw.im.user.status.service.impl.MemoryUserStatusServiceImpl
 import com.google.common.collect.Lists
 import com.google.protobuf.ByteString
 import io.netty.channel.Channel
@@ -38,6 +41,7 @@ import java.time.Duration
 import java.util.concurrent.CompletableFuture
 import java.util.function.BiConsumer
 
+import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION
 import static org.powermock.api.mockito.PowerMockito.when
 
 /**
@@ -56,34 +60,43 @@ class ConnectorTransferTest extends Specification {
     @Shared
     def clientConnContext = ConnectorStarter.injector.getInstance(ClientConnContext.class)
     @Shared
-    def connectorRestService = Mock(ConnectorRestService)
-    @Shared
-    def connectorRestServiceFactory = Mock(ConnectorRestServiceFactory) {
-        createService() >> connectorRestService
-    }
-    @Shared
-    def userStatusService = new UserStatusService(
-            new OfflineService(connectorRestServiceFactory, new ParseService()),
-            clientConnContext, new ConnectorService())
+    UserOnlineService userOnlineService
 
     def setupSpec() {
+        ConnectorStarter.CONNECTOR_CONFIG.setRedisHost("redisHost")
+        ConnectorStarter.CONNECTOR_CONFIG.setRedisPort(123)
+        ConnectorStarter.CONNECTOR_CONFIG.setRedisPassword("redisPassword")
+        ConnectorStarter.CONNECTOR_CONFIG.setRestUrl("restUrl")
+
+        def connectorRestService = Mock(ConnectorRestService) {
+            offlines(_ as String) >> new ArrayList<Offline>()
+        }
+        def connectorRestServiceFactory = Mock(ConnectorRestServiceFactory) {
+            createService(_ as String) >> connectorRestService
+        }
+        def userStatusServiceFactory = Mock(UserStatusServiceFactory) {
+            createService(_ as Properties) >> new MemoryUserStatusServiceImpl()
+        }
+        userOnlineService = new UserOnlineService(new OfflineService(
+                connectorRestServiceFactory, new ParseService()),
+                clientConnContext, new ConnectorService(), userStatusServiceFactory)
+
         channel.pipeline()
                 .addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class))
                 .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
-                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext), userStatusService))
+                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext)))
     }
 
     def cleanup() {
         clientConnContext.removeAllConn()
     }
 
-    def "test get chat"() {
-        //online
+    def "test get chat online"() {
         given:
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
-        when(ConnectorTransferHandler.createUserStatusMsgCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
+        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
                 .thenReturn(Mock(ResponseCollector) {
             getFuture() >> Mock(CompletableFuture) {
                 whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
@@ -99,10 +112,10 @@ class ConnectorTransferTest extends Specification {
                 }
             }
         }
-        userStatusService.userOnline(111112, "456", ctx)
+        userOnlineService.userOnline(111112, "456", ctx)
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
-                .setVersion(1)
+                .setVersion(MSG_VERSION)
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
@@ -117,18 +130,53 @@ class ConnectorTransferTest extends Specification {
 
         then:
         1 * ctx.writeAndFlush(chat)
+        //send delivered to transfer
         1 * connectorTransferCtx.writeAndFlush(_ as Ack.AckMsg)
-
-        //todo: offline
     }
 
-    def "test get ack"() {
-        //online
+    def "test get chat offline"() {
         given:
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
-        when(ConnectorTransferHandler.createUserStatusMsgCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
+        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
+                .thenReturn(Mock(ResponseCollector) {
+            getFuture() >> Mock(CompletableFuture) {
+                whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
+            }
+        })
+
+        def ctx = Mock(ChannelHandlerContext) {
+            channel() >> Mock(Channel) {
+                attr(Conn.NET_ID) >> Mock(Attribute)
+            }
+        }
+
+        Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
+                .setVersion(MSG_VERSION)
+                .setId(IdWorker.genId())
+                .setCreateTime(System.currentTimeMillis())
+                .setFromId("123")
+                .setDestId("456")
+                .setMsgType(Chat.ChatMsg.MsgType.TEXT)
+                .setMsgBody(ByteString.copyFromUtf8("encodedMsg"))
+                .setDestType(Chat.ChatMsg.DestType.SINGLE)
+                .build()
+
+        when:
+        channel.writeInbound(chat)
+
+        then:
+        0 * ctx.writeAndFlush(chat)
+        //todo:
+    }
+
+    def "test get ack online"() {
+        given:
+        def connectorTransferCtx = Mock(ChannelHandlerContext)
+        PowerMockito.mockStatic(ConnectorTransferHandler.class)
+        when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
+        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
                 .thenReturn(Mock(ResponseCollector) {
             getFuture() >> Mock(CompletableFuture) {
                 whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
@@ -144,10 +192,10 @@ class ConnectorTransferTest extends Specification {
                 }
             }
         }
-        userStatusService.userOnline(111112, "456", ctx)
+        userOnlineService.userOnline(111112, "456", ctx)
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
-                .setVersion(1)
+                .setVersion(MSG_VERSION)
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
@@ -162,66 +210,54 @@ class ConnectorTransferTest extends Specification {
 
         then:
         1 * ctx.writeAndFlush(delivered)
-
-        //offline
-        when:
-        userStatusService.userOffline(ctx)
-        channel.writeInbound(delivered)
-
-        then:
-        0 * ctx.write(_ as Internal.InternalMsg)
-        0 * ctx.writeAndFlush(_ as Internal.InternalMsg)
     }
 
-    def "test get internal force offline"() {
+    def "test get ack offline"() {
         given:
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
-        when(ConnectorTransferHandler.createUserStatusMsgCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
+        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
                 .thenReturn(Mock(ResponseCollector) {
             getFuture() >> Mock(CompletableFuture) {
                 whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
             }
         })
 
-        def map = new HashMap<String, Object>()
         def ctx = Mock(ChannelHandlerContext) {
             channel() >> Mock(Channel) {
-                attr(Conn.NET_ID) >> Mock(Attribute) {
-                    set() >> { arguments -> map.put("net_id", arguments[0]) }
-                    get() >> { map.get("net_id") }
-                }
+                attr(Conn.NET_ID) >> Mock(Attribute)
             }
         }
-        userStatusService.userOnline(11112, "123", ctx)
+
+        Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
+                .setVersion(MSG_VERSION)
+                .setId(IdWorker.genId())
+                .setCreateTime(System.currentTimeMillis())
+                .setFromId("123")
+                .setDestId("456")
+                .setMsgType(Ack.AckMsg.MsgType.DELIVERED)
+                .setAckMsgId(11241244)
+                .setDestType(Ack.AckMsg.DestType.SINGLE)
+                .build()
 
         when:
-        Internal.InternalMsg offline = Internal.InternalMsg.newBuilder()
-                .setId(IdWorker.genId())
-                .setVersion(1)
-                .setCreateTime(System.currentTimeMillis())
-                .setFrom(Internal.InternalMsg.Module.TRANSFER)
-                .setDest(Internal.InternalMsg.Module.CONNECTOR)
-                .setMsgType(Internal.InternalMsg.MsgType.FORCE_OFFLINE)
-                .setMsgBody("123")
-                .build()
-        channel.writeInbound(offline)
+        channel.writeInbound(delivered)
 
         then:
-        clientConnContext.getConnByUserId("123") == null
-        clientConnContext.getConn(ctx) == null
+        0 * ctx.writeAndFlush(delivered)
+        //todo:
     }
 
     def "test get internal ack"() {
         given:
         def result = new ArrayList<Internal.InternalMsg>()
-        def responseCollector = ConnectorTransferHandler.createUserStatusMsgCollector(1111112, Duration.ofSeconds(2))
+        def responseCollector = ConnectorTransferHandler.createGreetRespCollector(1111112, Duration.ofSeconds(2))
 
         when:
         responseCollector.getFuture().whenComplete({ r, e -> result.add(r) })
         Internal.InternalMsg ack = Internal.InternalMsg.newBuilder()
-                .setVersion(1)
+                .setVersion(MSG_VERSION)
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFrom(Internal.InternalMsg.Module.TRANSFER)

@@ -10,6 +10,8 @@ import java.time.Duration
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 
+import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION
+
 /**
  * Date: 2019-05-31
  * Time: 18:49
@@ -43,7 +45,7 @@ class ResponseCollectorTest extends Specification {
 
         when:
         Internal.InternalMsg msg = Internal.InternalMsg.newBuilder()
-                .setVersion(1)
+                .setVersion(MSG_VERSION)
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setMsgType(Internal.InternalMsg.MsgType.ACK)

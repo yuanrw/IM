@@ -96,11 +96,6 @@
                 <version>3.8.1</version>
             </dependency>
             <dependency>
-                <groupId>org.rocksdb</groupId>
-                <artifactId>rocksdbjni</artifactId>
-                <version>${rocksdb.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
                 <version>${protobuf.version}</version>
@@ -185,14 +180,9 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.ratis</groupId>
-                <artifactId>ratis-server</artifactId>
-                <version>${ratis.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ratis</groupId>
-                <artifactId>ratis-netty</artifactId>
-                <version>${ratis.version}</version>
+                <groupId>com.github.yuanrw.im</groupId>
+                <artifactId>user-status</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -11,11 +11,11 @@ public interface UserStatusService {
     /**
      * user online
      *
-     * @param connectorId
      * @param userId
+     * @param connectorId
      * @return the user's previous connection id, if don't exist then return null
      */
-    String online(String connectorId, String userId);
+    String online(String userId, String connectorId);
 
     /**
      * user offline

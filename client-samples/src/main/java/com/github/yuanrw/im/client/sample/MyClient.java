@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
+
 /**
  * Date: 2019-07-09
  * Time: 10:08
@@ -114,7 +116,7 @@ public class MyClient {
             .setDestType(Chat.ChatMsg.DestType.SINGLE)
             .setCreateTime(System.currentTimeMillis())
             .setMsgType(Chat.ChatMsg.MsgType.TEXT)
-            .setVersion(1)
+            .setVersion(MSG_VERSION)
             .setMsgBody(ByteString.copyFrom(text, CharsetUtil.UTF_8))
             .build();
 

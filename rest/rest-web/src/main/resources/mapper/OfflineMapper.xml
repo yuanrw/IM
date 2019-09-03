@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.github.yuanrw.im.rest.web.mapper.OfflineMapper">
+
+    <update id="readMsg">
+      update im_offline set has_read = true
+      where id = #{id} and has_read = false
+    </update>
+</mapper>

@@ -32,6 +32,7 @@ CREATE TABLE `im_offline` (
                             `msg_code` int(2) NOT NULL,
                             `to_user_id` varchar(100) NOT NULL,
                             `content` varbinary(5000) NOT NULL DEFAULT '',
+                            `has_read` tinyint(1) NOT NULL DEFAULT '0',
                             `gmt_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                             `gmt_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                             `deleted` tinyint(1) NOT NULL DEFAULT '0'

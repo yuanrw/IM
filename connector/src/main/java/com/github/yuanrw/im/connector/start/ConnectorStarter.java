@@ -40,6 +40,9 @@ public class ConnectorStarter {
             connectorConfig.setPort(Integer.parseInt(properties.getProperty("port")));
             connectorConfig.setTransferUrls((properties.getProperty("transfer.url")).split(","));
             connectorConfig.setRestUrl(properties.getProperty("rest.url"));
+            connectorConfig.setRedisHost(properties.getProperty("redis.host"));
+            connectorConfig.setRedisPort(Integer.parseInt(properties.getProperty("redis.port")));
+            connectorConfig.setRedisPassword(properties.getProperty("redis.password"));
         } catch (Exception e) {
             throw new ImException("there's a parse error, check your config properties");
         }

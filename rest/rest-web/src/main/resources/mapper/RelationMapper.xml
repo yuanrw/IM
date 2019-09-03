@@ -10,7 +10,7 @@
         <result column="username2" jdbcType="VARCHAR" property="username2"/>
         <result column="encrypt_key" jdbcType="CHAR" property="encryptKey"/>
         <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
-        <result column="deleted" jdbcType="BIT" property="deleted"/>
+        <result column="deleted" jdbcType="TINYINT" property="deleted"/>
     </resultMap>
 
     <select id="listFriends" resultMap="BaseResultMap">

@@ -10,4 +10,12 @@ import com.github.yuanrw.im.common.domain.po.Offline;
  * @author yrw
  */
 public interface OfflineMapper extends BaseMapper<Offline> {
+
+    /**
+     * read offline msg from db, cas
+     *
+     * @param msgId
+     * @return
+     */
+    int readMsg(Long msgId);
 }

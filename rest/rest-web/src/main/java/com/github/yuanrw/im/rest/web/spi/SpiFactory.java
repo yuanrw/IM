@@ -1,9 +1,9 @@
-package com.github.yuanrw.im.rest.web.util;
+package com.github.yuanrw.im.rest.web.spi;
 
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.rest.spi.UserSpi;
 import com.github.yuanrw.im.rest.spi.domain.UserBase;
-import com.github.yuanrw.im.rest.web.impl.DefaultUserSpiImpl;
+import com.github.yuanrw.im.rest.web.spi.impl.DefaultUserSpiImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

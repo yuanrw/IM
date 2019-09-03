@@ -387,17 +387,13 @@ public final class Internal {
        */
       GREET(0),
       /**
-       * <code>USER_STATUS = 1;</code>
+       * <code>ACK = 1;</code>
        */
-      USER_STATUS(1),
+      ACK(1),
       /**
-       * <code>ACK = 2;</code>
+       * <code>ERROR = 2;</code>
        */
-      ACK(2),
-      /**
-       * <code>FORCE_OFFLINE = 3;</code>
-       */
-      FORCE_OFFLINE(3),
+      ERROR(2),
       ;
 
       /**
@@ -405,17 +401,13 @@ public final class Internal {
        */
       public static final int GREET_VALUE = 0;
       /**
-       * <code>USER_STATUS = 1;</code>
+       * <code>ACK = 1;</code>
        */
-      public static final int USER_STATUS_VALUE = 1;
+      public static final int ACK_VALUE = 1;
       /**
-       * <code>ACK = 2;</code>
+       * <code>ERROR = 2;</code>
        */
-      public static final int ACK_VALUE = 2;
-      /**
-       * <code>FORCE_OFFLINE = 3;</code>
-       */
-      public static final int FORCE_OFFLINE_VALUE = 3;
+      public static final int ERROR_VALUE = 2;
 
 
       public final int getNumber() {
@@ -433,9 +425,8 @@ public final class Internal {
       public static MsgType forNumber(int value) {
         switch (value) {
           case 0: return GREET;
-          case 1: return USER_STATUS;
-          case 2: return ACK;
-          case 3: return FORCE_OFFLINE;
+          case 1: return ACK;
+          case 2: return ERROR;
           default: return null;
         }
       }
@@ -1660,7 +1651,7 @@ public final class Internal {
   static {
     java.lang.String[] descriptorData = {
       "\n\016internal.proto\022&com.github.yuanrw.im.p" +
-      "rotobuf.generate\"\247\003\n\013InternalMsg\022\017\n\007vers" +
+      "rotobuf.generate\"\216\003\n\013InternalMsg\022\017\n\007vers" +
       "ion\030\001 \002(\005\022\n\n\002id\030\002 \002(\003\022H\n\004from\030\003 \002(\0162:.co" +
       "m.github.yuanrw.im.protobuf.generate.Int" +
       "ernalMsg.Module\022H\n\004dest\030\004 \002(\0162:.com.gith" +
@@ -1669,9 +1660,8 @@ public final class Internal {
       "\030\006 \002(\0162;.com.github.yuanrw.im.protobuf.g" +
       "enerate.InternalMsg.MsgType\022\017\n\007msgBody\030\007" +
       " \001(\t\"1\n\006Module\022\r\n\tCONNECTOR\020\000\022\014\n\010TRANSFE" +
-      "R\020\001\022\n\n\006CLIENT\020\002\"A\n\007MsgType\022\t\n\005GREET\020\000\022\017\n" +
-      "\013USER_STATUS\020\001\022\007\n\003ACK\020\002\022\021\n\rFORCE_OFFLINE" +
-      "\020\003B\nB\010Internal"
+      "R\020\001\022\n\n\006CLIENT\020\002\"(\n\007MsgType\022\t\n\005GREET\020\000\022\007\n" +
+      "\003ACK\020\001\022\t\n\005ERROR\020\002B\nB\010Internal"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

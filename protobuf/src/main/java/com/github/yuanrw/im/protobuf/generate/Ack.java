@@ -157,7 +157,7 @@ public final class Ack {
 
     /**
      * <pre>
-     *消息体，json，格式由消息类型决定
+     *消息体
      * </pre>
      *
      * <code>required int64 ackMsgId = 8;</code>
@@ -165,7 +165,7 @@ public final class Ack {
     boolean hasAckMsgId();
     /**
      * <pre>
-     *消息体，json，格式由消息类型决定
+     *消息体
      * </pre>
      *
      * <code>required int64 ackMsgId = 8;</code>
@@ -715,7 +715,7 @@ public final class Ack {
     private long ackMsgId_;
     /**
      * <pre>
-     *消息体，json，格式由消息类型决定
+     *消息体
      * </pre>
      *
      * <code>required int64 ackMsgId = 8;</code>
@@ -725,7 +725,7 @@ public final class Ack {
     }
     /**
      * <pre>
-     *消息体，json，格式由消息类型决定
+     *消息体
      * </pre>
      *
      * <code>required int64 ackMsgId = 8;</code>
@@ -1735,7 +1735,7 @@ public final class Ack {
       private long ackMsgId_ ;
       /**
        * <pre>
-       *消息体，json，格式由消息类型决定
+       *消息体
        * </pre>
        *
        * <code>required int64 ackMsgId = 8;</code>
@@ -1745,7 +1745,7 @@ public final class Ack {
       }
       /**
        * <pre>
-       *消息体，json，格式由消息类型决定
+       *消息体
        * </pre>
        *
        * <code>required int64 ackMsgId = 8;</code>
@@ -1755,7 +1755,7 @@ public final class Ack {
       }
       /**
        * <pre>
-       *消息体，json，格式由消息类型决定
+       *消息体
        * </pre>
        *
        * <code>required int64 ackMsgId = 8;</code>
@@ -1768,7 +1768,7 @@ public final class Ack {
       }
       /**
        * <pre>
-       *消息体，json，格式由消息类型决定
+       *消息体
        * </pre>
        *
        * <code>required int64 ackMsgId = 8;</code>

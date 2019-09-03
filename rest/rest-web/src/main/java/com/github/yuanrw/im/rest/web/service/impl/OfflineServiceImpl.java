@@ -2,6 +2,7 @@ package com.github.yuanrw.im.rest.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.yuanrw.im.common.domain.po.DbModel;
 import com.github.yuanrw.im.common.domain.po.Offline;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.protobuf.constant.MsgTypeEnum;
@@ -9,10 +10,10 @@ import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.github.yuanrw.im.rest.web.mapper.OfflineMapper;
 import com.github.yuanrw.im.rest.web.service.OfflineService;
-import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,17 +55,14 @@ public class OfflineServiceImpl extends ServiceImpl<OfflineMapper, Offline> impl
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public List<Offline> pollOfflineMsg(String userId) {
-        List<Offline> list = list(new LambdaQueryWrapper<Offline>()
-            .eq(Offline::getToUserId, userId)
-            .orderBy(true, true, Offline::getMsgId));
+        List<Offline> unreadList = list(new LambdaQueryWrapper<Offline>()
+            .eq(Offline::getToUserId, userId));
 
-        if (list.size() > 0) {
-            List<Long> ids = list.stream().map(Offline::getId).collect(Collectors.toList());
-            Lists.partition(ids, 1000).forEach(this::removeByIds);
-        }
-
-        return list;
+        return unreadList.stream().filter(offline ->
+            baseMapper.readMsg(offline.getId()) > 0)
+            .sorted(Comparator.comparing(DbModel::getId))
+            .collect(Collectors.toList());
     }
 }

@@ -1,9 +1,9 @@
 package com.github.yuanrw.im.common.parse;
 
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.common.function.ImBiConsumer;
 import com.github.yuanrw.im.protobuf.generate.Internal;
+import com.google.protobuf.Message;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public abstract class AbstractMsgParser {
             Internal.InternalMsg m = (Internal.InternalMsg) message;
             if (m.getFrom() != module) {
                 throw new ImException("[unexpected msg] expect msg from: " + module.name() +
-                    ", but received msg from: " + m.getFrom().name());
+                    ", but received msg from: " + m.getFrom().name() + "\n\rmsg: " + m.toString());
             }
         }
     }

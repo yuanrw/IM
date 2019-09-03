@@ -1,7 +1,7 @@
-package com.github.yuanrw.im.rest.web.consumer;
+package com.github.yuanrw.im.rest.web.task;
 
 import com.rabbitmq.client.Channel;
-import com.github.yuanrw.im.common.domain.constant.MqConstant;
+import com.github.yuanrw.im.common.domain.constant.ImConstant;
 import com.github.yuanrw.im.common.parse.ParseService;
 import com.github.yuanrw.im.protobuf.constant.MsgTypeEnum;
 import com.github.yuanrw.im.protobuf.generate.Ack;
@@ -42,7 +42,7 @@ public class OfflineListen implements ChannelAwareMessageListener {
 
     @Override
     @RabbitHandler
-    @RabbitListener(queues = MqConstant.OFFLINE_QUEUE, containerFactory = "listenerFactory")
+    @RabbitListener(queues = ImConstant.MQ_OFFLINE_QUEUE, containerFactory = "listenerFactory")
     public void onMessage(Message message, Channel channel) throws Exception {
         logger.info("[OfflineConsumer] getUserSpi msg: {}", message.toString());
         try {

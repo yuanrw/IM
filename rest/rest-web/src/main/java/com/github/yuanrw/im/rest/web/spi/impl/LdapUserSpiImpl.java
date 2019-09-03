@@ -1,4 +1,4 @@
-package com.github.yuanrw.im.rest.web.impl;
+package com.github.yuanrw.im.rest.web.spi.impl;
 
 import com.github.yuanrw.im.rest.spi.UserSpi;
 import com.github.yuanrw.im.rest.spi.domain.LdapUser;

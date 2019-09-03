@@ -16,6 +16,16 @@ public class Offline extends DbModel {
 
     private byte[] content;
 
+    private Boolean hasRead;
+
+    public Boolean getHasRead() {
+        return hasRead;
+    }
+
+    public void setHasRead(Boolean hasRead) {
+        this.hasRead = hasRead;
+    }
+
     public Long getMsgId() {
         return msgId;
     }

@@ -11,8 +11,9 @@ import com.google.protobuf.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.function.BiConsumer;
+
+import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
 
 /**
  * process msg the connector received
@@ -33,11 +34,19 @@ public class ConnectorService {
 
     public void doChatToClientAndFlush(Chat.ChatMsg msg) {
         Conn conn = clientConnContext.getConnByUserId(msg.getDestId());
+        if (conn == null) {
+            //todo: if not on the machine
+            return;
+        }
         conn.getCtx().writeAndFlush(msg);
     }
 
     public void doSendAckToClientAndFlush(Ack.AckMsg ackMsg) {
         Conn conn = clientConnContext.getConnByUserId(ackMsg.getDestId());
+        if (conn == null) {
+            //todo: if not on the machine
+            return;
+        }
         conn.getCtx().writeAndFlush(ackMsg);
     }
 
@@ -59,7 +68,7 @@ public class ConnectorService {
     public Ack.AckMsg getDelivered(Chat.ChatMsg msg) {
         return Ack.AckMsg.newBuilder()
             .setId(IdWorker.genId())
-            .setVersion(1)
+            .setVersion(MSG_VERSION)
             .setFromId(msg.getDestId())
             .setDestId(msg.getFromId())
             .setDestType(msg.getDestType() == Chat.ChatMsg.DestType.SINGLE ? Ack.AckMsg.DestType.SINGLE : Ack.AckMsg.DestType.GROUP)
@@ -71,7 +80,7 @@ public class ConnectorService {
 
     private void sendMsg(Conn conn, Message msg, BiConsumer<Conn, Message> ifOnTheMachine) {
         if (conn == null) {
-            new ArrayList<>(ConnectorTransferHandler.getCtxList()).get(0).writeAndFlush(msg);
+            ConnectorTransferHandler.getCtxList().get(0).writeAndFlush(msg);
         } else {
             //the user is connected to this machine
             //won 't save chat histories

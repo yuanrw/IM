@@ -10,8 +10,8 @@ import java.util.Scanner;
  */
 public class MyClientApplication {
 
-    private final static String CONNECTOR_HOST = "172.25.49.165";
-    private final static Integer CONNECTOR_PORT = 9999;
+    private final static String CONNECTOR_HOST = "127.0.0.1";
+    private final static Integer CONNECTOR_PORT = 19081;
     private final static String REST_URL = "http://127.0.0.1:8082";
 
     public static void main(String[] args) {

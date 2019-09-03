@@ -18,6 +18,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
+
 /**
  * Date: 2019-05-14
  * Time: 10:29
@@ -56,7 +58,7 @@ public class UserApi {
             .setFrom(Internal.InternalMsg.Module.CLIENT)
             .setDest(Internal.InternalMsg.Module.CONNECTOR)
             .setCreateTime(System.currentTimeMillis())
-            .setVersion(1)
+            .setVersion(MSG_VERSION)
             .setMsgType(Internal.InternalMsg.MsgType.GREET)
             .setMsgBody(userId)
             .build();

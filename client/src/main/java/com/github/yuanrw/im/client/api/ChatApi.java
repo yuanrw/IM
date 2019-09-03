@@ -10,6 +10,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import io.netty.util.CharsetUtil;
 
+import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
+
 /**
  * Date: 2019-05-14
  * Time: 10:29
@@ -48,7 +50,7 @@ public class ChatApi {
             .setDestType(Chat.ChatMsg.DestType.SINGLE)
             .setCreateTime(System.currentTimeMillis())
             .setMsgType(Chat.ChatMsg.MsgType.TEXT)
-            .setVersion(1)
+            .setVersion(MSG_VERSION)
             .setMsgBody(ByteString.copyFrom(text, CharsetUtil.UTF_8))
             .build();
 
@@ -75,7 +77,7 @@ public class ChatApi {
     public void confirmRead(Chat.ChatMsg msg) {
         Ack.AckMsg read = Ack.AckMsg.newBuilder()
             .setId(IdWorker.genId())
-            .setVersion(1)
+            .setVersion(MSG_VERSION)
             .setFromId(msg.getDestId())
             .setDestId(msg.getFromId())
             .setCreateTime(System.currentTimeMillis())

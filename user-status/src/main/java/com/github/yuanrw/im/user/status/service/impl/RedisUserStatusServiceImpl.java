@@ -28,13 +28,14 @@ public class RedisUserStatusServiceImpl implements UserStatusService {
     public RedisUserStatusServiceImpl(@Assisted Properties properties) {
         JedisPoolConfig config = new JedisPoolConfig();
         config.setMaxWaitMillis(2 * 1000);
+        String password = properties.getProperty("password");
         jedisPool = new JedisPool(config, properties.getProperty("host"), (Integer) properties.get("port"),
-            2 * 1000, properties.getProperty("password"));
+            2 * 1000, password != null && !password.isEmpty() ? password : null);
     }
 
     @Override
-    public String online(String connectorId, String userId) {
-        logger.debug("[user status] user online: connectorId: {}, userId: {}", connectorId, userId);
+    public String online(String userId, String connectorId) {
+        logger.debug("[user status] user online: userId: {}, connectorId: {}", userId, connectorId);
 
         try (Jedis jedis = jedisPool.getResource()) {
             String oldConnectorId = jedis.hget(USER_CONN_STATUS_KEY, String.valueOf(userId));

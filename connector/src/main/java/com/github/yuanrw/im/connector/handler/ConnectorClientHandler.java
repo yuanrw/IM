@@ -4,7 +4,7 @@ import com.github.yuanrw.im.common.parse.AbstractMsgParser;
 import com.github.yuanrw.im.common.parse.InternalParser;
 import com.github.yuanrw.im.connector.domain.ClientConnContext;
 import com.github.yuanrw.im.connector.service.ConnectorService;
-import com.github.yuanrw.im.connector.service.UserStatusService;
+import com.github.yuanrw.im.connector.service.UserOnlineService;
 import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.github.yuanrw.im.protobuf.generate.Internal;
@@ -29,15 +29,15 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
     private Logger logger = LoggerFactory.getLogger(ConnectorClientHandler.class);
 
     private ConnectorService connectorService;
-    private UserStatusService userStatusService;
+    private UserOnlineService userOnlineService;
     private ClientConnContext clientConnContext;
     private FromClientParser fromClientParser;
 
     @Inject
-    public ConnectorClientHandler(ConnectorService connectorService, UserStatusService userStatusService, ClientConnContext clientConnContext) {
+    public ConnectorClientHandler(ConnectorService connectorService, UserOnlineService userOnlineService, ClientConnContext clientConnContext) {
         this.fromClientParser = new FromClientParser();
         this.connectorService = connectorService;
-        this.userStatusService = userStatusService;
+        this.userOnlineService = userOnlineService;
         this.clientConnContext = clientConnContext;
     }
 
@@ -54,7 +54,7 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //remove connection and update user's status
-        userStatusService.userOffline(ctx);
+        userOnlineService.userOffline(ctx);
         ctx.close();
     }
 
@@ -70,7 +70,7 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
         public void registerParsers() {
             InternalParser parser = new InternalParser(3);
             parser.register(Internal.InternalMsg.MsgType.GREET,
-                (m, ctx) -> userStatusService.userOnline(m.getId(), m.getMsgBody(), ctx));
+                (m, ctx) -> userOnlineService.userOnline(m.getId(), m.getMsgBody(), ctx));
 
             register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChatToClientOrTransferAndFlush(m));
             register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAckToClientOrTransferAndFlush(m));

@@ -2,7 +2,7 @@ package com.github.yuanrw.im.rest.web.config;
 
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
-import com.github.yuanrw.im.common.domain.constant.MqConstant;
+import com.github.yuanrw.im.common.domain.constant.ImConstant;
 import com.github.yuanrw.im.common.domain.po.DbModel;
 import com.github.yuanrw.im.rest.web.handler.ValidHandler;
 import org.mybatis.spring.annotation.MapperScan;
@@ -65,7 +65,7 @@ public class RestConfig {
 
     @Bean
     public Queue offlineQueue() {
-        return new Queue(MqConstant.OFFLINE_QUEUE);
+        return new Queue(ImConstant.MQ_OFFLINE_QUEUE);
     }
 
     @Bean

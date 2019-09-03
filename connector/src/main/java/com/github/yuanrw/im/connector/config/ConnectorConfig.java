@@ -11,15 +11,32 @@ public class ConnectorConfig {
     private Integer port;
     private String[] transferUrls;
     private String restUrl;
-    private String logPath;
-    private String logLevel;
+    private String redisHost;
+    private Integer redisPort;
+    private String redisPassword;
 
-    public String getLogLevel() {
-        return logLevel;
+    public String getRedisHost() {
+        return redisHost;
     }
 
-    public void setLogLevel(String logLevel) {
-        this.logLevel = logLevel;
+    public void setRedisHost(String redisHost) {
+        this.redisHost = redisHost;
+    }
+
+    public Integer getRedisPort() {
+        return redisPort;
+    }
+
+    public void setRedisPort(Integer redisPort) {
+        this.redisPort = redisPort;
+    }
+
+    public String getRedisPassword() {
+        return redisPassword;
+    }
+
+    public void setRedisPassword(String redisPassword) {
+        this.redisPassword = redisPassword;
     }
 
     public Integer getPort() {
@@ -44,13 +61,5 @@ public class ConnectorConfig {
 
     public void setRestUrl(String restUrl) {
         this.restUrl = restUrl;
-    }
-
-    public String getLogPath() {
-        return logPath;
-    }
-
-    public void setLogPath(String logPath) {
-        this.logPath = logPath;
     }
 }
