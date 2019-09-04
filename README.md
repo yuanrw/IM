@@ -5,7 +5,7 @@
 IM is a lightweight instant messaging server. It also provides a client jar,allows you to develop your own client.For example,with spring boot. It's able to login with your own login system or with ldap.
 
 ## Features
-* One to one text message
+* One to one text/file message
 * Sent/Delivered/Read message
 * Ldap Authentication
 * Authenticate with individual login system
@@ -57,7 +57,10 @@ sentMsg: 51, readMsg: 51, hasSentAck: 51, hasDeliveredAck: 51, hasReadAck: 51, h
 ```
 
 ## Distributed Deploy
-Make sure that you have downloaded the release packages.
+```
+mvn clean package -DskipTests
+```
+get $SERVICE_NAME-$VERSION-bin.zip under dir /target
 
 ### Environment Requirement
 * java 8+
