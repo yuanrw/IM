@@ -13,7 +13,7 @@ IM is a lightweight instant messaging server. It also provides a client jar,allo
 * Provide client jar
 
 ## Structure
-[!im-structure](https://github.com/yuanrw/IM/pic/im-structure.png)
+![im-structure](https://github.com/yuanrw/IM/blob/master/pic/im-structure.png)
 
 ## Quick Start
 
