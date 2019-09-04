@@ -12,6 +12,9 @@ IM is a lightweight instant messaging server. It also provides a client jar,allo
 * Horizontal expansion
 * Provide client jar
 
+## Structure
+[!im-structure](https://github.com/yuanrw/IM/pic/im-structure.png)
+
 ## Quick Start
 
 ### Prepare
