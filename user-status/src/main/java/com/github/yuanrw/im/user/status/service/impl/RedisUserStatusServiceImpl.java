@@ -60,7 +60,11 @@ public class RedisUserStatusServiceImpl implements UserStatusService {
 
     @Override
     public String getConnectorId(String userId) {
-        Jedis jedis = jedisPool.getResource();
-        return jedis.hget(USER_CONN_STATUS_KEY, userId);
+        try (Jedis jedis = jedisPool.getResource()) {
+            return jedis.hget(USER_CONN_STATUS_KEY, userId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
     }
 }

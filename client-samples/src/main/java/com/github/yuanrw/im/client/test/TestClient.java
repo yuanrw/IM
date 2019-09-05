@@ -105,24 +105,6 @@ class TestClient {
         return imClient;
     }
 
-    public void send(String id) {
-        String randomText = RandomStringUtils.random(20, true, true);
-        Long msgId = IdWorker.genId();
-
-        Chat.ChatMsg chat = chatApi.chatMsgBuilder()
-            .setId(msgId)
-            .setFromId(userInfo.getId())
-            .setDestId(id)
-            .setDestType(Chat.ChatMsg.DestType.SINGLE)
-            .setCreateTime(System.currentTimeMillis())
-            .setMsgType(Chat.ChatMsg.MsgType.TEXT)
-            .setVersion(MSG_VERSION)
-            .setMsgBody(ByteString.copyFrom(randomText, CharsetUtil.UTF_8))
-            .build();
-
-        chatApi.send(chat);
-    }
-
     void randomSendTest() {
         sendMsg.getAndIncrement();
         int index = ThreadLocalRandom.current().nextInt(0, friends.size());

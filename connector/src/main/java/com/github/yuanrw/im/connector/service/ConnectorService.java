@@ -36,15 +36,20 @@ public class ConnectorService {
         Conn conn = clientConnContext.getConnByUserId(msg.getDestId());
         if (conn == null) {
             //todo: if not on the machine
+            logger.error("[send ack to client] not one the machine, userId: {}, connectorId: {}",
+                msg.getDestId(), ConnectorTransferHandler.CONNECTOR_ID);
             return;
         }
         conn.getCtx().writeAndFlush(msg);
+        doSendAckToClientOrTransferAndFlush(getDelivered(msg));
     }
 
     public void doSendAckToClientAndFlush(Ack.AckMsg ackMsg) {
         Conn conn = clientConnContext.getConnByUserId(ackMsg.getDestId());
         if (conn == null) {
             //todo: if not on the machine
+            logger.error("[send msg to client] not one the machine, userId: {}, connectorId: {}",
+                ackMsg.getDestId(), ConnectorTransferHandler.CONNECTOR_ID);
             return;
         }
         conn.getCtx().writeAndFlush(ackMsg);
@@ -52,10 +57,10 @@ public class ConnectorService {
 
     public void doChatToClientOrTransferAndFlush(Chat.ChatMsg msg) {
         Conn conn = clientConnContext.getConnByUserId(msg.getDestId());
-
-        sendMsg(conn, msg, (c, m) -> conn.getCtx().writeAndFlush(msg));
-
-        doSendAckToClientOrTransferAndFlush(getDelivered(msg));
+        boolean onTheMachine = sendMsg(conn, msg, (c, m) -> conn.getCtx().writeAndFlush(msg));
+        if (onTheMachine) {
+            doSendAckToClientOrTransferAndFlush(getDelivered(msg));
+        }
     }
 
     public void doSendAckToClientOrTransferAndFlush(Ack.AckMsg ackMsg) {
@@ -78,13 +83,15 @@ public class ConnectorService {
             .build();
     }
 
-    private void sendMsg(Conn conn, Message msg, BiConsumer<Conn, Message> ifOnTheMachine) {
+    private boolean sendMsg(Conn conn, Message msg, BiConsumer<Conn, Message> ifOnTheMachine) {
         if (conn == null) {
             ConnectorTransferHandler.getCtxList().get(0).writeAndFlush(msg);
+            return false;
         } else {
             //the user is connected to this machine
             //won 't save chat histories
             ifOnTheMachine.accept(conn, msg);
+            return true;
         }
     }
 }
