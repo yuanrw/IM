@@ -37,17 +37,6 @@ public abstract class AbstractRestService<R> {
         this.restClient = retrofit.create(clazz);
     }
 
-    @FunctionalInterface
-    protected interface RestFunction<T> {
-        /**
-         * 执行一个http请求
-         *
-         * @return
-         * @throws IOException
-         */
-        Response<ResultWrapper<T>> doRequest() throws IOException;
-    }
-
     protected <T> T doRequest(RestFunction<T> function) {
         try {
             Response<ResultWrapper<T>> response = function.doRequest();
@@ -64,5 +53,16 @@ public abstract class AbstractRestService<R> {
         } catch (IOException e) {
             throw new ImException("[rest service] has error", e);
         }
+    }
+
+    @FunctionalInterface
+    protected interface RestFunction<T> {
+        /**
+         * 执行一个http请求
+         *
+         * @return
+         * @throws IOException
+         */
+        Response<ResultWrapper<T>> doRequest() throws IOException;
     }
 }

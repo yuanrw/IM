@@ -45,8 +45,6 @@ public class MsgDecoder extends ByteToMessageDecoder {
         }
 
         if (length > in.readableBytes() - 4) {
-            //注意！编解码器加这种in.readInt()日志，在大并发的情况下很可能会抛数组越界异常！
-            //logger.error("message received is incomplete,ptoNum:{}, length:{}, readable:{}", in.readInt(), length, in.readableBytes());
             in.resetReaderIndex();
             return;
         }

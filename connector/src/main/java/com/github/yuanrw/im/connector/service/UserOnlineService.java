@@ -1,5 +1,6 @@
 package com.github.yuanrw.im.connector.service;
 
+import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.connector.domain.ClientConn;
 import com.github.yuanrw.im.connector.domain.ClientConnContext;
@@ -17,7 +18,6 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.List;
 import java.util.Properties;
 
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
 import static com.github.yuanrw.im.connector.start.ConnectorStarter.CONNECTOR_CONFIG;
 
 /**
@@ -79,7 +79,7 @@ public class UserOnlineService {
     private void sendErrorToClient(String errorMsg, ChannelHandlerContext ctx) {
         Internal.InternalMsg ack = Internal.InternalMsg.newBuilder()
             .setId(IdWorker.genId())
-            .setVersion(MSG_VERSION)
+            .setVersion(MsgVersion.V1.getVersion())
             .setFrom(Internal.InternalMsg.Module.CONNECTOR)
             .setDest(Internal.InternalMsg.Module.CLIENT)
             .setCreateTime(System.currentTimeMillis())
@@ -93,7 +93,7 @@ public class UserOnlineService {
     private void sendAckToClient(Long id, ChannelHandlerContext ctx) {
         Internal.InternalMsg ack = Internal.InternalMsg.newBuilder()
             .setId(IdWorker.genId())
-            .setVersion(MSG_VERSION)
+            .setVersion(MsgVersion.V1.getVersion())
             .setFrom(Internal.InternalMsg.Module.CONNECTOR)
             .setDest(Internal.InternalMsg.Module.CLIENT)
             .setCreateTime(System.currentTimeMillis())

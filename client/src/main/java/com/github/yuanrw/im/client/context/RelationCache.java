@@ -1,6 +1,5 @@
 package com.github.yuanrw.im.client.context;
 
-import com.github.yuanrw.im.common.domain.po.Relation;
 import com.github.yuanrw.im.common.domain.po.RelationDetail;
 
 import java.util.List;

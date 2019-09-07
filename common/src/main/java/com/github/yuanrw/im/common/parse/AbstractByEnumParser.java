@@ -1,8 +1,8 @@
 package com.github.yuanrw.im.common.parse;
 
+import com.github.yuanrw.im.common.function.ImBiConsumer;
 import com.google.protobuf.Message;
 import com.google.protobuf.ProtocolMessageEnum;
-import com.github.yuanrw.im.common.function.ImBiConsumer;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.HashMap;

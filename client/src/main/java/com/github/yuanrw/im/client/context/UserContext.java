@@ -45,10 +45,6 @@ public class UserContext {
         this.userId = userId;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public RelationCache getRelationCache() {
         return relationCache;
     }
@@ -59,6 +55,10 @@ public class UserContext {
 
     public String getToken() {
         return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void addRelations(List<RelationDetail> relations) {

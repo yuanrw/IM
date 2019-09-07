@@ -4,6 +4,7 @@ import com.github.yuanrw.im.common.code.MsgDecoder
 import com.github.yuanrw.im.common.code.MsgEncoder
 import com.github.yuanrw.im.common.domain.conn.Conn
 import com.github.yuanrw.im.common.domain.conn.ConnectorConn
+import com.github.yuanrw.im.common.domain.constant.MsgVersion
 import com.github.yuanrw.im.common.util.IdWorker
 import com.github.yuanrw.im.protobuf.generate.Ack
 import com.github.yuanrw.im.protobuf.generate.Chat
@@ -21,8 +22,6 @@ import io.netty.channel.embedded.EmbeddedChannel
 import io.netty.util.Attribute
 import spock.lang.Shared
 import spock.lang.Specification
-
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION
 
 /**
  * Date: 2019-06-07
@@ -60,7 +59,7 @@ class TransferConnectorTest extends Specification {
     def "test get internal greet"() {
         when:
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFrom(Internal.InternalMsg.Module.CONNECTOR)
@@ -89,7 +88,7 @@ class TransferConnectorTest extends Specification {
         userStatusService.online("5678", conn.getNetId().toString())
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("1234")
@@ -120,7 +119,7 @@ class TransferConnectorTest extends Specification {
         userStatusService.online("5678", conn.getNetId().toString())
 
         Ack.AckMsg ack = Ack.AckMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("1234")

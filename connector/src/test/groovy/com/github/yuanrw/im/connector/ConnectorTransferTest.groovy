@@ -4,6 +4,7 @@ import com.github.yuanrw.im.common.code.MsgDecoder
 import com.github.yuanrw.im.common.code.MsgEncoder
 import com.github.yuanrw.im.common.domain.ResponseCollector
 import com.github.yuanrw.im.common.domain.conn.Conn
+import com.github.yuanrw.im.common.domain.constant.MsgVersion
 import com.github.yuanrw.im.common.domain.po.Offline
 import com.github.yuanrw.im.common.parse.ParseService
 import com.github.yuanrw.im.common.util.IdWorker
@@ -41,7 +42,6 @@ import java.time.Duration
 import java.util.concurrent.CompletableFuture
 import java.util.function.BiConsumer
 
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION
 import static org.powermock.api.mockito.PowerMockito.when
 
 /**
@@ -115,7 +115,7 @@ class ConnectorTransferTest extends Specification {
         userOnlineService.userOnline(111112, "456", ctx)
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
@@ -153,7 +153,7 @@ class ConnectorTransferTest extends Specification {
         }
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
@@ -195,7 +195,7 @@ class ConnectorTransferTest extends Specification {
         userOnlineService.userOnline(111112, "456", ctx)
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
@@ -231,7 +231,7 @@ class ConnectorTransferTest extends Specification {
         }
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
@@ -257,7 +257,7 @@ class ConnectorTransferTest extends Specification {
         when:
         responseCollector.getFuture().whenComplete({ r, e -> result.add(r) })
         Internal.InternalMsg ack = Internal.InternalMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFrom(Internal.InternalMsg.Module.TRANSFER)

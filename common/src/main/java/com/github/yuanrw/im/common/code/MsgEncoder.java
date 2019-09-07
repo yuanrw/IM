@@ -1,7 +1,7 @@
 package com.github.yuanrw.im.common.code;
 
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.protobuf.constant.MsgTypeEnum;
+import com.google.protobuf.Message;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;

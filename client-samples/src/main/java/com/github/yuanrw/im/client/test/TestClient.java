@@ -6,6 +6,7 @@ import com.github.yuanrw.im.client.api.ClientMsgListener;
 import com.github.yuanrw.im.client.api.UserApi;
 import com.github.yuanrw.im.client.domain.Friend;
 import com.github.yuanrw.im.common.domain.UserInfo;
+import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.google.protobuf.ByteString;
@@ -20,8 +21,6 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
-
 /**
  * Date: 2019-07-09
  * Time: 10:08
@@ -29,19 +28,16 @@ import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION
  * @author yrw
  */
 class TestClient {
-    private static Logger logger = LoggerFactory.getLogger(TestClient.class);
-
-    private ChatApi chatApi;
-    private UserInfo userInfo;
-
-    private List<Friend> friends;
-
     static AtomicInteger sendMsg = new AtomicInteger(0);
     static AtomicInteger readMsg = new AtomicInteger(0);
     static AtomicInteger hasSentAck = new AtomicInteger(0);
     static AtomicInteger hasDeliveredAck = new AtomicInteger(0);
     static AtomicInteger hasReadAck = new AtomicInteger(0);
     static AtomicInteger hasException = new AtomicInteger(0);
+    private static Logger logger = LoggerFactory.getLogger(TestClient.class);
+    private ChatApi chatApi;
+    private UserInfo userInfo;
+    private List<Friend> friends;
 
     TestClient(String connectorHost, Integer connectorPort, String restUrl, String username, String password) {
         ImClient imClient = start(connectorHost, connectorPort, restUrl);
@@ -118,7 +114,7 @@ class TestClient {
             .setDestType(Chat.ChatMsg.DestType.SINGLE)
             .setCreateTime(System.currentTimeMillis())
             .setMsgType(Chat.ChatMsg.MsgType.TEXT)
-            .setVersion(MSG_VERSION)
+            .setVersion(MsgVersion.V1.getVersion())
             .setMsgBody(ByteString.copyFrom(randomText, CharsetUtil.UTF_8))
             .build();
 

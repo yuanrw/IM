@@ -3,6 +3,7 @@ package com.github.yuanrw.im.transfer.service;
 import com.github.yuanrw.im.common.domain.conn.Conn;
 import com.github.yuanrw.im.common.domain.conn.ConnectorConn;
 import com.github.yuanrw.im.common.domain.constant.ImConstant;
+import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
@@ -16,8 +17,6 @@ import com.rabbitmq.client.MessageProperties;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
-
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
 
 /**
  * Date: 2019-05-04
@@ -66,7 +65,7 @@ public class TransferService {
 
     private Internal.InternalMsg getInternalAck(Long msgId) {
         return Internal.InternalMsg.newBuilder()
-            .setVersion(MSG_VERSION)
+            .setVersion(MsgVersion.V1.getVersion())
             .setId(IdWorker.genId())
             .setFrom(Internal.InternalMsg.Module.TRANSFER)
             .setDest(Internal.InternalMsg.Module.CONNECTOR)

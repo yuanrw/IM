@@ -1,12 +1,11 @@
 package com.github.yuanrw.im.client.service;
 
-import com.github.yuanrw.im.common.domain.po.RelationDetail;
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 import com.github.yuanrw.im.client.domain.UserReq;
 import com.github.yuanrw.im.common.domain.UserInfo;
-import com.github.yuanrw.im.common.domain.po.Relation;
+import com.github.yuanrw.im.common.domain.po.RelationDetail;
 import com.github.yuanrw.im.common.rest.AbstractRestService;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import java.util.List;
 

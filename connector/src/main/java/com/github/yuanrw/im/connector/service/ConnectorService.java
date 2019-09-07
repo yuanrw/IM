@@ -1,6 +1,7 @@
 package com.github.yuanrw.im.connector.service;
 
 import com.github.yuanrw.im.common.domain.conn.Conn;
+import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.connector.domain.ClientConnContext;
 import com.github.yuanrw.im.connector.handler.ConnectorTransferHandler;
@@ -12,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.function.BiConsumer;
-
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
 
 /**
  * process msg the connector received
@@ -73,7 +72,7 @@ public class ConnectorService {
     public Ack.AckMsg getDelivered(Chat.ChatMsg msg) {
         return Ack.AckMsg.newBuilder()
             .setId(IdWorker.genId())
-            .setVersion(MSG_VERSION)
+            .setVersion(MsgVersion.V1.getVersion())
             .setFromId(msg.getDestId())
             .setDestId(msg.getFromId())
             .setDestType(msg.getDestType() == Chat.ChatMsg.DestType.SINGLE ? Ack.AckMsg.DestType.SINGLE : Ack.AckMsg.DestType.GROUP)

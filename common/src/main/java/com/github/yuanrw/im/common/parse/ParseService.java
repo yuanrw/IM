@@ -1,12 +1,12 @@
 package com.github.yuanrw.im.common.parse;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.protobuf.constant.MsgTypeEnum;
 import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.github.yuanrw.im.protobuf.generate.Internal;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Message;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,18 +20,6 @@ import java.util.Map;
 public class ParseService {
 
     private Map<MsgTypeEnum, Parse> parseFunctionMap;
-
-    @FunctionalInterface
-    public interface Parse {
-        /**
-         * parse msg
-         *
-         * @param bytes msg bytes
-         * @return
-         * @throws InvalidProtocolBufferException
-         */
-        Message process(byte[] bytes) throws InvalidProtocolBufferException;
-    }
 
     public ParseService() {
         parseFunctionMap = new HashMap<>(MsgTypeEnum.values().length);
@@ -48,5 +36,17 @@ public class ParseService {
             throw new ImException("[msg parse], no proper parse function, msgType: " + msgType.name());
         }
         return parseFunction.process(bytes);
+    }
+
+    @FunctionalInterface
+    public interface Parse {
+        /**
+         * parse msg
+         *
+         * @param bytes msg bytes
+         * @return
+         * @throws InvalidProtocolBufferException
+         */
+        Message process(byte[] bytes) throws InvalidProtocolBufferException;
     }
 }

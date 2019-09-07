@@ -1,12 +1,12 @@
 package com.github.yuanrw.im.rest.web.task;
 
-import com.rabbitmq.client.Channel;
 import com.github.yuanrw.im.common.domain.constant.ImConstant;
 import com.github.yuanrw.im.common.parse.ParseService;
 import com.github.yuanrw.im.protobuf.constant.MsgTypeEnum;
 import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.github.yuanrw.im.rest.web.service.OfflineService;
+import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -30,14 +30,14 @@ public class OfflineListen implements ChannelAwareMessageListener {
     private ParseService parseService;
     private OfflineService offlineService;
 
-    @PostConstruct
-    public void init() {
-        logger.info("[OfflineConsumer] Start listening Offline queue......");
-    }
-
     public OfflineListen(OfflineService offlineService) {
         this.parseService = new ParseService();
         this.offlineService = offlineService;
+    }
+
+    @PostConstruct
+    public void init() {
+        logger.info("[OfflineConsumer] Start listening Offline queue......");
     }
 
     @Override

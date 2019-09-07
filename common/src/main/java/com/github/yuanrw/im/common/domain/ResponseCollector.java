@@ -18,13 +18,11 @@ import java.util.concurrent.TimeoutException;
  */
 public class ResponseCollector<M extends Message> {
 
-    private CompletableFuture<M> future;
-
+    private static final HashedWheelTimer TIMER = new HashedWheelTimer(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("response-timer-%d").build());
     private final Duration responseTimeout;
 
     private final String debugMsg;
-
-    private static final HashedWheelTimer TIMER = new HashedWheelTimer(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("response-timer-%d").build());
+    private CompletableFuture<M> future;
 
     public ResponseCollector(Duration responseTimeout, String debugMsg) {
         this.responseTimeout = responseTimeout;

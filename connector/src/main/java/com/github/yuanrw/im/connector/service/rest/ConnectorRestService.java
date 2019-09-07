@@ -1,9 +1,9 @@
 package com.github.yuanrw.im.connector.service.rest;
 
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 import com.github.yuanrw.im.common.domain.po.Offline;
 import com.github.yuanrw.im.common.rest.AbstractRestService;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 
 import java.util.List;
 

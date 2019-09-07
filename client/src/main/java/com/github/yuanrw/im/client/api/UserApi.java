@@ -5,6 +5,7 @@ import com.github.yuanrw.im.client.domain.Friend;
 import com.github.yuanrw.im.client.handler.ClientConnectorHandler;
 import com.github.yuanrw.im.client.service.ClientRestService;
 import com.github.yuanrw.im.common.domain.UserInfo;
+import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.domain.po.RelationDetail;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.common.util.IdWorker;
@@ -17,8 +18,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
 
 /**
  * Date: 2019-05-14
@@ -37,6 +36,21 @@ public class UserApi {
         this.clientRestService = clientRestService;
         this.userContext = userContext;
         this.handler = handler;
+    }
+
+    private static List<Friend> getFriends(List<RelationDetail> relations, String userId) {
+        return relations.stream().map(r -> {
+            Friend friend = new Friend();
+            if (r.getUserId1().equals(userId)) {
+                friend.setUserId(r.getUserId2());
+                friend.setUsername(r.getUsername2());
+            } else {
+                friend.setUserId(r.getUserId1());
+                friend.setUsername(r.getUsername1());
+            }
+            friend.setEncryptKey(r.getEncryptKey());
+            return friend;
+        }).collect(Collectors.toList());
     }
 
     public UserInfo login(String username, String password) {
@@ -58,7 +72,7 @@ public class UserApi {
             .setFrom(Internal.InternalMsg.Module.CLIENT)
             .setDest(Internal.InternalMsg.Module.CONNECTOR)
             .setCreateTime(System.currentTimeMillis())
-            .setVersion(MSG_VERSION)
+            .setVersion(MsgVersion.V1.getVersion())
             .setMsgType(Internal.InternalMsg.MsgType.GREET)
             .setMsgBody(userId)
             .build();
@@ -89,20 +103,5 @@ public class UserApi {
 
     public List<Friend> friends(String token) {
         return getFriends(clientRestService.friends(userContext.getUserId(), token), userContext.getUserId());
-    }
-
-    private static List<Friend> getFriends(List<RelationDetail> relations, String userId) {
-        return relations.stream().map(r -> {
-            Friend friend = new Friend();
-            if (r.getUserId1().equals(userId)) {
-                friend.setUserId(r.getUserId2());
-                friend.setUsername(r.getUsername2());
-            } else {
-                friend.setUserId(r.getUserId1());
-                friend.setUsername(r.getUsername1());
-            }
-            friend.setEncryptKey(r.getEncryptKey());
-            return friend;
-        }).collect(Collectors.toList());
     }
 }

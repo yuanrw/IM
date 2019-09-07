@@ -1,7 +1,7 @@
-package com.github.yuanrw.im.client.context;
+package com.github.yuanrw.im.client.context.impl;
 
+import com.github.yuanrw.im.client.context.RelationCache;
 import com.github.yuanrw.im.client.service.ClientRestService;
-import com.github.yuanrw.im.common.domain.po.Relation;
 import com.github.yuanrw.im.common.domain.po.RelationDetail;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -48,7 +48,9 @@ public class MemoryRelationCache implements RelationCache {
         RelationDetail relation = relationMap.get(generateKey(userId1, userId2));
         if (relation == null) {
             relation = getRelationFromRest(userId1, userId2, token);
-            relationMap.put(generateKey(userId1, userId2), relation);
+            if (relation != null) {
+                relationMap.put(generateKey(userId1, userId2), relation);
+            }
         }
         return relation;
     }

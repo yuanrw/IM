@@ -1,7 +1,7 @@
 package com.github.yuanrw.im.client;
 
-import com.google.inject.Provider;
 import com.github.yuanrw.im.client.service.ClientRestService;
+import com.google.inject.Provider;
 
 /**
  * Date: 2019-08-08

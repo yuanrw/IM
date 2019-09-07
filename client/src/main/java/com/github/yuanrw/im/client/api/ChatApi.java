@@ -2,6 +2,7 @@ package com.github.yuanrw.im.client.api;
 
 import com.github.yuanrw.im.client.context.UserContext;
 import com.github.yuanrw.im.client.handler.ClientConnectorHandler;
+import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.protobuf.generate.Ack;
@@ -9,8 +10,6 @@ import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import io.netty.util.CharsetUtil;
-
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
 
 /**
  * Date: 2019-05-14
@@ -50,18 +49,13 @@ public class ChatApi {
             .setDestType(Chat.ChatMsg.DestType.SINGLE)
             .setCreateTime(System.currentTimeMillis())
             .setMsgType(Chat.ChatMsg.MsgType.TEXT)
-            .setVersion(MSG_VERSION)
+            .setVersion(MsgVersion.V1.getVersion())
             .setMsgBody(ByteString.copyFrom(text, CharsetUtil.UTF_8))
             .build();
 
         sendToConnector(chat, chat.getId());
 
         return chat.getId();
-    }
-
-    public Long file(String toId, byte[] bytes) {
-        checkLogin();
-        return null;
     }
 
     private void checkLogin() {
@@ -77,7 +71,7 @@ public class ChatApi {
     public void confirmRead(Chat.ChatMsg msg) {
         Ack.AckMsg read = Ack.AckMsg.newBuilder()
             .setId(IdWorker.genId())
-            .setVersion(MSG_VERSION)
+            .setVersion(MsgVersion.V1.getVersion())
             .setFromId(msg.getDestId())
             .setDestId(msg.getFromId())
             .setCreateTime(System.currentTimeMillis())

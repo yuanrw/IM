@@ -53,6 +53,10 @@ public class ResultWrapper<T> {
         return status;
     }
 
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public T getData() {
         return data;
     }
@@ -67,9 +71,5 @@ public class ResultWrapper<T> {
 
     public void setMsg(String msg) {
         this.msg = msg;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 }

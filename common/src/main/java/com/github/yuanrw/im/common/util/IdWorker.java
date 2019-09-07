@@ -14,7 +14,7 @@ public class IdWorker {
         snowFlake = new SnowFlake(1, 1);
     }
 
-    public static Long genId(){
+    public static Long genId() {
         return snowFlake.nextId();
     }
 }

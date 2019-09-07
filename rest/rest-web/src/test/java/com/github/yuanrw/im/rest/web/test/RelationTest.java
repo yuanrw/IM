@@ -31,10 +31,9 @@ import java.util.HashMap;
 @AutoConfigureWebTestClient
 @DirtiesContext
 public class RelationTest {
+    private static String token;
     @Autowired
     private WebTestClient webClient;
-
-    private static String token;
 
     @Before
     public void setupMethod() {

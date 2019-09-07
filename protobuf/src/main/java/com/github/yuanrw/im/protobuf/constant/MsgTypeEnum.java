@@ -38,10 +38,6 @@ public enum MsgTypeEnum {
         this.clazz = clazz;
     }
 
-    public int getCode() {
-        return code;
-    }
-
     public static MsgTypeEnum getByCode(int code) {
         return Stream.of(values()).filter(t -> t.code == code)
             .findFirst().orElseThrow(IllegalArgumentException::new);
@@ -50,5 +46,9 @@ public enum MsgTypeEnum {
     public static MsgTypeEnum getByClass(Class<?> clazz) {
         return Stream.of(values()).filter(t -> t.clazz == clazz)
             .findFirst().orElseThrow(IllegalArgumentException::new);
+    }
+
+    public int getCode() {
+        return code;
     }
 }

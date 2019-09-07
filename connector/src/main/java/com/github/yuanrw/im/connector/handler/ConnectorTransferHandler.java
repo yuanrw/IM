@@ -1,6 +1,7 @@
 package com.github.yuanrw.im.connector.handler;
 
 import com.github.yuanrw.im.common.domain.ResponseCollector;
+import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.parse.AbstractMsgParser;
 import com.github.yuanrw.im.common.parse.InternalParser;
 import com.github.yuanrw.im.common.util.IdWorker;
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
 import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkDest;
 import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkFrom;
 
@@ -35,10 +35,8 @@ import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkFrom;
  * @author yrw
  */
 public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Message> {
-    private static Logger logger = LoggerFactory.getLogger(ConnectorTransferHandler.class);
-
     public static final String CONNECTOR_ID = TokenGenerator.generate();
-
+    private static Logger logger = LoggerFactory.getLogger(ConnectorTransferHandler.class);
     private static ConcurrentMap<Long, ResponseCollector<Internal.InternalMsg>> greetRespCollectorMap = new ConcurrentHashMap<>();
     private static List<ChannelHandlerContext> ctxList = new ArrayList<>();
 
@@ -51,6 +49,20 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
         this.connectorService = connectorService;
     }
 
+    public static List<ChannelHandlerContext> getCtxList() {
+        if (ctxList.size() == 0) {
+            logger.warn("connector is not connected to a transfer!");
+        }
+        return ctxList;
+    }
+
+    public static ResponseCollector<Internal.InternalMsg> createGreetRespCollector(Long msgId, Duration timeout) {
+        ResponseCollector<Internal.InternalMsg> collector = new ResponseCollector<>(timeout,
+            "time out waiting for msg from transfer");
+        greetRespCollectorMap.put(msgId, collector);
+        return collector;
+    }
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("[ConnectorTransfer] connect to transfer");
@@ -61,7 +73,7 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
 
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
             .setId(msgId)
-            .setVersion(MSG_VERSION)
+            .setVersion(MsgVersion.V1.getVersion())
             .setMsgType(Internal.InternalMsg.MsgType.GREET)
             .setMsgBody(CONNECTOR_ID)
             .setFrom(Internal.InternalMsg.Module.CONNECTOR)
@@ -88,20 +100,6 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         //todo: reconnect
-    }
-
-    public static List<ChannelHandlerContext> getCtxList() {
-        if (ctxList.size() == 0) {
-            logger.warn("connector is not connected to a transfer!");
-        }
-        return ctxList;
-    }
-
-    public static ResponseCollector<Internal.InternalMsg> createGreetRespCollector(Long msgId, Duration timeout) {
-        ResponseCollector<Internal.InternalMsg> collector = new ResponseCollector<>(timeout,
-            "time out waiting for msg from transfer");
-        greetRespCollectorMap.put(msgId, collector);
-        return collector;
     }
 
     class FromTransferParser extends AbstractMsgParser {

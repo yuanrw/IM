@@ -1,6 +1,7 @@
 package com.github.yuanrw.im.common.test
 
 import com.github.yuanrw.im.common.domain.ResponseCollector
+import com.github.yuanrw.im.common.domain.constant.MsgVersion
 import com.github.yuanrw.im.common.util.IdWorker
 import com.github.yuanrw.im.protobuf.generate.Internal
 import spock.lang.Specification
@@ -9,8 +10,6 @@ import spock.lang.Timeout
 import java.time.Duration
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
-
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION
 
 /**
  * Date: 2019-05-31
@@ -45,7 +44,7 @@ class ResponseCollectorTest extends Specification {
 
         when:
         Internal.InternalMsg msg = Internal.InternalMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setMsgType(Internal.InternalMsg.MsgType.ACK)

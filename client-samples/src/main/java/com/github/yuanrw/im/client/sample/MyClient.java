@@ -6,6 +6,7 @@ import com.github.yuanrw.im.client.api.ClientMsgListener;
 import com.github.yuanrw.im.client.api.UserApi;
 import com.github.yuanrw.im.client.domain.Friend;
 import com.github.yuanrw.im.common.domain.UserInfo;
+import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.google.protobuf.ByteString;
@@ -18,8 +19,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION;
 
 /**
  * Date: 2019-07-09
@@ -116,7 +115,7 @@ public class MyClient {
             .setDestType(Chat.ChatMsg.DestType.SINGLE)
             .setCreateTime(System.currentTimeMillis())
             .setMsgType(Chat.ChatMsg.MsgType.TEXT)
-            .setVersion(MSG_VERSION)
+            .setVersion(MsgVersion.V1.getVersion())
             .setMsgBody(ByteString.copyFrom(text, CharsetUtil.UTF_8))
             .build();
 

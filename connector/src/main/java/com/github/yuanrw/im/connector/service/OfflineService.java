@@ -1,13 +1,13 @@
 package com.github.yuanrw.im.connector.service;
 
-import com.google.inject.Inject;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.Message;
 import com.github.yuanrw.im.common.domain.po.Offline;
 import com.github.yuanrw.im.common.parse.ParseService;
 import com.github.yuanrw.im.connector.config.ConnectorRestServiceFactory;
 import com.github.yuanrw.im.connector.service.rest.ConnectorRestService;
 import com.github.yuanrw.im.connector.start.ConnectorStarter;
+import com.google.inject.Inject;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Message;
 
 import java.util.List;
 import java.util.Objects;

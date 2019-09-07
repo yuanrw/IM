@@ -1,6 +1,8 @@
 # IM
 [![Build Status](https://travis-ci.org/yuanrw/IM.svg?branch=master)](https://travis-ci.org/yuanrw/IM)
 [![codecov](https://codecov.io/gh/yuanrw/IM/branch/master/graph/badge.svg)](https://codecov.io/gh/yuanrw/IM)
+![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/yuanrw/client-samples)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/yuanrw/client-samples)
 
 IM is a lightweight instant messaging server. It also provides a client jar,allows you to develop your own client.For example,with spring boot. It's able to login with your own login system or with ldap.
 
@@ -122,15 +124,15 @@ java -jar -Dconfig=connector.properties connector-$VERSION.jar
 ```
 
 ## Nginx Config
-All services are avaiable to expand horizontally,connections need to be kept alive between each client and connector server.
+All services are available to expand horizontally,connections need to be kept alive between each client and connector server.
 A sample nginx config:
 
 ```
 stream {
 	upstream backend {
-	    # connector services port
+        # connector services port
         server 127.0.0.1:9081         max_fails=3 fail_timeout=30s;
-		server 127.0.0.1:19081			max_fails=3 fail_timeout=30s;
+        server 127.0.0.1:19081			max_fails=3 fail_timeout=30s;
 	}
 
     server {

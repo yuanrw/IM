@@ -2,13 +2,14 @@ package com.github.yuanrw.im.client.test
 
 import com.github.yuanrw.im.client.ImClient
 import com.github.yuanrw.im.client.api.ClientMsgListener
-import com.github.yuanrw.im.client.context.MemoryRelationCache
 import com.github.yuanrw.im.client.context.UserContext
+import com.github.yuanrw.im.client.context.impl.MemoryRelationCache
 import com.github.yuanrw.im.client.handler.ClientConnectorHandler
 import com.github.yuanrw.im.client.handler.code.AesDecoder
 import com.github.yuanrw.im.client.handler.code.AesEncoder
 import com.github.yuanrw.im.common.code.MsgDecoder
 import com.github.yuanrw.im.common.code.MsgEncoder
+import com.github.yuanrw.im.common.domain.constant.MsgVersion
 import com.github.yuanrw.im.common.domain.po.RelationDetail
 import com.github.yuanrw.im.common.util.Encryption
 import com.github.yuanrw.im.common.util.IdWorker
@@ -21,8 +22,6 @@ import io.netty.util.CharsetUtil
 import spock.lang.Specification
 
 import java.time.Duration
-
-import static com.github.yuanrw.im.common.domain.constant.ImConstant.MSG_VERSION
 
 /**
  * Date: 2019-06-06
@@ -45,7 +44,7 @@ class ImClientConnectorTest extends Specification {
 
         when:
         def delivered = Ack.AckMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
@@ -88,7 +87,7 @@ class ImClientConnectorTest extends Specification {
         def collector = handler.createCollector(Duration.ofSeconds(2))
 
         def internal = Internal.InternalMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFrom(Internal.InternalMsg.Module.CONNECTOR)
@@ -103,8 +102,6 @@ class ImClientConnectorTest extends Specification {
         then:
         collector.getFuture().isDone()
         0 * _
-
-        //todo: test unexpected msg
     }
 
     def "test get chat"() {
@@ -133,7 +130,7 @@ class ImClientConnectorTest extends Specification {
                 .addLast("ClientConnectorHandler", new ClientConnectorHandler(clientMsgListener))
 
         def chat = Chat.ChatMsg.newBuilder()
-                .setVersion(MSG_VERSION)
+                .setVersion(MsgVersion.V1.getVersion())
                 .setId(IdWorker.genId())
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")

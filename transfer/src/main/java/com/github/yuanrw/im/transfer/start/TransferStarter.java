@@ -20,9 +20,8 @@ import java.util.Properties;
  */
 public class TransferStarter {
     public static TransferConfig TRANSFER_CONFIG = new TransferConfig();
-    static Injector injector = Guice.createInjector(new TransferModule());
-
     public static TransferMqProducer producer;
+    static Injector injector = Guice.createInjector(new TransferModule());
 
     public static void main(String[] args) {
         try {
