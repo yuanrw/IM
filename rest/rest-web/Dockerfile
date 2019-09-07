@@ -6,7 +6,7 @@ FROM adoptopenjdk/openjdk11:alpine-jre
 MAINTAINER yuanrw <295415537@qq.com>
 
 ENV SERVICE_NAME rest-web
-ENV VERSION 1.0.0-SNAPSHOT
+ENV VERSION 1.0.0
 
 EXPOSE 8082
 

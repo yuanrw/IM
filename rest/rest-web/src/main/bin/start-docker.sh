@@ -1,6 +1,6 @@
 #!/bin/bash
 SERVICE_NAME="rest-web"
-VERSION="1.0.0-SNAPSHOT"
+VERSION="1.0.0"
 
 LOG_DIR=/tmp/IM_logs
 mkdir -p $LOG_DIR

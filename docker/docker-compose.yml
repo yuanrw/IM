@@ -2,7 +2,7 @@ version: '3'
 
 services:
   client-samples:
-    image: yuanrw/client-samples:1.0.0-SNAPSHOT
+    image: yuanrw/client-samples:1.0.0
     container_name: client-samples
     depends_on:
       - rest-web
@@ -12,7 +12,7 @@ services:
       - /tmp/IM_logs/client-samples.log:/tmp/IM_logs/client-samples.log
 
   rest-web:
-    image: yuanrw/rest-web:1.0.0-SNAPSHOT
+    image: yuanrw/rest-web:1.0.0
     container_name: rest-web
     depends_on:
       - im-mysql
@@ -24,7 +24,7 @@ services:
       - /tmp/IM_logs/rest.log:/tmp/IM_logs/rest.log
 
   connector:
-    image: yuanrw/connector:1.0.0-SNAPSHOT
+    image: yuanrw/connector:1.0.0
     container_name: connector
     depends_on:
       - transfer
@@ -34,7 +34,7 @@ services:
       - /tmp/IM_logs/connector.log:/tmp/IM_logs/connector.log
 
   transfer:
-    image: yuanrw/transfer:1.0.0-SNAPSHOT
+    image: yuanrw/transfer:1.0.0
     container_name: transfer
     depends_on:
       - rest-web

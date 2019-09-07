@@ -6,7 +6,7 @@ FROM adoptopenjdk/openjdk11:alpine-jre
 MAINTAINER yuanrw <295415537@qq.com>
 
 ENV SERVICE_NAME client-samples
-ENV VERSION 1.0.0-SNAPSHOT
+ENV VERSION 1.0.0
 
 RUN echo "http://mirrors.aliyun.com/alpine/v3.8/main" > /etc/apk/repositories \
     && echo "http://mirrors.aliyun.com/alpine/v3.8/community" >> /etc/apk/repositories \
