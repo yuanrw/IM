@@ -1,8 +1,6 @@
 # IM
 [![Build Status](https://travis-ci.org/yuanrw/IM.svg?branch=master)](https://travis-ci.org/yuanrw/IM)
 [![codecov](https://codecov.io/gh/yuanrw/IM/branch/master/graph/badge.svg)](https://codecov.io/gh/yuanrw/IM)
-![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/yuanrw/client-samples)
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/yuanrw/client-samples)
 
 IM is a lightweight instant messaging server. It also provides a client jar,allows you to develop your own client.For example,with spring boot. It's able to login with your own login system or with ldap.
 
