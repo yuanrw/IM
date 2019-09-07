@@ -95,7 +95,7 @@ class ConnectorTransferTest extends Specification {
         given:
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
-        when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
+        when(ConnectorTransferHandler.getOneOfTransferCtx(Mockito.anyLong())).thenReturn(connectorTransferCtx)
         when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
                 .thenReturn(Mock(ResponseCollector) {
             getFuture() >> Mock(CompletableFuture) {

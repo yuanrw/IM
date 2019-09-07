@@ -56,7 +56,7 @@ public class ConnectorService {
 
     public void doChatToClientOrTransferAndFlush(Chat.ChatMsg msg) {
         Conn conn = clientConnContext.getConnByUserId(msg.getDestId());
-        boolean onTheMachine = sendMsg(conn, msg, (c, m) -> conn.getCtx().writeAndFlush(msg));
+        boolean onTheMachine = sendMsg(conn, msg.getId(), msg, (c, m) -> conn.getCtx().writeAndFlush(msg));
         if (onTheMachine) {
             doSendAckToClientOrTransferAndFlush(getDelivered(msg));
         }
@@ -66,7 +66,7 @@ public class ConnectorService {
         logger.debug("[send ack] {}", ackMsg.toString());
 
         Conn conn = clientConnContext.getConnByUserId(ackMsg.getDestId());
-        sendMsg(conn, ackMsg, (c, m) -> conn.getCtx().writeAndFlush(ackMsg));
+        sendMsg(conn, ackMsg.getId(), ackMsg, (c, m) -> conn.getCtx().writeAndFlush(ackMsg));
     }
 
     public Ack.AckMsg getDelivered(Chat.ChatMsg msg) {
@@ -82,9 +82,9 @@ public class ConnectorService {
             .build();
     }
 
-    private boolean sendMsg(Conn conn, Message msg, BiConsumer<Conn, Message> ifOnTheMachine) {
+    private boolean sendMsg(Conn conn, Long msgId, Message msg, BiConsumer<Conn, Message> ifOnTheMachine) {
         if (conn == null) {
-            ConnectorTransferHandler.getCtxList().get(0).writeAndFlush(msg);
+            ConnectorTransferHandler.getOneOfTransferCtx(msgId).writeAndFlush(msg);
             return false;
         } else {
             //the user is connected to this machine

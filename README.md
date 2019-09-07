@@ -1,6 +1,8 @@
 # IM
 [![Build Status](https://travis-ci.org/yuanrw/IM.svg?branch=master)](https://travis-ci.org/yuanrw/IM)
 [![codecov](https://codecov.io/gh/yuanrw/IM/branch/master/graph/badge.svg)](https://codecov.io/gh/yuanrw/IM)
+[![codebeat badge](https://codebeat.co/badges/be93165e-76f7-473b-ae45-7c8b5e7b7a87)](https://codebeat.co/projects/github-com-yuanrw-im-master)
+![release]https://img.shields.io/github/v/release/yuanrw/IM?include_prereleases
 
 IM is a lightweight instant messaging server. It also provides a client jar,allows you to develop your own client.For example,with spring boot. It's able to login with your own login system or with ldap.
 

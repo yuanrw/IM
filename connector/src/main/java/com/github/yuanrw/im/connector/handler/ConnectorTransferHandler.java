@@ -49,6 +49,13 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
         this.connectorService = connectorService;
     }
 
+    public static ChannelHandlerContext getOneOfTransferCtx(long msgId) {
+        if (ctxList.size() == 0) {
+            logger.warn("connector is not connected to a transfer!");
+        }
+        return ctxList.get((int) (msgId % ctxList.size()));
+    }
+
     public static List<ChannelHandlerContext> getCtxList() {
         if (ctxList.size() == 0) {
             logger.warn("connector is not connected to a transfer!");

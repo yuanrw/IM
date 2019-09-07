@@ -7,7 +7,7 @@
     <groupId>com.github.yuanrw.im</groupId>
     <artifactId>IM</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <modules>
         <module>rest</module>
         <module>client</module>

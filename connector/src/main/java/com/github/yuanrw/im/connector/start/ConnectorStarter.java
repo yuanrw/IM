@@ -44,7 +44,7 @@ public class ConnectorStarter {
             connectorConfig.setRedisPort(Integer.parseInt(properties.getProperty("redis.port")));
             connectorConfig.setRedisPassword(properties.getProperty("redis.password"));
         } catch (Exception e) {
-            throw new ImException("there's a parse error, check your config properties");
+            throw new ImException("there's a parse error, check your config properties", e);
         }
 
         System.setProperty("log.path", properties.getProperty("log.path"));
