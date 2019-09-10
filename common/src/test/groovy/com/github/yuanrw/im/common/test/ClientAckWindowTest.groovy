@@ -209,12 +209,9 @@ class ClientAckWindowTest extends Specification {
         def suc3 = clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat3, longProcess)
 
-        Thread.sleep(52)
-
         then:
         suc1
         suc2
         !suc3
-        processMsg.size() == 2
     }
 }
