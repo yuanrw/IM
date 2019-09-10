@@ -8,8 +8,6 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -22,8 +20,6 @@ import java.util.concurrent.TimeoutException;
  * @author yrw
  */
 public class ConnectorClient {
-
-    private static Logger logger = LoggerFactory.getLogger(ConnectorClient.class);
 
     static void start(String[] transferUrls) {
         for (String transferUrl : transferUrls) {
@@ -43,9 +39,7 @@ public class ConnectorClient {
                     }
                 }).connect(url[0], Integer.parseInt(url[1]))
                 .addListener((ChannelFutureListener) future -> {
-                    if (future.isSuccess()) {
-                        logger.info("[connector] connect to transfer successfully");
-                    } else {
+                    if (!future.isSuccess()) {
                         throw new ImException("[connector] connect to transfer failed! transfer url: " + transferUrl);
                     }
                 });

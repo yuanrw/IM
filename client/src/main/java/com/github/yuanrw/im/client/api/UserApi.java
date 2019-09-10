@@ -13,10 +13,10 @@ import com.github.yuanrw.im.protobuf.generate.Internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 /**
@@ -56,7 +56,7 @@ public class UserApi {
     public UserInfo login(String username, String password) {
         UserInfo userInfo = clientRestService.login(username, password);
         //等待connector的ack信息
-        userLoginInit(userInfo.getId());
+        greetToConnector(userInfo.getId());
 
         assert userInfo.getId() != null;
 
@@ -66,7 +66,7 @@ public class UserApi {
         return userInfo;
     }
 
-    private void userLoginInit(String userId) {
+    private void greetToConnector(String userId) {
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
             .setId(IdWorker.genId())
             .setFrom(Internal.InternalMsg.Module.CLIENT)
@@ -77,22 +77,12 @@ public class UserApi {
             .setMsgBody(userId)
             .build();
 
-
-        CompletableFuture<Internal.InternalMsg> future = handler.createCollector(Duration.ofSeconds(10)).getFuture()
-            .whenComplete((m, e) -> {
-                if (!m.getMsgBody().equals(greet.getId() + "")) {
-                    throw new ImException("[client] user connected to server failed, " +
-                        "init msg id is: {}, but received ack id is: {}");
-                } else {
-                    logger.info("[client] client connect to server successfully");
-                }
-            });
-
-        handler.getCtx().writeAndFlush(greet);
-
         try {
-            future.get();
-        } catch (InterruptedException | ExecutionException e) {
+            handler.getServerAckWindow().offer(greet.getId(), greet,
+                m -> handler.getCtx().writeAndFlush(m))
+                .get(3, TimeUnit.SECONDS);
+            logger.info("[client] client connect to server successfully");
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw new ImException("[client] waiting for connector's response failed", e);
         }
     }

@@ -96,12 +96,6 @@ class ConnectorTransferTest extends Specification {
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getOneOfTransferCtx(Mockito.anyLong())).thenReturn(connectorTransferCtx)
-        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
-                .thenReturn(Mock(ResponseCollector) {
-            getFuture() >> Mock(CompletableFuture) {
-                whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
-            }
-        })
 
         def map = new HashMap<String, Object>()
         def ctx = Mock(ChannelHandlerContext) {
@@ -112,7 +106,7 @@ class ConnectorTransferTest extends Specification {
                 }
             }
         }
-        userOnlineService.userOnline(111112, "456", ctx)
+        userOnlineService.userOnline("456", ctx)
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
@@ -139,12 +133,6 @@ class ConnectorTransferTest extends Specification {
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
-        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
-                .thenReturn(Mock(ResponseCollector) {
-            getFuture() >> Mock(CompletableFuture) {
-                whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
-            }
-        })
 
         def ctx = Mock(ChannelHandlerContext) {
             channel() >> Mock(Channel) {
@@ -176,12 +164,6 @@ class ConnectorTransferTest extends Specification {
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
-        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
-                .thenReturn(Mock(ResponseCollector) {
-            getFuture() >> Mock(CompletableFuture) {
-                whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
-            }
-        })
 
         def map = new HashMap<String, Object>()
         def ctx = Mock(ChannelHandlerContext) {
@@ -192,7 +174,7 @@ class ConnectorTransferTest extends Specification {
                 }
             }
         }
-        userOnlineService.userOnline(111112, "456", ctx)
+        userOnlineService.userOnline("456", ctx)
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
@@ -217,12 +199,6 @@ class ConnectorTransferTest extends Specification {
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
-        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
-                .thenReturn(Mock(ResponseCollector) {
-            getFuture() >> Mock(CompletableFuture) {
-                whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
-            }
-        })
 
         def ctx = Mock(ChannelHandlerContext) {
             channel() >> Mock(Channel) {
@@ -247,29 +223,5 @@ class ConnectorTransferTest extends Specification {
         then:
         0 * ctx.writeAndFlush(delivered)
         //todo:
-    }
-
-    def "test get internal ack"() {
-        given:
-        def result = new ArrayList<Internal.InternalMsg>()
-        def responseCollector = ConnectorTransferHandler.createGreetRespCollector(1111112, Duration.ofSeconds(2))
-
-        when:
-        responseCollector.getFuture().whenComplete({ r, e -> result.add(r) })
-        Internal.InternalMsg ack = Internal.InternalMsg.newBuilder()
-                .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
-                .setCreateTime(System.currentTimeMillis())
-                .setFrom(Internal.InternalMsg.Module.TRANSFER)
-                .setDest(Internal.InternalMsg.Module.CONNECTOR)
-                .setMsgType(Internal.InternalMsg.MsgType.ACK)
-                .setMsgBody("1111112")
-                .build()
-
-        channel.writeInbound(ack)
-
-        then:
-        result.size() == 1
-        responseCollector.getFuture().isDone()
     }
 }

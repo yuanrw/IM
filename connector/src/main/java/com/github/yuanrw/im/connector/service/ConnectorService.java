@@ -69,7 +69,7 @@ public class ConnectorService {
         sendMsg(conn, ackMsg.getId(), ackMsg, (c, m) -> conn.getCtx().writeAndFlush(ackMsg));
     }
 
-    public Ack.AckMsg getDelivered(Chat.ChatMsg msg) {
+    private Ack.AckMsg getDelivered(Chat.ChatMsg msg) {
         return Ack.AckMsg.newBuilder()
             .setId(IdWorker.genId())
             .setVersion(MsgVersion.V1.getVersion())

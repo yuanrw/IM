@@ -48,21 +48,7 @@ public class UserOnlineService {
         this.userStatusService = userStatusServiceFactory.createService(properties);
     }
 
-    public void userOnline(Long msgId, String userId, ChannelHandlerContext clientConnectorCtx) {
-        //user is online
-        String oldConnectorId = userStatusService.online(userId, ConnectorTransferHandler.CONNECTOR_ID);
-        if (oldConnectorId != null) {
-            //can't online twice
-            sendErrorToClient("already online", clientConnectorCtx);
-        }
-
-        //save connection
-        ClientConn conn = new ClientConn(clientConnectorCtx);
-        conn.setUserId(userId);
-        clientConnContext.addConn(conn);
-
-        sendAckToClient(msgId, clientConnectorCtx);
-
+    public void userOnline(String userId, ChannelHandlerContext clientConnectorCtx) {
         //get all offline msg and send
         List<Message> msgs = offlineService.pollOfflineMsg(userId);
         msgs.forEach(msg -> {
@@ -74,6 +60,18 @@ public class UserOnlineService {
                 connectorService.doSendAckToClientAndFlush(ackMsg);
             }
         });
+
+        //save connection
+        ClientConn conn = new ClientConn(clientConnectorCtx);
+        conn.setUserId(userId);
+        clientConnContext.addConn(conn);
+
+        //user is online
+        String oldConnectorId = userStatusService.online(userId, ConnectorTransferHandler.CONNECTOR_ID);
+        if (oldConnectorId != null) {
+            //can't online twice
+            sendErrorToClient("already online", clientConnectorCtx);
+        }
     }
 
     private void sendErrorToClient(String errorMsg, ChannelHandlerContext ctx) {
@@ -85,20 +83,6 @@ public class UserOnlineService {
             .setCreateTime(System.currentTimeMillis())
             .setMsgType(Internal.InternalMsg.MsgType.ERROR)
             .setMsgBody(errorMsg)
-            .build();
-
-        ctx.writeAndFlush(ack);
-    }
-
-    private void sendAckToClient(Long id, ChannelHandlerContext ctx) {
-        Internal.InternalMsg ack = Internal.InternalMsg.newBuilder()
-            .setId(IdWorker.genId())
-            .setVersion(MsgVersion.V1.getVersion())
-            .setFrom(Internal.InternalMsg.Module.CONNECTOR)
-            .setDest(Internal.InternalMsg.Module.CLIENT)
-            .setCreateTime(System.currentTimeMillis())
-            .setMsgType(Internal.InternalMsg.MsgType.ACK)
-            .setMsgBody(id + "")
             .build();
 
         ctx.writeAndFlush(ack);

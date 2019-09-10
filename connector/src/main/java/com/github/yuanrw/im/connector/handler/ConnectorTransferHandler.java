@@ -1,6 +1,6 @@
 package com.github.yuanrw.im.connector.handler;
 
-import com.github.yuanrw.im.common.domain.ResponseCollector;
+import com.github.yuanrw.im.common.domain.ack.ServerAckWindow;
 import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.parse.AbstractMsgParser;
 import com.github.yuanrw.im.common.parse.InternalParser;
@@ -20,8 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkDest;
 import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkFrom;
@@ -37,9 +35,9 @@ import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkFrom;
 public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Message> {
     public static final String CONNECTOR_ID = TokenGenerator.generate();
     private static Logger logger = LoggerFactory.getLogger(ConnectorTransferHandler.class);
-    private static ConcurrentMap<Long, ResponseCollector<Internal.InternalMsg>> greetRespCollectorMap = new ConcurrentHashMap<>();
     private static List<ChannelHandlerContext> ctxList = new ArrayList<>();
 
+    private ServerAckWindow serverAckWindow;
     private FromTransferParser fromTransferParser;
     private ConnectorService connectorService;
 
@@ -63,23 +61,19 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
         return ctxList;
     }
 
-    public static ResponseCollector<Internal.InternalMsg> createGreetRespCollector(Long msgId, Duration timeout) {
-        ResponseCollector<Internal.InternalMsg> collector = new ResponseCollector<>(timeout,
-            "time out waiting for msg from transfer");
-        greetRespCollectorMap.put(msgId, collector);
-        return collector;
-    }
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("[ConnectorTransfer] connect to transfer");
 
+        serverAckWindow = new ServerAckWindow(50, Duration.ofSeconds(2));
+        greetToTransfer(ctx);
+
         ctxList.add(ctx);
+    }
 
-        Long msgId = IdWorker.genId();
-
+    private void greetToTransfer(ChannelHandlerContext ctx) {
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
-            .setId(msgId)
+            .setId(IdWorker.genId())
             .setVersion(MsgVersion.V1.getVersion())
             .setMsgType(Internal.InternalMsg.MsgType.GREET)
             .setMsgBody(CONNECTOR_ID)
@@ -88,10 +82,12 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
             .setCreateTime(System.currentTimeMillis())
             .build();
 
-        ResponseCollector<Internal.InternalMsg> greetRespCollector = createGreetRespCollector(msgId, Duration.ofSeconds(10));
-        greetRespCollectorMap.putIfAbsent(msgId, greetRespCollector);
-
-        ctx.writeAndFlush(greet);
+        serverAckWindow.offer(greet.getId(), greet, ctx::writeAndFlush)
+            .thenAccept(m -> logger.info("[connector] connect to transfer successfully"))
+            .exceptionally(e -> {
+                logger.error("[connector] waiting for transfer's response failed", e);
+                return null;
+            });
     }
 
     @Override
@@ -114,20 +110,11 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
         @Override
         public void registerParsers() {
             InternalParser parser = new InternalParser(3);
-            parser.register(Internal.InternalMsg.MsgType.ACK, (m, ctx) -> greetRespDone(m));
+            parser.register(Internal.InternalMsg.MsgType.ACK, (m, ctx) -> serverAckWindow.ack(m));
 
             register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChatToClientAndFlush(m));
             register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAckToClientAndFlush(m));
             register(Internal.InternalMsg.class, parser.generateFun());
-        }
-
-        private void greetRespDone(Internal.InternalMsg msg) {
-            ResponseCollector<Internal.InternalMsg> collector = greetRespCollectorMap.remove(Long.parseLong(msg.getMsgBody()));
-            if (collector != null) {
-                collector.getFuture().complete(msg);
-            } else {
-                logger.error("Unexpected response received: {}", msg);
-            }
         }
     }
 }

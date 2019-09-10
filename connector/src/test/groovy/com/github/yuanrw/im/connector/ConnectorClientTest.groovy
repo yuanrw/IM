@@ -2,7 +2,7 @@ package com.github.yuanrw.im.connector
 
 import com.github.yuanrw.im.common.code.MsgDecoder
 import com.github.yuanrw.im.common.code.MsgEncoder
-import com.github.yuanrw.im.common.domain.ResponseCollector
+import com.github.yuanrw.im.common.domain.ack.ClientAckWindow
 import com.github.yuanrw.im.common.domain.conn.Conn
 import com.github.yuanrw.im.common.domain.constant.MsgVersion
 import com.github.yuanrw.im.common.domain.po.Offline
@@ -39,10 +39,6 @@ import org.spockframework.runtime.Sputnik
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.time.Duration
-import java.util.concurrent.CompletableFuture
-import java.util.function.BiConsumer
-
 import static org.powermock.api.mockito.PowerMockito.when
 
 /**
@@ -62,6 +58,8 @@ class ConnectorClientTest extends Specification {
     def clientConnContext = ConnectorStarter.injector.getInstance(ClientConnContext.class)
     @Shared
     UserOnlineService userOnlineService
+    @Shared
+    def clientAckWindow = new ClientAckWindow(5, Mock(ChannelHandlerContext))
 
     def setupSpec() {
         ConnectorStarter.CONNECTOR_CONFIG.setRedisHost("redisHost")
@@ -82,15 +80,19 @@ class ConnectorClientTest extends Specification {
                 connectorRestServiceFactory, new ParseService()),
                 clientConnContext, new ConnectorService(), userStatusServiceFactory)
 
+        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+                userOnlineService, clientConnContext)
+        handler.setClientAckWindow(clientAckWindow)
+
         ch.pipeline()
                 .addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class))
                 .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
-                .addLast("ConnectorClientHandler", new ConnectorClientHandler(new ConnectorService(clientConnContext),
-                userOnlineService, clientConnContext))
+                .addLast("ConnectorClientHandler", handler)
     }
 
     def cleanup() {
         clientConnContext.removeAllConn()
+        clientAckWindow.clean()
     }
 
     def "test get internal greet"() {
@@ -98,12 +100,6 @@ class ConnectorClientTest extends Specification {
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
-        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
-                .thenReturn(Mock(ResponseCollector) {
-            getFuture() >> Mock(CompletableFuture) {
-                whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
-            }
-        })
         when:
         //user online
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
@@ -117,6 +113,8 @@ class ConnectorClientTest extends Specification {
                 .build()
         ch.writeInbound(greet)
 
+        Thread.sleep(2)
+
         then:
         //get conn in memory
         clientConnContext.getConnByUserId("123") != null
@@ -127,12 +125,6 @@ class ConnectorClientTest extends Specification {
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
-        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
-                .thenReturn(Mock(ResponseCollector) {
-            getFuture() >> Mock(CompletableFuture) {
-                whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
-            }
-        })
 
         def map = new HashMap<String, Object>()
         def ctx = Mock(ChannelHandlerContext) {
@@ -143,7 +135,7 @@ class ConnectorClientTest extends Specification {
                 }
             }
         }
-        userOnlineService.userOnline(111112, "456", ctx)
+        userOnlineService.userOnline("456", ctx)
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
@@ -158,6 +150,7 @@ class ConnectorClientTest extends Specification {
 
         when:
         ch.writeInbound(delivered)
+        Thread.sleep(2)
 
         then:
         1 * ctx.writeAndFlush(delivered)
@@ -169,12 +162,6 @@ class ConnectorClientTest extends Specification {
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getOneOfTransferCtx(Mockito.anyLong())).thenReturn(connectorTransferCtx)
-        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
-                .thenReturn(Mock(ResponseCollector) {
-            getFuture() >> Mock(CompletableFuture) {
-                whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
-            }
-        })
 
         def ctx = Mock(ChannelHandlerContext) {
             channel() >> Mock(Channel) {
@@ -195,6 +182,7 @@ class ConnectorClientTest extends Specification {
 
         when:
         ch.writeInbound(delivered)
+        Thread.sleep(20)
 
         then:
         0 * ctx.writeAndFlush(_ as Internal.InternalMsg)
@@ -207,12 +195,6 @@ class ConnectorClientTest extends Specification {
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
-        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
-                .thenReturn(Mock(ResponseCollector) {
-            getFuture() >> Mock(CompletableFuture) {
-                whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
-            }
-        })
 
         def map = new HashMap<String, Object>()
         def ctx = Mock(ChannelHandlerContext) {
@@ -223,7 +205,7 @@ class ConnectorClientTest extends Specification {
                 }
             }
         }
-        userOnlineService.userOnline(111112, "456", ctx)
+        userOnlineService.userOnline("456", ctx)
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
@@ -238,6 +220,7 @@ class ConnectorClientTest extends Specification {
 
         when:
         ch.writeInbound(chat)
+        Thread.sleep(2)
 
         then:
         1 * ctx.writeAndFlush(chat)
@@ -250,12 +233,6 @@ class ConnectorClientTest extends Specification {
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getOneOfTransferCtx(Mockito.anyLong())).thenReturn(connectorTransferCtx)
-        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
-                .thenReturn(Mock(ResponseCollector) {
-            getFuture() >> Mock(CompletableFuture) {
-                whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
-            }
-        })
 
         def ctx = Mock(ChannelHandlerContext) {
             channel() >> Mock(Channel) {
@@ -277,6 +254,7 @@ class ConnectorClientTest extends Specification {
         when:
         userOnlineService.userOffline(ctx)
         ch.writeInbound(chat)
+        Thread.sleep(2)
 
         then:
         0 * ctx.writeAndFlush(_ as Chat.ChatMsg)
@@ -288,12 +266,6 @@ class ConnectorClientTest extends Specification {
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
-        when(ConnectorTransferHandler.createGreetRespCollector(Mockito.anyLong(), Mockito.eq(Duration.ofSeconds(10))))
-                .thenReturn(Mock(ResponseCollector) {
-            getFuture() >> Mock(CompletableFuture) {
-                whenComplete(_ as BiConsumer) >> Mock(CompletableFuture)
-            }
-        })
 
         def map = new HashMap<String, Object>()
         def ctx = Mock(ChannelHandlerContext) {
@@ -305,7 +277,7 @@ class ConnectorClientTest extends Specification {
             }
         }
         //user online
-        userOnlineService.userOnline(11112, "123", ctx)
+        userOnlineService.userOnline("123", ctx)
 
         when:
         //user online again
