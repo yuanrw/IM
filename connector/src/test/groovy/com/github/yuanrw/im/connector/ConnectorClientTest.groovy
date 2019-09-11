@@ -113,7 +113,7 @@ class ConnectorClientTest extends Specification {
                 .build()
         ch.writeInbound(greet)
 
-        Thread.sleep(2)
+        Thread.sleep(40)
 
         then:
         //get conn in memory
@@ -150,7 +150,7 @@ class ConnectorClientTest extends Specification {
 
         when:
         ch.writeInbound(delivered)
-        Thread.sleep(2)
+        Thread.sleep(40)
 
         then:
         1 * ctx.writeAndFlush(delivered)
@@ -220,7 +220,7 @@ class ConnectorClientTest extends Specification {
 
         when:
         ch.writeInbound(chat)
-        Thread.sleep(2)
+        Thread.sleep(40)
 
         then:
         1 * ctx.writeAndFlush(chat)
@@ -254,7 +254,7 @@ class ConnectorClientTest extends Specification {
         when:
         userOnlineService.userOffline(ctx)
         ch.writeInbound(chat)
-        Thread.sleep(2)
+        Thread.sleep(40)
 
         then:
         0 * ctx.writeAndFlush(_ as Chat.ChatMsg)
