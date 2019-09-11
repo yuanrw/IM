@@ -102,8 +102,8 @@ class ServerAckWindowTest extends Specification {
         given:
         def serverAckWindow = new ServerAckWindow(2, Duration.ofMillis(500))
 
-        def chat = Chat.ChatMsg.newBuilder()
-                .setId(111111)
+        def chat1 = Chat.ChatMsg.newBuilder()
+                .setId(1)
                 .setFromId("123")
                 .setDestId("456")
                 .setDestType(Chat.ChatMsg.DestType.SINGLE)
@@ -112,6 +112,22 @@ class ServerAckWindowTest extends Specification {
                 .setVersion(MsgVersion.V1.getVersion())
                 .setMsgBody(ByteString.copyFrom("hello", CharsetUtil.UTF_8))
                 .build()
+
+        def chat2 = Chat.ChatMsg.newBuilder().mergeFrom(chat1)
+                .setId(2).build()
+
+        def ack1 = Internal.InternalMsg.newBuilder()
+                .setId(IdWorker.genId())
+                .setVersion(MsgVersion.V1.getVersion())
+                .setFrom(Internal.InternalMsg.Module.CONNECTOR)
+                .setDest(Internal.InternalMsg.Module.CLIENT)
+                .setCreateTime(System.currentTimeMillis())
+                .setMsgType(Internal.InternalMsg.MsgType.ERROR)
+                .setMsgBody(chat1.getId() + "")
+                .build()
+
+        def ack2 = Internal.InternalMsg.newBuilder().mergeFrom(ack1)
+                .setMsgBody(chat2.getId() + "").build()
 
         int sentCnt = 0
         List<Internal.InternalMsg> receiveMsg = new ArrayList()
@@ -122,22 +138,28 @@ class ServerAckWindowTest extends Specification {
             return null
         }
         when:
-        serverAckWindow.offer(chat.getId(), chat, { m -> sentCnt++ })
+        def f1 = serverAckWindow.offer(chat1.getId(), chat1, { m -> sentCnt++ })
                 .thenAccept({ m -> receiveMsg.add(m) })
                 .exceptionally(getException)
-        serverAckWindow.offer(chat.getId(), chat, { m -> sentCnt++ })
+        def f2 = serverAckWindow.offer(chat2.getId(), chat2, { m -> sentCnt++ })
                 .thenAccept({ m -> receiveMsg.add(m) })
                 .exceptionally(getException)
-        serverAckWindow.offer(chat.getId(), chat, { m -> sentCnt++ })
+        serverAckWindow.offer(chat2.getId(), chat2, { m -> sentCnt++ })
                 .thenAccept({ m -> receiveMsg.add(m) })
                 .exceptionally(getException)
-        serverAckWindow.offer(chat.getId(), chat, { m -> sentCnt++ })
+        serverAckWindow.offer(chat2.getId(), chat2, { m -> sentCnt++ })
                 .thenAccept({ m -> receiveMsg.add(m) })
                 .exceptionally(getException)
 
+        serverAckWindow.ack(ack1)
+        serverAckWindow.ack(ack2)
+
+        f1.get()
+        f2.get()
+
         then:
         sentCnt == 2
-        receiveMsg.size() == 0
+        receiveMsg.size() == 2
         exceptionCnt == 2
     }
 }

@@ -8,8 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.Iterator;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
@@ -24,7 +26,6 @@ public class ServerAckWindow {
     private static Logger logger = LoggerFactory.getLogger(ServerAckWindow.class);
 
     private AtomicBoolean offer;
-    private ConcurrentLinkedQueue<Long> sendMessageQueue;
     private ConcurrentHashMap<Long, ResponseCollector<Internal.InternalMsg>> responseCollectorMap;
 
     private final int maxSize;
@@ -34,8 +35,7 @@ public class ServerAckWindow {
 
     public ServerAckWindow(int maxSize, Duration timeout) {
         this.offer = new AtomicBoolean(false);
-        this.sendMessageQueue = new ConcurrentLinkedQueue<>();
-        this.responseCollectorMap = new ConcurrentHashMap<>(maxSize);
+        this.responseCollectorMap = new ConcurrentHashMap<>();
         this.maxSize = maxSize;
         this.timeout = timeout;
 
@@ -54,11 +54,9 @@ public class ServerAckWindow {
         while (!offer.compareAndSet(false, true)) {
         }
         ResponseCollector<Internal.InternalMsg> responseCollector = new ResponseCollector<>(sendMessage, sendFunction);
-        if (sendMessageQueue.size() < maxSize) {
+        if (responseCollectorMap.size() < maxSize) {
             responseCollectorMap.put(id, responseCollector);
-            sendMessageQueue.offer(id);
-            sendFunction.accept(sendMessage);
-            responseCollector.getSendTime().set(System.currentTimeMillis());
+            responseCollector.send();
         } else {
             responseCollector.getFuture().completeExceptionally(new ImException("the queue is full"));
         }
@@ -68,7 +66,6 @@ public class ServerAckWindow {
 
     public void ack(Internal.InternalMsg message) {
         Long id = Long.parseLong(message.getMsgBody());
-        sendMessageQueue.remove(id);
         logger.debug("get ack, msg: {}", id);
         if (responseCollectorMap.containsKey(id)) {
             responseCollectorMap.get(id).getFuture().complete(message);
@@ -81,9 +78,7 @@ public class ServerAckWindow {
      */
     private void checkTimeoutAndRetry() {
         while (true) {
-            Iterator<Long> iterator = sendMessageQueue.iterator();
-            while (iterator.hasNext()) {
-                Long id = iterator.next();
+            for (Long id : responseCollectorMap.keySet()) {
                 ResponseCollector<?> collector = responseCollectorMap.get(id);
                 if (timeout(collector)) {
                     logger.debug("msg {} is timeout", id);
@@ -95,17 +90,16 @@ public class ServerAckWindow {
 
     private void retry(Long id, ResponseCollector<?> collector) {
         if (canRetry(collector)) {
-            logger.debug("retry msg {}", id);
-            collector.retry();
+            logger.debug("send msg {}", id);
+            collector.send();
         }
     }
 
     private boolean timeout(ResponseCollector<?> collector) {
-        return collector.getSendTime().get() != 0 &&
-            System.currentTimeMillis() - collector.getSendTime().get() > timeout.getNano() / 1000000;
+        return collector.getSendTime().get() != 0 && collector.timeElapse() > timeout.getNano();
     }
 
     private boolean canRetry(ResponseCollector<?> collector) {
-        return collector.getRetrying().compareAndSet(false, true);
+        return collector.getSending().compareAndSet(false, true);
     }
 }

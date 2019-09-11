@@ -24,25 +24,29 @@ public class ResponseCollector<M extends Message> {
     private CompletableFuture<M> future;
 
     private volatile AtomicLong sendTime;
-    private volatile AtomicBoolean retrying;
+    private volatile AtomicBoolean sending;
 
     public ResponseCollector(Message sendMessage, Consumer<Message> sendFunction) {
         this.sendMessage = sendMessage;
         this.sendFunction = sendFunction;
         this.future = new CompletableFuture<>();
         this.sendTime = new AtomicLong(0);
-        this.retrying = new AtomicBoolean(false);
+        this.sending = new AtomicBoolean(false);
     }
 
-    public void retry() {
-        this.sendTime.set(System.currentTimeMillis());
+    public void send() {
+        this.sendTime.set(System.nanoTime());
         try {
             sendFunction.accept(sendMessage);
         } catch (Exception e) {
-            logger.error("send msg retry has error", e);
+            logger.error("send msg send has error", e);
         } finally {
-            this.retrying.set(false);
+            this.sending.set(false);
         }
+    }
+
+    public long timeElapse() {
+        return System.nanoTime() - sendTime.get();
     }
 
     public CompletableFuture<M> getFuture() {
@@ -53,7 +57,7 @@ public class ResponseCollector<M extends Message> {
         return sendTime;
     }
 
-    public AtomicBoolean getRetrying() {
-        return retrying;
+    public AtomicBoolean getSending() {
+        return sending;
     }
 }

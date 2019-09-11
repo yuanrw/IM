@@ -32,10 +32,10 @@ class ResponseCollectorTest extends Specification {
         def msgResponseCollector = new ResponseCollector(chat, { m -> send.add(m) })
 
         when:
-        msgResponseCollector.retry()
+        msgResponseCollector.send()
 
         then:
         send.size() == 1
-        !msgResponseCollector.getRetrying().get()
+        !msgResponseCollector.getSending().get()
     }
 }

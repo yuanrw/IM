@@ -182,7 +182,7 @@ class ConnectorClientTest extends Specification {
 
         when:
         ch.writeInbound(delivered)
-        Thread.sleep(20)
+        Thread.sleep(40)
 
         then:
         0 * ctx.writeAndFlush(_ as Internal.InternalMsg)

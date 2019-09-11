@@ -62,7 +62,7 @@ class ClientConnectorTest extends Specification {
                 .build()
 
         channel.writeInbound(delivered)
-        Thread.sleep(20)
+        Thread.sleep(40)
 
         then:
         1 * clientMsgListener.hasDelivered(1111112)
@@ -76,7 +76,7 @@ class ClientConnectorTest extends Specification {
                 .build()
 
         channel.writeInbound(read)
-        Thread.sleep(20)
+        Thread.sleep(40)
 
         then:
         1 * clientMsgListener.hasRead(1111112)
@@ -166,7 +166,7 @@ class ClientConnectorTest extends Specification {
         channel.writeInbound(chat)
         1 * ctx.writeAndFlush(_ as Internal.InternalMsg)
 
-        Thread.sleep(20)
+        Thread.sleep(40)
 
         then:
         1 * clientMsgListener.read(decodedChat)

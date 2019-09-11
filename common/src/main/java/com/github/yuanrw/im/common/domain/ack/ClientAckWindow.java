@@ -46,20 +46,18 @@ public class ClientAckWindow {
      * @param receivedMsg
      * @param processFunction
      */
-    public boolean offer(Long id, Internal.InternalMsg.Module from, Internal.InternalMsg.Module dest,
-                         Message receivedMsg, Consumer<Message> processFunction) {
+    public CompletableFuture<Void> offer(Long id, Internal.InternalMsg.Module from, Internal.InternalMsg.Module dest,
+                                         Message receivedMsg, Consumer<Message> processFunction) {
         while (!offer.compareAndSet(false, true)) {
         }
         if (receivedMsgQueue.size() < maxSize) {
             SendMessageNode node = new SendMessageNode(id, from, dest, receivedMsg, processFunction);
             receivedMsgQueue.offer(node);
-            processMsgAsync(node);
             offer.set(false);
-            return true;
+            return processMsgAsync(node);
         } else {
-            logger.error("queue is full, msg: {} is dropped", id);
             offer.set(false);
-            return false;
+            return null;
         }
     }
 
@@ -68,8 +66,8 @@ public class ClientAckWindow {
         offer.set(false);
     }
 
-    private void processMsgAsync(SendMessageNode node) {
-        CompletableFuture.supplyAsync(node::process)
+    private CompletableFuture<Void> processMsgAsync(SendMessageNode node) {
+        return CompletableFuture.supplyAsync(node::process)
             .thenAccept(ignore -> {
                 ctx.writeAndFlush(getInternalAck(node));
                 receivedMsgQueue.remove(node);

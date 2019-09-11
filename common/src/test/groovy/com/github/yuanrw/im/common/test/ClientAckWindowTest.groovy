@@ -48,14 +48,16 @@ class ClientAckWindowTest extends Specification {
         List<Message> processMsg = new ArrayList()
 
         when:
-        clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f1 = clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat1, { m -> processMsg.add(m) })
-        clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f2 = clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat2, { m -> processMsg.add(m) })
-        clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f3 = clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat3, { m -> processMsg.add(m) })
 
-        Thread.sleep(10)
+        f1.get()
+        f2.get()
+        f3.get()
 
         then:
         processMsg.size() == 3
@@ -96,14 +98,16 @@ class ClientAckWindowTest extends Specification {
         }
 
         when:
-        clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f1 = clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat1, { m -> processMsg.add(m) })
-        clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f2 = clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat2, longProcess)
-        clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f3 = clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat3, { m -> processMsg.add(m) })
 
-        Thread.sleep(560)
+        f1.get()
+        f2.get()
+        f3.get()
 
         then:
         processMsg.size() == 3
@@ -145,25 +149,26 @@ class ClientAckWindowTest extends Specification {
         }
 
         when:
-        def suc1 = clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f1 = clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat1, longProcess)
 
-        Thread.sleep(60)
+        f1.get()
 
-        def suc2 = clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f2 = clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat2, longProcess)
 
-        Thread.sleep(60)
+        f2.get()
 
-        def suc3 = clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f3 = clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat3, longProcess)
 
-        Thread.sleep(60)
+        f3.get()
 
         then:
-        suc1
-        suc2
-        suc3
+        f1.isDone()
+        f2.isDone()
+        f3.isDone()
+
         processMsg.size() == 3
         3 * ctx.writeAndFlush(_ as Internal.InternalMsg)
     }
@@ -197,21 +202,21 @@ class ClientAckWindowTest extends Specification {
 
         List<Message> processMsg = new ArrayList()
         def longProcess = { m ->
-            Thread.sleep(50)
+            Thread.sleep(100)
             processMsg.add(m)
         }
 
         when:
-        def suc1 = clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f1 = clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat1, longProcess)
-        def suc2 = clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f2 = clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat2, longProcess)
-        def suc3 = clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
+        def f3 = clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
                 Internal.InternalMsg.Module.CONNECTOR, chat3, longProcess)
 
         then:
-        suc1
-        suc2
-        !suc3
+        f1 != null
+        f2 != null
+        f3 == null
     }
 }
