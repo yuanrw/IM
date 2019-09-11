@@ -94,7 +94,7 @@ class ServerAckWindowTest extends Specification {
         serverAckWindow.ack(ack)
 
         then:
-        sentCnt == 4
+        sentCnt > 1
         receiveMsg.size() == 1
     }
 
