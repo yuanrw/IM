@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * client's connection info
  * Date: 2019-04-15
- * Time: 16:42
+ * Time: 20:42
  *
  * @author yrw
  */

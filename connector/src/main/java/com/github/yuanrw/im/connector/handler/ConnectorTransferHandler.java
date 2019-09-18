@@ -28,7 +28,7 @@ import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkFrom;
  * send msg to transfer
  * stateless, shareable
  * Date: 2019-02-12
- * Time: 12:17
+ * Time: 21:17
  *
  * @author yrw
  */

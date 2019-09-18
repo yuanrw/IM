@@ -2,7 +2,7 @@ package com.github.yuanrw.im.client.domain;
 
 /**
  * Date: 2019-05-24
- * Time: 15:08
+ * Time: 21:08
  *
  * @author yrw
  */

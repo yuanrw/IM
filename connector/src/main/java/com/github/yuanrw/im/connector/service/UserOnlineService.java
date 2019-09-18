@@ -22,7 +22,7 @@ import static com.github.yuanrw.im.connector.start.ConnectorStarter.CONNECTOR_CO
 
 /**
  * Date: 2019-05-14
- * Time: 09:53
+ * Time: 07:53
  *
  * @author yrw
  */

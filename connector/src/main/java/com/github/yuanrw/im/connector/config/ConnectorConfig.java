@@ -2,7 +2,7 @@ package com.github.yuanrw.im.connector.config;
 
 /**
  * Date: 2019-06-14
- * Time: 18:29
+ * Time: 20:29
  *
  * @author yrw
  */
