@@ -2,7 +2,6 @@ package com.github.yuanrw.im.connector
 
 import com.github.yuanrw.im.common.code.MsgDecoder
 import com.github.yuanrw.im.common.code.MsgEncoder
-import com.github.yuanrw.im.common.domain.ResponseCollector
 import com.github.yuanrw.im.common.domain.conn.Conn
 import com.github.yuanrw.im.common.domain.constant.MsgVersion
 import com.github.yuanrw.im.common.domain.po.Offline
@@ -18,7 +17,6 @@ import com.github.yuanrw.im.connector.service.rest.ConnectorRestService
 import com.github.yuanrw.im.connector.start.ConnectorStarter
 import com.github.yuanrw.im.protobuf.generate.Ack
 import com.github.yuanrw.im.protobuf.generate.Chat
-import com.github.yuanrw.im.protobuf.generate.Internal
 import com.github.yuanrw.im.user.status.factory.UserStatusServiceFactory
 import com.github.yuanrw.im.user.status.service.impl.MemoryUserStatusServiceImpl
 import com.google.common.collect.Lists
@@ -37,10 +35,6 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate
 import org.spockframework.runtime.Sputnik
 import spock.lang.Shared
 import spock.lang.Specification
-
-import java.time.Duration
-import java.util.concurrent.CompletableFuture
-import java.util.function.BiConsumer
 
 import static org.powermock.api.mockito.PowerMockito.when
 

@@ -1,6 +1,7 @@
 package com.github.yuanrw.im.common.domain.ack;
 
 import com.github.yuanrw.im.common.domain.constant.MsgVersion;
+import com.github.yuanrw.im.common.exception.ImException;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.protobuf.generate.Internal;
 import com.google.protobuf.Message;
@@ -8,10 +9,11 @@ import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 /**
@@ -24,21 +26,21 @@ import java.util.function.Consumer;
 public class ClientAckWindow {
     private static Logger logger = LoggerFactory.getLogger(ClientAckWindow.class);
 
-    private final ChannelHandlerContext ctx;
     private final int maxSize;
 
-    private Queue<SendMessageNode> receivedMsgQueue;
-    private AtomicBoolean offer;
+    private AtomicBoolean first;
+    private AtomicLong lastId;
+    private ConcurrentMap<Long, ProcessMsgNode> notContinuousMap;
 
-    public ClientAckWindow(int maxSize, ChannelHandlerContext ctx) {
-        this.ctx = ctx;
+    public ClientAckWindow(int maxSize) {
+        this.first = new AtomicBoolean(true);
         this.maxSize = maxSize;
-        this.offer = new AtomicBoolean(false);
-        this.receivedMsgQueue = new ConcurrentLinkedQueue<>();
+        this.lastId = new AtomicLong(-1);
+        this.notContinuousMap = new ConcurrentHashMap<>();
     }
 
     /**
-     * multi thread do it, it will try forever until success or the queue is full.
+     * multi thread do it
      *
      * @param id              msg id
      * @param from            from module
@@ -47,47 +49,90 @@ public class ClientAckWindow {
      * @param processFunction
      */
     public CompletableFuture<Void> offer(Long id, Internal.InternalMsg.Module from, Internal.InternalMsg.Module dest,
-                                         Message receivedMsg, Consumer<Message> processFunction) {
-        while (!offer.compareAndSet(false, true)) {
+                                         ChannelHandlerContext ctx, Message receivedMsg, Consumer<Message> processFunction) {
+        if (isRepeat(id)) {
+            ctx.writeAndFlush(getInternalAck(id, from, dest));
+            CompletableFuture<Void> future = new CompletableFuture<>();
+            future.complete(null);
+            return future;
         }
-        if (receivedMsgQueue.size() < maxSize) {
-            SendMessageNode node = new SendMessageNode(id, from, dest, receivedMsg, processFunction);
-            receivedMsgQueue.offer(node);
-            offer.set(false);
-            return processMsgAsync(node);
-        } else {
-            offer.set(false);
-            return null;
+
+        ProcessMsgNode msgNode = new ProcessMsgNode(id, from, dest, ctx, receivedMsg, processFunction);
+        if (!isContinuous(id)) {
+            if (notContinuousMap.size() >= maxSize) {
+                CompletableFuture<Void> future = new CompletableFuture<>();
+                future.completeExceptionally(new ImException("client window is full"));
+                return future;
+            }
+            notContinuousMap.put(id, msgNode);
+            return msgNode.getFuture();
         }
+        //process the msg
+        return processAsync(msgNode);
     }
 
-    public void clean() {
-        receivedMsgQueue.clear();
-        offer.set(false);
-    }
-
-    private CompletableFuture<Void> processMsgAsync(SendMessageNode node) {
-        return CompletableFuture.supplyAsync(node::process)
-            .thenAccept(ignore -> {
-                ctx.writeAndFlush(getInternalAck(node));
-                receivedMsgQueue.remove(node);
+    private CompletableFuture<Void> processAsync(ProcessMsgNode node) {
+        return CompletableFuture
+            .runAsync(node::process)
+            .thenAccept(v -> {
+                node.sendAck();
+                node.complete();
+            })
+            .thenAccept(v -> {
+                lastId.set(node.getId());
+                notContinuousMap.remove(node.getId());
+            })
+            .thenComposeAsync(v -> {
+                Long nextId = nextId(node.getId());
+                if (notContinuousMap.containsKey(nextId)) {
+                    //there is a next msg waiting in the map
+                    ProcessMsgNode nextNode = notContinuousMap.get(nextId);
+                    return processAsync(nextNode);
+                } else {
+                    //that's the newest msg
+                    CompletableFuture<Void> future = new CompletableFuture<>();
+                    future.complete(null);
+                    return future;
+                }
             })
             .exceptionally(e -> {
-                logger.error("process received msg has error", e);
-                receivedMsgQueue.remove(node);
+                logger.error("[process received msg] has error", e);
                 return null;
             });
     }
 
-    private Internal.InternalMsg getInternalAck(SendMessageNode node) {
+
+    private boolean isRepeat(Long msgId) {
+        return msgId <= lastId.get();
+    }
+
+    private boolean isContinuous(Long msgId) {
+        //如果是本次会话的第一条消息
+        if (first.compareAndSet(true, false)) {
+            return true;
+        } else {
+            //不是第一条消息，则按照公式算（如果同时有好几条第一条消息，除了真正的第一条，其他会返回false）
+            return msgId - lastId.get() == 1;
+        }
+    }
+
+    private Long nextId(Long id) {
+        return id + 1;
+    }
+
+    private Internal.InternalMsg getInternalAck(Long msgId, Internal.InternalMsg.Module from, Internal.InternalMsg.Module dest) {
         return Internal.InternalMsg.newBuilder()
             .setVersion(MsgVersion.V1.getVersion())
             .setId(IdWorker.genId())
-            .setFrom(node.getFrom())
-            .setDest(node.getDest())
+            .setFrom(from)
+            .setDest(dest)
             .setCreateTime(System.currentTimeMillis())
             .setMsgType(Internal.InternalMsg.MsgType.ACK)
-            .setMsgBody(node.getId() + "")
+            .setMsgBody(msgId + "")
             .build();
+    }
+
+    public void clean() {
+        notContinuousMap.clear();
     }
 }

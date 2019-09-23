@@ -100,7 +100,7 @@ class ServerAckWindowTest extends Specification {
 
     void testFull() {
         given:
-        def serverAckWindow = new ServerAckWindow(2, Duration.ofMillis(500))
+        def serverAckWindow = new ServerAckWindow(2, Duration.ofMillis(100))
 
         def chat1 = Chat.ChatMsg.newBuilder()
                 .setId(1)
@@ -115,6 +115,10 @@ class ServerAckWindowTest extends Specification {
 
         def chat2 = Chat.ChatMsg.newBuilder().mergeFrom(chat1)
                 .setId(2).build()
+        def chat3 = Chat.ChatMsg.newBuilder().mergeFrom(chat1)
+                .setId(3).build()
+        def chat4 = Chat.ChatMsg.newBuilder().mergeFrom(chat1)
+                .setId(4).build()
 
         def ack1 = Internal.InternalMsg.newBuilder()
                 .setId(IdWorker.genId())
@@ -144,10 +148,10 @@ class ServerAckWindowTest extends Specification {
         def f2 = serverAckWindow.offer(chat2.getId(), chat2, { m -> sentCnt++ })
                 .thenAccept({ m -> receiveMsg.add(m) })
                 .exceptionally(getException)
-        serverAckWindow.offer(chat2.getId(), chat2, { m -> sentCnt++ })
+        serverAckWindow.offer(chat3.getId(), chat3, { m -> sentCnt++ })
                 .thenAccept({ m -> receiveMsg.add(m) })
                 .exceptionally(getException)
-        serverAckWindow.offer(chat2.getId(), chat2, { m -> sentCnt++ })
+        serverAckWindow.offer(chat4.getId(), chat4, { m -> sentCnt++ })
                 .thenAccept({ m -> receiveMsg.add(m) })
                 .exceptionally(getException)
 
@@ -160,6 +164,60 @@ class ServerAckWindowTest extends Specification {
         then:
         sentCnt == 2
         receiveMsg.size() == 2
+        exceptionCnt == 2
+    }
+
+    void testSendRepeat() {
+        given:
+        def serverAckWindow = new ServerAckWindow(2, Duration.ofMillis(100))
+
+        def chat = Chat.ChatMsg.newBuilder()
+                .setId(1)
+                .setFromId("123")
+                .setDestId("456")
+                .setDestType(Chat.ChatMsg.DestType.SINGLE)
+                .setCreateTime(System.currentTimeMillis())
+                .setMsgType(Chat.ChatMsg.MsgType.TEXT)
+                .setVersion(MsgVersion.V1.getVersion())
+                .setMsgBody(ByteString.copyFrom("hello", CharsetUtil.UTF_8))
+                .build()
+
+        def ack = Internal.InternalMsg.newBuilder()
+                .setId(IdWorker.genId())
+                .setVersion(MsgVersion.V1.getVersion())
+                .setFrom(Internal.InternalMsg.Module.CONNECTOR)
+                .setDest(Internal.InternalMsg.Module.CLIENT)
+                .setCreateTime(System.currentTimeMillis())
+                .setMsgType(Internal.InternalMsg.MsgType.ERROR)
+                .setMsgBody(chat.getId() + "")
+                .build()
+
+        int sentCnt = 0
+        List<Internal.InternalMsg> receiveMsg = new ArrayList()
+        int exceptionCnt = 0
+
+        def getException = { e ->
+            exceptionCnt++
+            return null
+        }
+        when:
+        def f1 = serverAckWindow.offer(chat.getId(), chat, { m -> sentCnt++ })
+                .thenAccept({ m -> receiveMsg.add(m) })
+                .exceptionally(getException)
+        serverAckWindow.offer(chat.getId(), chat, { m -> sentCnt++ })
+                .thenAccept({ m -> receiveMsg.add(m) })
+                .exceptionally(getException)
+        serverAckWindow.offer(chat.getId(), chat, { m -> sentCnt++ })
+                .thenAccept({ m -> receiveMsg.add(m) })
+                .exceptionally(getException)
+
+        serverAckWindow.ack(ack)
+
+        f1.get()
+
+        then:
+        sentCnt == 1
+        receiveMsg.size() == 1
         exceptionCnt == 2
     }
 }

@@ -65,7 +65,7 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("[ConnectorTransfer] connect to transfer");
 
-        serverAckWindow = new ServerAckWindow(50, Duration.ofSeconds(2));
+        serverAckWindow = new ServerAckWindow(100, Duration.ofSeconds(2));
         greetToTransfer(ctx);
 
         ctxList.add(ctx);

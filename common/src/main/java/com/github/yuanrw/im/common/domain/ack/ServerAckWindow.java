@@ -12,7 +12,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 /**
@@ -25,25 +24,23 @@ import java.util.function.Consumer;
 public class ServerAckWindow {
     private static Logger logger = LoggerFactory.getLogger(ServerAckWindow.class);
 
-    private AtomicBoolean offer;
-    private ConcurrentHashMap<Long, ResponseCollector<Internal.InternalMsg>> responseCollectorMap;
-
-    private final int maxSize;
-    private final Duration timeout;
-
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
+    private final Duration timeout;
+    private final int maxSize;
+
+    private ConcurrentHashMap<Long, ResponseCollector<Internal.InternalMsg>> responseCollectorMap;
+
     public ServerAckWindow(int maxSize, Duration timeout) {
-        this.offer = new AtomicBoolean(false);
         this.responseCollectorMap = new ConcurrentHashMap<>();
-        this.maxSize = maxSize;
         this.timeout = timeout;
+        this.maxSize = maxSize;
 
         executor.submit(this::checkTimeoutAndRetry);
     }
 
     /**
-     * multi thread do it, it will try forever until success or the queue is full.
+     * multi thread do it
      *
      * @param id           msg id
      * @param sendMessage
@@ -51,16 +48,20 @@ public class ServerAckWindow {
      * @return
      */
     public CompletableFuture<Internal.InternalMsg> offer(Long id, Message sendMessage, Consumer<Message> sendFunction) {
-        while (!offer.compareAndSet(false, true)) {
+        if (responseCollectorMap.containsKey(id)) {
+            CompletableFuture<Internal.InternalMsg> future = new CompletableFuture<>();
+            future.completeExceptionally(new ImException("send repeat msg id: " + id));
+            return future;
         }
+        if (responseCollectorMap.size() >= maxSize) {
+            CompletableFuture<Internal.InternalMsg> future = new CompletableFuture<>();
+            future.completeExceptionally(new ImException("server window is full"));
+            return future;
+        }
+
         ResponseCollector<Internal.InternalMsg> responseCollector = new ResponseCollector<>(sendMessage, sendFunction);
-        if (responseCollectorMap.size() < maxSize) {
-            responseCollectorMap.put(id, responseCollector);
-            responseCollector.send();
-        } else {
-            responseCollector.getFuture().completeExceptionally(new ImException("the queue is full"));
-        }
-        offer.set(false);
+        responseCollectorMap.put(id, responseCollector);
+        responseCollector.send();
         return responseCollector.getFuture();
     }
 

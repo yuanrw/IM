@@ -47,7 +47,7 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         this.ctx = ctx;
         serverAckWindow = new ServerAckWindow(500, Duration.ofSeconds(2));
-        clientAckWindow = new ClientAckWindow(500, ctx);
+        clientAckWindow = new ClientAckWindow(500);
         clientMsgListener.online();
     }
 
@@ -112,7 +112,10 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
         }
 
         private void offer(Long id, Message m, Consumer<Message> consumer) {
-            clientAckWindow.offer(id, Internal.InternalMsg.Module.CLIENT, Internal.InternalMsg.Module.CONNECTOR, m, consumer);
+            clientAckWindow.offer(id,
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, m, consumer);
         }
     }
 

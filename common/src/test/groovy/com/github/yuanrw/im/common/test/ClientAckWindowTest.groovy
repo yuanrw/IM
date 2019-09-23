@@ -6,6 +6,7 @@ import com.github.yuanrw.im.protobuf.generate.Chat
 import com.github.yuanrw.im.protobuf.generate.Internal
 import com.google.protobuf.ByteString
 import com.google.protobuf.Message
+import io.netty.channel.Channel
 import io.netty.channel.ChannelHandlerContext
 import io.netty.util.CharsetUtil
 import spock.lang.Specification
@@ -18,12 +19,16 @@ import spock.lang.Specification
 class ClientAckWindowTest extends Specification {
 
     /**
-     * 按序处理
+     * 并发处理
      */
     void testProcessWell() {
         given:
-        def ctx = Mock(ChannelHandlerContext)
-        def clientAckWindow = new ClientAckWindow(3, ctx)
+        def ctx = Mock(ChannelHandlerContext) {
+            channel() >> Mock(Channel) {
+                isOpen() >> true
+            }
+        }
+        def clientAckWindow = new ClientAckWindow(2)
 
         def chat1 = Chat.ChatMsg.newBuilder()
                 .setId(1)
@@ -48,12 +53,18 @@ class ClientAckWindowTest extends Specification {
         List<Message> processMsg = new ArrayList()
 
         when:
-        def f1 = clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat1, { m -> processMsg.add(m) })
-        def f2 = clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat2, { m -> processMsg.add(m) })
-        def f3 = clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat3, { m -> processMsg.add(m) })
+        def f1 = clientAckWindow.offer(chat1.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat1, { m -> processMsg.add(m) })
+        def f2 = clientAckWindow.offer(chat2.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat2, { m -> processMsg.add(m) })
+        def f3 = clientAckWindow.offer(chat3.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat3, { m -> processMsg.add(m) })
 
         f1.get()
         f2.get()
@@ -65,12 +76,16 @@ class ClientAckWindowTest extends Specification {
     }
 
     /**
-     * 按序处理，个别任务时间过长
+     * 个别任务时间过长
      */
     void testProcessLongTime() {
         given:
-        def ctx = Mock(ChannelHandlerContext)
-        def clientAckWindow = new ClientAckWindow(3, ctx)
+        def ctx = Mock(ChannelHandlerContext) {
+            channel() >> Mock(Channel) {
+                isOpen() >> true
+            }
+        }
+        def clientAckWindow = new ClientAckWindow(2)
 
         def chat1 = Chat.ChatMsg.newBuilder()
                 .setId(1)
@@ -98,12 +113,18 @@ class ClientAckWindowTest extends Specification {
         }
 
         when:
-        def f1 = clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat1, { m -> processMsg.add(m) })
-        def f2 = clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat2, longProcess)
-        def f3 = clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat3, { m -> processMsg.add(m) })
+        def f1 = clientAckWindow.offer(chat1.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat1, { m -> processMsg.add(m) })
+        def f2 = clientAckWindow.offer(chat2.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat2, longProcess)
+        def f3 = clientAckWindow.offer(chat3.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat3, { m -> processMsg.add(m) })
 
         f1.get()
         f2.get()
@@ -119,8 +140,12 @@ class ClientAckWindowTest extends Specification {
      */
     void testLongTimeNotFull() {
         given:
-        def ctx = Mock(ChannelHandlerContext)
-        def clientAckWindow = new ClientAckWindow(1, ctx)
+        def ctx = Mock(ChannelHandlerContext) {
+            channel() >> Mock(Channel) {
+                isOpen() >> true
+            }
+        }
+        def clientAckWindow = new ClientAckWindow(0)
 
         def chat1 = Chat.ChatMsg.newBuilder()
                 .setId(1)
@@ -143,24 +168,27 @@ class ClientAckWindowTest extends Specification {
 
 
         List<Message> processMsg = new ArrayList()
-        def longProcess = { m ->
-            Thread.sleep(50)
-            processMsg.add(m)
-        }
+        def longProcess = { m -> processMsg.add(m) }
 
         when:
-        def f1 = clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat1, longProcess)
+        def f1 = clientAckWindow.offer(chat1.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat1, longProcess)
 
         f1.get()
 
-        def f2 = clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat2, longProcess)
+        def f2 = clientAckWindow.offer(chat2.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat2, longProcess)
 
         f2.get()
 
-        def f3 = clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat3, longProcess)
+        def f3 = clientAckWindow.offer(chat3.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat3, longProcess)
 
         f3.get()
 
@@ -178,8 +206,12 @@ class ClientAckWindowTest extends Specification {
      */
     void testFull() {
         given:
-        def ctx = Mock(ChannelHandlerContext)
-        def clientAckWindow = new ClientAckWindow(2, ctx)
+        def ctx = Mock(ChannelHandlerContext) {
+            channel() >> Mock(Channel) {
+                isOpen() >> true
+            }
+        }
+        def clientAckWindow = new ClientAckWindow(1)
 
         def chat1 = Chat.ChatMsg.newBuilder()
                 .setId(1)
@@ -205,18 +237,39 @@ class ClientAckWindowTest extends Specification {
             Thread.sleep(100)
             processMsg.add(m)
         }
+        int exceptionCnt = 0
+
+        def getException = { e ->
+            exceptionCnt++
+            return null
+        }
 
         when:
-        def f1 = clientAckWindow.offer(chat1.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat1, longProcess)
-        def f2 = clientAckWindow.offer(chat2.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat2, longProcess)
-        def f3 = clientAckWindow.offer(chat3.getId(), Internal.InternalMsg.Module.CLIENT,
-                Internal.InternalMsg.Module.CONNECTOR, chat3, longProcess)
+        //process
+        def f1 = clientAckWindow.offer(chat1.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat1, longProcess)
+
+        //put into queue
+        def f2 = clientAckWindow.offer(chat2.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat2, longProcess)
+
+        //get exception
+        def f3 = clientAckWindow.offer(chat3.getId(),
+                Internal.InternalMsg.Module.CLIENT,
+                Internal.InternalMsg.Module.CONNECTOR,
+                ctx, chat3, longProcess)
+                .exceptionally(getException)
+
+        f1.get()
+        f2.get()
+        f3.get()
 
         then:
-        f1 != null
-        f2 != null
-        f3 == null
+        processMsg.size() == 2
+        exceptionCnt == 1
     }
 }

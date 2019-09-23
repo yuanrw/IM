@@ -59,7 +59,7 @@ class ConnectorClientTest extends Specification {
     @Shared
     UserOnlineService userOnlineService
     @Shared
-    def clientAckWindow = new ClientAckWindow(5, Mock(ChannelHandlerContext))
+    def clientAckWindow = new ClientAckWindow(5)
 
     def setupSpec() {
         ConnectorStarter.CONNECTOR_CONFIG.setRedisHost("redisHost")
@@ -182,7 +182,7 @@ class ConnectorClientTest extends Specification {
 
         when:
         ch.writeInbound(delivered)
-        Thread.sleep(40)
+        Thread.sleep(100)
 
         then:
         0 * ctx.writeAndFlush(_ as Internal.InternalMsg)
@@ -220,7 +220,7 @@ class ConnectorClientTest extends Specification {
 
         when:
         ch.writeInbound(chat)
-        Thread.sleep(40)
+        Thread.sleep(100)
 
         then:
         1 * ctx.writeAndFlush(chat)
@@ -254,7 +254,7 @@ class ConnectorClientTest extends Specification {
         when:
         userOnlineService.userOffline(ctx)
         ch.writeInbound(chat)
-        Thread.sleep(40)
+        Thread.sleep(100)
 
         then:
         0 * ctx.writeAndFlush(_ as Chat.ChatMsg)

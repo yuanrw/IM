@@ -5,7 +5,7 @@ import com.github.yuanrw.im.common.code.MsgEncoder
 import com.github.yuanrw.im.common.domain.conn.Conn
 import com.github.yuanrw.im.common.domain.conn.ConnectorConn
 import com.github.yuanrw.im.common.domain.constant.MsgVersion
-import com.github.yuanrw.im.common.util.IdWorker
+
 import com.github.yuanrw.im.protobuf.generate.Ack
 import com.github.yuanrw.im.protobuf.generate.Chat
 import com.github.yuanrw.im.protobuf.generate.Internal

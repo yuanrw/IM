@@ -48,7 +48,7 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        this.clientAckWindow = new ClientAckWindow(500, ctx);
+        this.clientAckWindow = new ClientAckWindow(500);
     }
 
     @Override
@@ -80,19 +80,22 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
         public void registerParsers() {
             InternalParser parser = new InternalParser(3);
             parser.register(Internal.InternalMsg.MsgType.GREET, (m, ctx) ->
-                offer(m.getId(), m, ignore -> userOnlineService.userOnline(m.getMsgBody(), ctx)));
+                offer(m.getId(), m, ctx, ignore -> userOnlineService.userOnline(m.getMsgBody(), ctx)));
 
             register(Chat.ChatMsg.class, (m, ctx) ->
-                offer(m.getId(), m, ignore -> connectorService.doChatToClientOrTransferAndFlush(m)));
+                offer(m.getId(), m, ctx, ignore -> connectorService.doChatToClientOrTransferAndFlush(m)));
 
             register(Ack.AckMsg.class, (m, ctx) ->
-                offer(m.getId(), m, ignore -> connectorService.doSendAckToClientOrTransferAndFlush(m))
+                offer(m.getId(), m, ctx, ignore -> connectorService.doSendAckToClientOrTransferAndFlush(m))
             );
             register(Internal.InternalMsg.class, parser.generateFun());
         }
 
-        private void offer(Long id, Message m, Consumer<Message> consumer) {
-            clientAckWindow.offer(id, Internal.InternalMsg.Module.CONNECTOR, Internal.InternalMsg.Module.CLIENT, m, consumer);
+        private void offer(Long id, Message m, ChannelHandlerContext ctx, Consumer<Message> consumer) {
+            clientAckWindow.offer(id,
+                Internal.InternalMsg.Module.CONNECTOR,
+                Internal.InternalMsg.Module.CLIENT,
+                ctx, m, consumer);
         }
     }
 
