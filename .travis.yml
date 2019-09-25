@@ -2,6 +2,10 @@ language: java
 
 sudo: false # run on container-based infrastructure
 
+branches:
+  only:
+    - master
+
 cache:
   directories:
     - $HOME/.m2/repository/
@@ -16,7 +20,7 @@ services:
   - rabbitmq
   - redis-server
 
-script: mvn clean package
+script: mvn -q clean package
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
