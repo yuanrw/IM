@@ -50,8 +50,6 @@ import static org.powermock.api.mockito.PowerMockito.when
 class ConnectorTransferTest extends Specification {
 
     @Shared
-    def channel = new EmbeddedChannel()
-    @Shared
     def clientConnContext = ConnectorStarter.injector.getInstance(ClientConnContext.class)
     @Shared
     UserOnlineService userOnlineService
@@ -74,11 +72,6 @@ class ConnectorTransferTest extends Specification {
         userOnlineService = new UserOnlineService(new OfflineService(
                 connectorRestServiceFactory, new ParseService()),
                 clientConnContext, new ConnectorService(), userStatusServiceFactory)
-
-        channel.pipeline()
-                .addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class))
-                .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
-                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext)))
     }
 
     def cleanup() {
@@ -87,6 +80,12 @@ class ConnectorTransferTest extends Specification {
 
     def "test get chat online"() {
         given:
+        def c = new EmbeddedChannel()
+        c.pipeline()
+                .addLast("MsgDecoder", new MsgDecoder())
+                .addLast("MsgEncoder", new MsgEncoder())
+                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext)))
+
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getOneOfTransferCtx(Mockito.anyLong())).thenReturn(connectorTransferCtx)
@@ -114,7 +113,7 @@ class ConnectorTransferTest extends Specification {
                 .build()
 
         when:
-        channel.writeInbound(chat)
+        c.writeInbound(chat)
 
         then:
         1 * ctx.writeAndFlush(chat)
@@ -124,6 +123,12 @@ class ConnectorTransferTest extends Specification {
 
     def "test get chat offline"() {
         given:
+        def c = new EmbeddedChannel()
+        c.pipeline()
+                .addLast("MsgDecoder", new MsgDecoder())
+                .addLast("MsgEncoder", new MsgEncoder())
+                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext)))
+
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
@@ -146,7 +151,7 @@ class ConnectorTransferTest extends Specification {
                 .build()
 
         when:
-        channel.writeInbound(chat)
+        c.writeInbound(chat)
 
         then:
         0 * ctx.writeAndFlush(chat)
@@ -155,6 +160,12 @@ class ConnectorTransferTest extends Specification {
 
     def "test get ack online"() {
         given:
+        def c = new EmbeddedChannel()
+        c.pipeline()
+                .addLast("MsgDecoder", new MsgDecoder())
+                .addLast("MsgEncoder", new MsgEncoder())
+                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext)))
+
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
@@ -182,7 +193,7 @@ class ConnectorTransferTest extends Specification {
                 .build()
 
         when:
-        channel.writeInbound(delivered)
+        c.writeInbound(delivered)
 
         then:
         1 * ctx.writeAndFlush(delivered)
@@ -190,6 +201,12 @@ class ConnectorTransferTest extends Specification {
 
     def "test get ack offline"() {
         given:
+        def c = new EmbeddedChannel()
+        c.pipeline()
+                .addLast("MsgDecoder", new MsgDecoder())
+                .addLast("MsgEncoder", new MsgEncoder())
+                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext)))
+
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
@@ -212,7 +229,7 @@ class ConnectorTransferTest extends Specification {
                 .build()
 
         when:
-        channel.writeInbound(delivered)
+        c.writeInbound(delivered)
 
         then:
         0 * ctx.writeAndFlush(delivered)

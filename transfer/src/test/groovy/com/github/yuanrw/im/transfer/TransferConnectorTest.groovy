@@ -5,7 +5,6 @@ import com.github.yuanrw.im.common.code.MsgEncoder
 import com.github.yuanrw.im.common.domain.conn.Conn
 import com.github.yuanrw.im.common.domain.conn.ConnectorConn
 import com.github.yuanrw.im.common.domain.constant.MsgVersion
-
 import com.github.yuanrw.im.protobuf.generate.Ack
 import com.github.yuanrw.im.protobuf.generate.Chat
 import com.github.yuanrw.im.protobuf.generate.Internal
@@ -60,7 +59,7 @@ class TransferConnectorTest extends Specification {
         when:
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFrom(Internal.InternalMsg.Module.CONNECTOR)
                 .setDest(Internal.InternalMsg.Module.TRANSFER)
@@ -89,7 +88,7 @@ class TransferConnectorTest extends Specification {
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("1234")
                 .setDestId("5678")
@@ -120,7 +119,7 @@ class TransferConnectorTest extends Specification {
 
         Ack.AckMsg ack = Ack.AckMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("1234")
                 .setDestId("5678")

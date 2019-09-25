@@ -29,7 +29,6 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.embedded.EmbeddedChannel
 import io.netty.util.Attribute
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PowerMockIgnore
 import org.powermock.core.classloader.annotations.PrepareForTest
@@ -39,6 +38,7 @@ import org.spockframework.runtime.Sputnik
 import spock.lang.Shared
 import spock.lang.Specification
 
+import static org.mockito.ArgumentMatchers.anyLong
 import static org.powermock.api.mockito.PowerMockito.when
 
 /**
@@ -53,13 +53,9 @@ import static org.powermock.api.mockito.PowerMockito.when
 class ConnectorClientTest extends Specification {
 
     @Shared
-    def ch = new EmbeddedChannel()
-    @Shared
-    def clientConnContext = ConnectorStarter.injector.getInstance(ClientConnContext.class)
+    def clientConnContext = new ClientConnContext()
     @Shared
     UserOnlineService userOnlineService
-    @Shared
-    def clientAckWindow = new ClientAckWindow(5)
 
     def setupSpec() {
         ConnectorStarter.CONNECTOR_CONFIG.setRedisHost("redisHost")
@@ -79,24 +75,24 @@ class ConnectorClientTest extends Specification {
         userOnlineService = new UserOnlineService(new OfflineService(
                 connectorRestServiceFactory, new ParseService()),
                 clientConnContext, new ConnectorService(), userStatusServiceFactory)
-
-        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
-                userOnlineService, clientConnContext)
-        handler.setClientAckWindow(clientAckWindow)
-
-        ch.pipeline()
-                .addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class))
-                .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
-                .addLast("ConnectorClientHandler", handler)
     }
 
     def cleanup() {
         clientConnContext.removeAllConn()
-        clientAckWindow.clean()
     }
 
     def "test get internal greet"() {
         given:
+        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+                userOnlineService, clientConnContext)
+        handler.setClientAckWindow(new ClientAckWindow(5))
+
+        def ch = new EmbeddedChannel()
+        ch.pipeline()
+                .addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class))
+                .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
+                .addLast("ConnectorClientHandler", handler)
+
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
@@ -122,6 +118,16 @@ class ConnectorClientTest extends Specification {
 
     def "test get ack online"() {
         given:
+        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+                userOnlineService, clientConnContext)
+        handler.setClientAckWindow(new ClientAckWindow(5))
+
+        def ch = new EmbeddedChannel()
+        ch.pipeline()
+                .addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class))
+                .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
+                .addLast("ConnectorClientHandler", handler)
+
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
@@ -159,15 +165,19 @@ class ConnectorClientTest extends Specification {
 
     def "test get ack offline"() {
         given:
+        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+                userOnlineService, clientConnContext)
+        handler.setClientAckWindow(new ClientAckWindow(5))
+
+        def ch = new EmbeddedChannel()
+        ch.pipeline()
+                .addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class))
+                .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
+                .addLast("ConnectorClientHandler", handler)
+
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
-        when(ConnectorTransferHandler.getOneOfTransferCtx(Mockito.anyLong())).thenReturn(connectorTransferCtx)
-
-        def ctx = Mock(ChannelHandlerContext) {
-            channel() >> Mock(Channel) {
-                attr(Conn.NET_ID) >> Mock(Attribute)
-            }
-        }
+        when(ConnectorTransferHandler.getOneOfTransferCtx(anyLong())).thenReturn(connectorTransferCtx)
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
@@ -185,16 +195,25 @@ class ConnectorClientTest extends Specification {
         Thread.sleep(100)
 
         then:
-        0 * ctx.writeAndFlush(_ as Internal.InternalMsg)
         1 * connectorTransferCtx.writeAndFlush(delivered)
     }
 
     def "test get chat online"() {
         //online
         given:
+        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+                userOnlineService, clientConnContext)
+        handler.setClientAckWindow(new ClientAckWindow(5))
+
+        def ch = new EmbeddedChannel()
+        ch.pipeline()
+                .addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class))
+                .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
+                .addLast("ConnectorClientHandler", handler)
+
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
-        when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))
+        when(ConnectorTransferHandler.getOneOfTransferCtx(anyLong())).thenReturn(connectorTransferCtx)
 
         def map = new HashMap<String, Object>()
         def ctx = Mock(ChannelHandlerContext) {
@@ -230,9 +249,19 @@ class ConnectorClientTest extends Specification {
     def "test get chat offline"() {
         //online
         given:
+        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+                userOnlineService, clientConnContext)
+        handler.setClientAckWindow(new ClientAckWindow(5))
+
+        def ch = new EmbeddedChannel()
+        ch.pipeline()
+                .addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class))
+                .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
+                .addLast("ConnectorClientHandler", handler)
+
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
-        when(ConnectorTransferHandler.getOneOfTransferCtx(Mockito.anyLong())).thenReturn(connectorTransferCtx)
+        when(ConnectorTransferHandler.getOneOfTransferCtx(anyLong())).thenReturn(connectorTransferCtx)
 
         def ctx = Mock(ChannelHandlerContext) {
             channel() >> Mock(Channel) {
@@ -263,6 +292,16 @@ class ConnectorClientTest extends Specification {
 
     def "test force offline"() {
         given:
+        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+                userOnlineService, clientConnContext)
+        handler.setClientAckWindow(new ClientAckWindow(5))
+
+        def ch = new EmbeddedChannel()
+        ch.pipeline()
+                .addLast("MsgDecoder", ConnectorStarter.injector.getInstance(MsgDecoder.class))
+                .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
+                .addLast("ConnectorClientHandler", handler)
+
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getCtxList()).thenReturn(Lists.newArrayList(connectorTransferCtx))

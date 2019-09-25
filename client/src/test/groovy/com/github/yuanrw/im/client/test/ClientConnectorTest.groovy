@@ -32,62 +32,65 @@ import spock.lang.Specification
  */
 class ClientConnectorTest extends Specification {
 
-//    def "test get ack"() {
-//        given:
-//        def c = new EmbeddedChannel()
-//        def clientMsgListener = Mock(ClientMsgListener)
-//
-//        def handler = new ClientConnectorHandler(clientMsgListener)
-//        def ctx = Mock(ChannelHandlerContext) {
-//            channel() >> Mock(Channel) {
-//                isOpen() >> true
-//            }
-//        }
-//        def clientAckWindow = new ClientAckWindow(5)
-//        handler.setClientAckWindow(clientAckWindow)
-//
-//        c.pipeline()
-//                .addLast("MsgEncoder", new MsgEncoder())
-//                .addLast("AesEncoder", new AesEncoder(new UserContext()))
-//                .addLast("MsgDecoder", new ImClient("localhost", 9082, "http://127.0.0.1:8080")
-//                .injector.getInstance(MsgDecoder.class))
-//                .addLast("AesDecoder", new AesDecoder())
-//                .addLast("ClientConnectorHandler", handler)
-//
-//        when:
-//        def delivered = Ack.AckMsg.newBuilder()
-//                .setVersion(MsgVersion.V1.getVersion())
-//                .setId(IdWorker.genId())
-//                .setCreateTime(System.currentTimeMillis())
-//                .setFromId("123")
-//                .setDestId("456")
-//                .setMsgType(Ack.AckMsg.MsgType.DELIVERED)
-//                .setDestType(Ack.AckMsg.DestType.SINGLE)
-//                .setAckMsgId(1111112)
-//                .build()
-//
-//        c.writeInbound(delivered)
-//        Thread.sleep(40)
-//
-//        then:
-//        1 * clientMsgListener.hasDelivered(1111112)
-//        1 * ctx.writeAndFlush(_ as Internal.InternalMsg)
-//        0 * _
-//
-//        when:
-//        def read = Ack.AckMsg.newBuilder()
-//                .mergeFrom(delivered)
-//                .setMsgType(Ack.AckMsg.MsgType.READ)
-//                .build()
-//
-//        c.writeInbound(read)
-//        Thread.sleep(40)
-//
-//        then:
-//        1 * clientMsgListener.hasRead(1111112)
-//        1 * ctx.writeAndFlush(_ as Internal.InternalMsg)
-//        0 * _
-//    }
+    def "test get ack"() {
+        given:
+        def c = new EmbeddedChannel()
+        def clientMsgListener = Mock(ClientMsgListener)
+
+        def handler = new ClientConnectorHandler(clientMsgListener)
+        def ctx = Mock(ChannelHandlerContext) {
+            channel() >> Mock(Channel) {
+                isOpen() >> true
+            }
+        }
+        handler.setCtx(ctx)
+
+        def clientAckWindow = new ClientAckWindow(5)
+        handler.setClientAckWindow(clientAckWindow)
+
+        c.pipeline()
+                .addLast("MsgEncoder", new MsgEncoder())
+                .addLast("AesEncoder", new AesEncoder(new UserContext()))
+                .addLast("MsgDecoder", new ImClient("localhost", 9082, "http://127.0.0.1:8080")
+                .injector.getInstance(MsgDecoder.class))
+                .addLast("AesDecoder", new AesDecoder())
+                .addLast("ClientConnectorHandler", handler)
+
+        when:
+        def delivered = Ack.AckMsg.newBuilder()
+                .setVersion(MsgVersion.V1.getVersion())
+                .setId(1)
+                .setCreateTime(System.currentTimeMillis())
+                .setFromId("123")
+                .setDestId("456")
+                .setMsgType(Ack.AckMsg.MsgType.DELIVERED)
+                .setDestType(Ack.AckMsg.DestType.SINGLE)
+                .setAckMsgId(111112)
+                .build()
+
+        c.writeInbound(delivered)
+        Thread.sleep(40)
+
+        then:
+        1 * clientMsgListener.hasDelivered(111112)
+        //send ack
+        1 * ctx.writeAndFlush(_ as Internal.InternalMsg)
+
+        when:
+        def read = Ack.AckMsg.newBuilder()
+                .mergeFrom(delivered)
+                .setId(2)
+                .setMsgType(Ack.AckMsg.MsgType.READ)
+                .build()
+
+        c.writeInbound(read)
+        Thread.sleep(40)
+
+        then:
+        1 * clientMsgListener.hasRead(111112)
+        //send ack
+        1 * ctx.writeAndFlush(_ as Internal.InternalMsg)
+    }
 
     def "test get internal"() {
         given:
@@ -124,59 +127,60 @@ class ClientConnectorTest extends Specification {
         0 * _
     }
 
-//    def "test get chat"() {
-//        given:
-//        def clientMsgListener = Mock(ClientMsgListener)
-//
-//        def c = new EmbeddedChannel()
-//
-//        def r = new RelationDetail()
-//        r.setUserId1("123")
-//        r.setUserId2("456")
-//        r.setEncryptKey("HvxZFa7B1dBlKwP7|9302073163544974")
-//
-//        def userContext = new UserContext(new MemoryRelationCache())
-//        userContext.addRelation(r)
-//
-//        String[] keys = r.getEncryptKey().split("\\|")
-//        byte[] encodeBody = Encryption.encrypt(keys[0], keys[1], "hello".getBytes(CharsetUtil.UTF_8))
-//
-//        def ctx = Mock(ChannelHandlerContext) {
-//            channel() >> Mock(Channel) {
-//                isOpen() >> true
-//            }
-//        }
-//        def handler = new ClientConnectorHandler(clientMsgListener)
-//        def clientAckWindow = new ClientAckWindow(5)
-//        handler.setClientAckWindow(clientAckWindow)
-//        c.pipeline()
-//                .addLast("MsgEncoder", new MsgEncoder())
-//                .addLast("AesEncoder", new AesEncoder(userContext))
-//                .addLast("MsgDecoder", new ImClient("localhost", 9082, "http://127.0.0.1:8080")
-//                .injector.getInstance(MsgDecoder.class))
-//                .addLast("AesDecoder", new AesDecoder(userContext))
-//                .addLast("ClientConnectorHandler", handler)
-//
-//        def chat = Chat.ChatMsg.newBuilder()
-//                .setVersion(MsgVersion.V1.getVersion())
-//                .setId(IdWorker.genId())
-//                .setCreateTime(System.currentTimeMillis())
-//                .setFromId("123")
-//                .setDestId("456")
-//                .setMsgType(Chat.ChatMsg.MsgType.TEXT)
-//                .setDestType(Chat.ChatMsg.DestType.SINGLE)
-//                .setMsgBody(ByteString.copyFrom(encodeBody))
-//                .build()
-//
-//        def decodedChat = Chat.ChatMsg.newBuilder().mergeFrom(chat)
-//                .setMsgBody(ByteString.copyFromUtf8("hello")).build()
-//        when:
-//        c.writeInbound(chat)
-//        1 * ctx.writeAndFlush(_ as Internal.InternalMsg)
-//
-//        Thread.sleep(40)
-//
-//        then:
-//        1 * clientMsgListener.read(decodedChat)
-//    }
+    def "test get chat"() {
+        given:
+        def clientMsgListener = Mock(ClientMsgListener)
+
+        def c = new EmbeddedChannel()
+
+        def r = new RelationDetail()
+        r.setUserId1("123")
+        r.setUserId2("456")
+        r.setEncryptKey("HvxZFa7B1dBlKwP7|9302073163544974")
+
+        def userContext = new UserContext(new MemoryRelationCache())
+        userContext.addRelation(r)
+
+        String[] keys = r.getEncryptKey().split("\\|")
+        byte[] encodeBody = Encryption.encrypt(keys[0], keys[1], "hello".getBytes(CharsetUtil.UTF_8))
+
+        def ctx = Mock(ChannelHandlerContext) {
+            channel() >> Mock(Channel) {
+                isOpen() >> true
+            }
+        }
+        def handler = new ClientConnectorHandler(clientMsgListener)
+        handler.setCtx(ctx)
+
+        def clientAckWindow = new ClientAckWindow(5)
+        handler.setClientAckWindow(clientAckWindow)
+        c.pipeline()
+                .addLast("MsgEncoder", new MsgEncoder())
+                .addLast("AesEncoder", new AesEncoder(userContext))
+                .addLast("MsgDecoder", new ImClient("localhost", 9082, "http://127.0.0.1:8080")
+                .injector.getInstance(MsgDecoder.class))
+                .addLast("AesDecoder", new AesDecoder(userContext))
+                .addLast("ClientConnectorHandler", handler)
+
+        def chat = Chat.ChatMsg.newBuilder()
+                .setVersion(MsgVersion.V1.getVersion())
+                .setId(1)
+                .setCreateTime(System.currentTimeMillis())
+                .setFromId("123")
+                .setDestId("456")
+                .setMsgType(Chat.ChatMsg.MsgType.TEXT)
+                .setDestType(Chat.ChatMsg.DestType.SINGLE)
+                .setMsgBody(ByteString.copyFrom(encodeBody))
+                .build()
+
+        def decodedChat = Chat.ChatMsg.newBuilder().mergeFrom(chat)
+                .setMsgBody(ByteString.copyFromUtf8("hello")).build()
+        when:
+        c.writeInbound(chat)
+        Thread.sleep(40)
+
+        then:
+        1 * clientMsgListener.read(decodedChat)
+        1 * ctx.writeAndFlush(_ as Internal.InternalMsg)
+    }
 }

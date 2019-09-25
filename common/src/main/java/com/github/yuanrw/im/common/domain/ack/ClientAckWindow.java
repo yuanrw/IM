@@ -131,8 +131,4 @@ public class ClientAckWindow {
             .setMsgBody(msgId + "")
             .build();
     }
-
-    public void clean() {
-        notContinuousMap.clear();
-    }
 }

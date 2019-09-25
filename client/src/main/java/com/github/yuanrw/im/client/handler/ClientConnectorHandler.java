@@ -119,11 +119,30 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
         }
     }
 
+    /**
+     * do not use, for test
+     *
+     * @param serverAckWindow
+     */
     public void setServerAckWindow(ServerAckWindow serverAckWindow) {
         this.serverAckWindow = serverAckWindow;
     }
 
+    /**
+     * do not use, for test
+     *
+     * @param clientAckWindow
+     */
     public void setClientAckWindow(ClientAckWindow clientAckWindow) {
         this.clientAckWindow = clientAckWindow;
+    }
+
+    /**
+     * do not use, for test
+     *
+     * @param ctx
+     */
+    public void setCtx(ChannelHandlerContext ctx) {
+        this.ctx = ctx;
     }
 }
