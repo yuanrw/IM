@@ -54,10 +54,6 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    }
-
-    @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
         logger.debug("[connector] get msg: {}", msg.toString());
 
@@ -88,8 +84,8 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
 
             //do not use clientAckWindow, buz don't know netId yet
             parser.register(Internal.InternalMsg.MsgType.GREET, (m, ctx) -> {
-                ClientConn conn = userOnlineService.userOnline(serverAckWindow, m.getMsgBody(), ctx);
-                serverAckWindow = new ServerAckWindow(conn.getUserId(), 10, Duration.ofSeconds(5));
+                ClientConn conn = userOnlineService.userOnline(m.getMsgBody(), ctx);
+                serverAckWindow = new ServerAckWindow(conn.getNetId(), 10, Duration.ofSeconds(5));
                 clientAckWindow = new ClientAckWindow(5);
                 ctx.writeAndFlush(getAck(m.getId()));
             });
@@ -99,10 +95,10 @@ public class ConnectorClientHandler extends SimpleChannelInboundHandler<Message>
 
             //now we know netId
             register(Chat.ChatMsg.class, (m, ctx) -> offerChat(m.getId(), m, ctx, ignore ->
-                connectorToClientService.doChatToClientOrTransferAndFlush(serverAckWindow, m)));
+                connectorToClientService.doChatToClientOrTransferAndFlush(m)));
 
             register(Ack.AckMsg.class, (m, ctx) -> offerAck(m.getId(), m, ctx, ignore ->
-                connectorToClientService.doSendAckToClientOrTransferAndFlush(serverAckWindow, m))
+                connectorToClientService.doSendAckToClientOrTransferAndFlush(m))
             );
             register(Internal.InternalMsg.class, parser.generateFun());
         }

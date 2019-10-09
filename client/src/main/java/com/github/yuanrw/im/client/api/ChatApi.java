@@ -47,7 +47,7 @@ public class ChatApi {
             .setMsgBody(ByteString.copyFrom(text, CharsetUtil.UTF_8))
             .build();
 
-        sendToConnector(chat, chat.getId());
+        sendToConnector(chat.getId(), chat);
 
         return chat.getId();
     }
@@ -58,8 +58,8 @@ public class ChatApi {
         }
     }
 
-    private void sendToConnector(Message msg, Long id) {
-        userContext.getClientConnectorHandler().writeAndFlush(msg, id);
+    private void sendToConnector(Long id, Message msg) {
+        userContext.getClientConnectorHandler().writeAndFlush(connectionId, id, msg);
     }
 
     public void confirmRead(Chat.ChatMsg msg) {

@@ -16,6 +16,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.function.Consumer;
 
@@ -75,9 +76,9 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
         clientMsgListener.hasException(ctx, cause);
     }
 
-    public void writeAndFlush(Message message, Long id) {
-        serverAckWindow.offer(id, message, m -> ctx.writeAndFlush(m))
-            .thenAccept(m -> clientMsgListener.hasSent(id))
+    public void writeAndFlush(Serializable connectionId, Long msgId, Message message) {
+        ServerAckWindow.offer(connectionId, msgId, message, m -> ctx.writeAndFlush(m))
+            .thenAccept(m -> clientMsgListener.hasSent(msgId))
             .exceptionally(e -> {
                 logger.error("[client] send to connector failed", e);
                 return null;

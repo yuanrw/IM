@@ -2,7 +2,6 @@ package com.github.yuanrw.im.common.test
 
 import com.github.yuanrw.im.common.domain.ack.ServerAckWindow
 import com.github.yuanrw.im.common.domain.constant.MsgVersion
-import com.github.yuanrw.im.common.util.IdWorker
 import com.github.yuanrw.im.protobuf.generate.Chat
 import com.github.yuanrw.im.protobuf.generate.Internal
 import com.google.protobuf.ByteString
@@ -20,7 +19,7 @@ class ServerAckWindowTest extends Specification {
 
     void testGetAckInTime() {
         given:
-        def serverAckWindow = new ServerAckWindow(5, Duration.ofMillis(500))
+        def serverAckWindow = new ServerAckWindow("1", 5, Duration.ofMillis(500))
 
         def chat = Chat.ChatMsg.newBuilder()
                 .setId(111111)
@@ -37,7 +36,7 @@ class ServerAckWindowTest extends Specification {
         List<Internal.InternalMsg> receiveMsg = new ArrayList()
 
         def ack = Internal.InternalMsg.newBuilder()
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setVersion(MsgVersion.V1.getVersion())
                 .setFrom(Internal.InternalMsg.Module.CONNECTOR)
                 .setDest(Internal.InternalMsg.Module.CLIENT)
@@ -59,7 +58,7 @@ class ServerAckWindowTest extends Specification {
 
     void testTimeout() {
         given:
-        def serverAckWindow = new ServerAckWindow(5, Duration.ofMillis(50))
+        def serverAckWindow = new ServerAckWindow("1", 5, Duration.ofMillis(50))
 
         def chat = Chat.ChatMsg.newBuilder()
                 .setId(111111)
@@ -76,7 +75,7 @@ class ServerAckWindowTest extends Specification {
         List<Internal.InternalMsg> receiveMsg = new ArrayList()
 
         def ack = Internal.InternalMsg.newBuilder()
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setVersion(MsgVersion.V1.getVersion())
                 .setFrom(Internal.InternalMsg.Module.CONNECTOR)
                 .setDest(Internal.InternalMsg.Module.CLIENT)
@@ -100,7 +99,7 @@ class ServerAckWindowTest extends Specification {
 
     void testFull() {
         given:
-        def serverAckWindow = new ServerAckWindow(2, Duration.ofMillis(100))
+        def serverAckWindow = new ServerAckWindow("1", 2, Duration.ofMillis(100))
 
         def chat1 = Chat.ChatMsg.newBuilder()
                 .setId(1)
@@ -121,7 +120,7 @@ class ServerAckWindowTest extends Specification {
                 .setId(4).build()
 
         def ack1 = Internal.InternalMsg.newBuilder()
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setVersion(MsgVersion.V1.getVersion())
                 .setFrom(Internal.InternalMsg.Module.CONNECTOR)
                 .setDest(Internal.InternalMsg.Module.CLIENT)
@@ -169,7 +168,7 @@ class ServerAckWindowTest extends Specification {
 
     void testSendRepeat() {
         given:
-        def serverAckWindow = new ServerAckWindow(2, Duration.ofMillis(100))
+        def serverAckWindow = new ServerAckWindow("1", 2, Duration.ofMillis(100))
 
         def chat = Chat.ChatMsg.newBuilder()
                 .setId(1)
@@ -183,7 +182,7 @@ class ServerAckWindowTest extends Specification {
                 .build()
 
         def ack = Internal.InternalMsg.newBuilder()
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setVersion(MsgVersion.V1.getVersion())
                 .setFrom(Internal.InternalMsg.Module.CONNECTOR)
                 .setDest(Internal.InternalMsg.Module.CLIENT)

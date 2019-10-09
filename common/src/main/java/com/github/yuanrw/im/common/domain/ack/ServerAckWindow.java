@@ -7,6 +7,7 @@ import com.google.protobuf.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -24,7 +25,7 @@ import java.util.function.Consumer;
  */
 public class ServerAckWindow {
     private static Logger logger = LoggerFactory.getLogger(ServerAckWindow.class);
-    private static Map<String, ServerAckWindow> windowsMap;
+    private static Map<Serializable, ServerAckWindow> windowsMap;
     private static ExecutorService executorService;
 
     private final Duration timeout;
@@ -38,7 +39,7 @@ public class ServerAckWindow {
         executorService.submit(ServerAckWindow::checkTimeoutAndRetry);
     }
 
-    public ServerAckWindow(String connectionId, int maxSize, Duration timeout) {
+    public ServerAckWindow(Serializable connectionId, int maxSize, Duration timeout) {
         this.responseCollectorMap = new ConcurrentHashMap<>();
         this.timeout = timeout;
         this.maxSize = maxSize;
@@ -54,9 +55,8 @@ public class ServerAckWindow {
      * @param sendFunction
      * @return
      */
-    public static CompletableFuture<Internal.InternalMsg> offer(String userId, Long id, Message sendMessage, Consumer<Message> sendFunction) {
-        windowsMap.putIfAbsent(userId, new ServerAckWindow(userId, 10, Duration.ofSeconds(5)));
-        return windowsMap.get(userId).offer(id, sendMessage, sendFunction);
+    public static CompletableFuture<Internal.InternalMsg> offer(Serializable connectionId, Long id, Message sendMessage, Consumer<Message> sendFunction) {
+        return windowsMap.get(connectionId).offer(id, sendMessage, sendFunction);
     }
 
     /**

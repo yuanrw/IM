@@ -3,10 +3,12 @@ package com.github.yuanrw.im.connector
 import com.github.yuanrw.im.common.code.MsgDecoder
 import com.github.yuanrw.im.common.code.MsgEncoder
 import com.github.yuanrw.im.common.domain.ack.ClientAckWindow
+import com.github.yuanrw.im.common.domain.ack.ServerAckWindow
 import com.github.yuanrw.im.common.domain.conn.Conn
 import com.github.yuanrw.im.common.domain.constant.MsgVersion
 import com.github.yuanrw.im.common.domain.po.Offline
 import com.github.yuanrw.im.common.parse.ParseService
+import com.github.yuanrw.im.common.util.IdWorker
 import com.github.yuanrw.im.connector.config.ConnectorRestServiceFactory
 import com.github.yuanrw.im.connector.domain.ClientConnContext
 import com.github.yuanrw.im.connector.handler.ConnectorClientHandler
@@ -36,6 +38,8 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate
 import org.spockframework.runtime.Sputnik
 import spock.lang.Shared
 import spock.lang.Specification
+
+import java.time.Duration
 
 import static org.mockito.ArgumentMatchers.anyLong
 import static org.powermock.api.mockito.PowerMockito.when
@@ -140,7 +144,10 @@ class ConnectorClientTest extends Specification {
                 }
             }
         }
-        userOnlineService.userOnline("456", ctx)
+
+        //make user online
+        def conn = userOnlineService.userOnline("456", ctx)
+        new ServerAckWindow(conn.getNetId(), 10, Duration.ofSeconds(5))
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
@@ -174,7 +181,14 @@ class ConnectorClientTest extends Specification {
                 .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
                 .addLast("ConnectorClientHandler", handler)
 
-        def connectorTransferCtx = Mock(ChannelHandlerContext)
+        def connectorTransferCtx = Mock(ChannelHandlerContext) {
+            channel() >> Mock(Channel) {
+                attr(Conn.NET_ID) >> Mock(Attribute) {
+                    get() >> IdWorker.uuid()
+                }
+            }
+        }
+
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getOneOfTransferCtx(anyLong())).thenReturn(connectorTransferCtx)
 
@@ -223,7 +237,9 @@ class ConnectorClientTest extends Specification {
                 }
             }
         }
-        userOnlineService.userOnline("456", ctx)
+        //make user online
+        def conn = userOnlineService.userOnline("456", ctx)
+        new ServerAckWindow(conn.getNetId(), 10, Duration.ofSeconds(5))
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
@@ -258,9 +274,15 @@ class ConnectorClientTest extends Specification {
                 .addLast("MsgEncoder", ConnectorStarter.injector.getInstance(MsgEncoder.class))
                 .addLast("ConnectorClientHandler", handler)
 
-        def connectorTransferCtx = Mock(ChannelHandlerContext)
+        def ctx1 = Mock(ChannelHandlerContext) {
+            channel() >> Mock(Channel) {
+                attr(Conn.NET_ID) >> Mock(Attribute) {
+                    get() >> IdWorker.uuid()
+                }
+            }
+        }
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
-        when(ConnectorTransferHandler.getOneOfTransferCtx(anyLong())).thenReturn(connectorTransferCtx)
+        when(ConnectorTransferHandler.getOneOfTransferCtx(anyLong())).thenReturn(ctx1)
 
         def ctx = Mock(ChannelHandlerContext) {
             channel() >> Mock(Channel) {
@@ -286,7 +308,7 @@ class ConnectorClientTest extends Specification {
 
         then:
         0 * ctx.writeAndFlush(_ as Chat.ChatMsg)
-        1 * connectorTransferCtx.writeAndFlush(chat)
+        1 * ctx1.writeAndFlush(chat)
     }
 
     def "test force offline"() {

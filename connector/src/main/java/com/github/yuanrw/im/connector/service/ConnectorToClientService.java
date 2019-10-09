@@ -36,7 +36,7 @@ public class ConnectorToClientService {
         this.clientConnContext = clientConnContext;
     }
 
-    public void doChatToClientAndFlush(ServerAckWindow serverAckWindow, Chat.ChatMsg msg) {
+    public void doChatToClientAndFlush(Chat.ChatMsg msg) {
         Conn conn = clientConnContext.getConnByUserId(msg.getDestId());
         if (conn == null) {
             //todo: if not on the machine
@@ -48,7 +48,8 @@ public class ConnectorToClientService {
         Chat.ChatMsg copy = Chat.ChatMsg.newBuilder().mergeFrom(msg)
             .setId(IdWorker.nextId(conn.getNetId())).build();
         conn.getCtx().writeAndFlush(copy);
-        sendMsg(serverAckWindow, msg.getFromId(), msg.getId(), cid -> getDelivered(cid, msg));
+        //send delivered
+        sendMsg(msg.getFromId(), msg.getId(), cid -> getDelivered(cid, msg));
     }
 
     public void doSendAckToClientAndFlush(Ack.AckMsg ackMsg) {
@@ -64,8 +65,8 @@ public class ConnectorToClientService {
         conn.getCtx().writeAndFlush(copy);
     }
 
-    public void doChatToClientOrTransferAndFlush(ServerAckWindow serverAckWindow, Chat.ChatMsg chat) {
-        boolean onTheMachine = sendMsg(serverAckWindow, chat.getDestId(), chat.getId(),
+    public void doChatToClientOrTransferAndFlush(Chat.ChatMsg chat) {
+        boolean onTheMachine = sendMsg(chat.getDestId(), chat.getId(),
             cid -> Chat.ChatMsg.newBuilder().mergeFrom(chat).setId(IdWorker.nextId(cid)).build());
 
         //send ack to from id
@@ -82,8 +83,8 @@ public class ConnectorToClientService {
         }
     }
 
-    public void doSendAckToClientOrTransferAndFlush(ServerAckWindow serverAckWindow, Ack.AckMsg ackMsg) {
-        sendMsg(serverAckWindow, ackMsg.getDestId(), ackMsg.getId(),
+    public void doSendAckToClientOrTransferAndFlush(Ack.AckMsg ackMsg) {
+        sendMsg(ackMsg.getDestId(), ackMsg.getId(),
             cid -> Ack.AckMsg.newBuilder().mergeFrom(ackMsg).setId(IdWorker.nextId(cid)).build());
     }
 
@@ -100,7 +101,7 @@ public class ConnectorToClientService {
             .build();
     }
 
-    private boolean sendMsg(ServerAckWindow serverAckWindow, String destId, Long msgId, Function<Serializable, Message> generateMsg) {
+    private boolean sendMsg(String destId, Long msgId, Function<Serializable, Message> generateMsg) {
         Conn conn = clientConnContext.getConnByUserId(destId);
         if (conn == null) {
             ChannelHandlerContext ctx = ConnectorTransferHandler.getOneOfTransferCtx(System.currentTimeMillis());
@@ -110,7 +111,7 @@ public class ConnectorToClientService {
             //the user is connected to this machine
             //won 't save chat histories
             Message message = generateMsg.apply(conn.getNetId());
-            serverAckWindow.offer(msgId, message, m -> conn.getCtx().writeAndFlush(m));
+            ServerAckWindow.offer(conn.getNetId(), msgId, message, m -> conn.getCtx().writeAndFlush(m));
             return true;
         }
     }

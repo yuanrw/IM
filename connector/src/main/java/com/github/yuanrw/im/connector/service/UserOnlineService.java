@@ -1,6 +1,5 @@
 package com.github.yuanrw.im.connector.service;
 
-import com.github.yuanrw.im.common.domain.ack.ServerAckWindow;
 import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.connector.domain.ClientConn;
@@ -49,13 +48,13 @@ public class UserOnlineService {
         this.userStatusService = userStatusServiceFactory.createService(properties);
     }
 
-    public ClientConn userOnline(ServerAckWindow serverAckWindow, String userId, ChannelHandlerContext ctx) {
+    public ClientConn userOnline(String userId, ChannelHandlerContext ctx) {
         //get all offline msg and send
         List<Message> msgs = offlineService.pollOfflineMsg(userId);
         msgs.forEach(msg -> {
             try {
                 Chat.ChatMsg chatMsg = (Chat.ChatMsg) msg;
-                connectorToClientService.doChatToClientAndFlush(serverAckWindow, chatMsg);
+                connectorToClientService.doChatToClientAndFlush(chatMsg);
             } catch (ClassCastException ex) {
                 Ack.AckMsg ackMsg = (Ack.AckMsg) msg;
                 connectorToClientService.doSendAckToClientAndFlush(ackMsg);

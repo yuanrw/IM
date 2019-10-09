@@ -2,6 +2,7 @@ package com.github.yuanrw.im.connector
 
 import com.github.yuanrw.im.common.code.MsgDecoder
 import com.github.yuanrw.im.common.code.MsgEncoder
+import com.github.yuanrw.im.common.domain.ack.ServerAckWindow
 import com.github.yuanrw.im.common.domain.conn.Conn
 import com.github.yuanrw.im.common.domain.constant.MsgVersion
 import com.github.yuanrw.im.common.domain.po.Offline
@@ -34,6 +35,8 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate
 import org.spockframework.runtime.Sputnik
 import spock.lang.Shared
 import spock.lang.Specification
+
+import java.time.Duration
 
 import static org.powermock.api.mockito.PowerMockito.when
 
@@ -110,7 +113,8 @@ class ConnectorTransferTest extends Specification {
                 }
             }
         }
-        userOnlineService.userOnline("456", ctx)
+        def conn = userOnlineService.userOnline("456", ctx)
+        new ServerAckWindow(conn.getNetId(), 10, Duration.ofSeconds(5))
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
@@ -190,7 +194,8 @@ class ConnectorTransferTest extends Specification {
                 }
             }
         }
-        userOnlineService.userOnline("456", ctx)
+        def conn = userOnlineService.userOnline("456", ctx)
+        new ServerAckWindow(conn.getNetId(), 10, Duration.ofSeconds(5))
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())

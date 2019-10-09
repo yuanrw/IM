@@ -14,7 +14,6 @@ import com.github.yuanrw.im.common.domain.ack.ServerAckWindow
 import com.github.yuanrw.im.common.domain.constant.MsgVersion
 import com.github.yuanrw.im.common.domain.po.RelationDetail
 import com.github.yuanrw.im.common.util.Encryption
-import com.github.yuanrw.im.common.util.IdWorker
 import com.github.yuanrw.im.protobuf.generate.Ack
 import com.github.yuanrw.im.protobuf.generate.Chat
 import com.github.yuanrw.im.protobuf.generate.Internal
@@ -111,7 +110,7 @@ class ClientConnectorTest extends Specification {
 
         def internal = Internal.InternalMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFrom(Internal.InternalMsg.Module.CONNECTOR)
                 .setDest(Internal.InternalMsg.Module.CLIENT)

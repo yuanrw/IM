@@ -113,7 +113,7 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
             InternalParser parser = new InternalParser(3);
             parser.register(Internal.InternalMsg.MsgType.ACK, (m, ctx) -> serverAckWindow.ack(m));
 
-            register(Chat.ChatMsg.class, (m, ctx) -> connectorToClientService.doChatToClientAndFlush(serverAckWindow, m));
+            register(Chat.ChatMsg.class, (m, ctx) -> connectorToClientService.doChatToClientAndFlush(m));
             register(Ack.AckMsg.class, (m, ctx) -> connectorToClientService.doSendAckToClientAndFlush(m));
             register(Internal.InternalMsg.class, parser.generateFun());
         }
