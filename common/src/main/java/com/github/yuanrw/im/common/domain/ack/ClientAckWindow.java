@@ -90,9 +90,7 @@ public class ClientAckWindow {
                     return processAsync(nextNode);
                 } else {
                     //that's the newest msg
-                    CompletableFuture<Void> future = new CompletableFuture<>();
-                    future.complete(null);
-                    return future;
+                    return node.getFuture();
                 }
             })
             .exceptionally(e -> {
@@ -123,7 +121,7 @@ public class ClientAckWindow {
     private Internal.InternalMsg getInternalAck(Long msgId, Internal.InternalMsg.Module from, Internal.InternalMsg.Module dest) {
         return Internal.InternalMsg.newBuilder()
             .setVersion(MsgVersion.V1.getVersion())
-            .setId(IdWorker.genId())
+            .setId(IdWorker.snowGenId())
             .setFrom(from)
             .setDest(dest)
             .setCreateTime(System.currentTimeMillis())

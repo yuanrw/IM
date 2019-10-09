@@ -6,11 +6,10 @@ import com.github.yuanrw.im.common.domain.conn.Conn
 import com.github.yuanrw.im.common.domain.constant.MsgVersion
 import com.github.yuanrw.im.common.domain.po.Offline
 import com.github.yuanrw.im.common.parse.ParseService
-import com.github.yuanrw.im.common.util.IdWorker
 import com.github.yuanrw.im.connector.config.ConnectorRestServiceFactory
 import com.github.yuanrw.im.connector.domain.ClientConnContext
 import com.github.yuanrw.im.connector.handler.ConnectorTransferHandler
-import com.github.yuanrw.im.connector.service.ConnectorService
+import com.github.yuanrw.im.connector.service.ConnectorToClientService
 import com.github.yuanrw.im.connector.service.OfflineService
 import com.github.yuanrw.im.connector.service.UserOnlineService
 import com.github.yuanrw.im.connector.service.rest.ConnectorRestService
@@ -71,7 +70,7 @@ class ConnectorTransferTest extends Specification {
         }
         userOnlineService = new UserOnlineService(new OfflineService(
                 connectorRestServiceFactory, new ParseService()),
-                clientConnContext, new ConnectorService(), userStatusServiceFactory)
+                clientConnContext, new ConnectorToClientService(), userStatusServiceFactory)
     }
 
     def cleanup() {
@@ -80,15 +79,27 @@ class ConnectorTransferTest extends Specification {
 
     def "test get chat online"() {
         given:
+        def handler = new ConnectorTransferHandler(new ConnectorToClientService(clientConnContext))
+
         def c = new EmbeddedChannel()
         c.pipeline()
                 .addLast("MsgDecoder", new MsgDecoder())
                 .addLast("MsgEncoder", new MsgEncoder())
-                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext)))
+                .addLast("ConnectorTransferHandler", handler)
 
-        def connectorTransferCtx = Mock(ChannelHandlerContext)
+        def connectorTransferCtx = Mock(ChannelHandlerContext) {
+            channel() >> Mock(Channel) {
+                attr(Conn.NET_ID) >> Mock(Attribute) {
+                    get() >> "1"
+                }
+            }
+        }
+        handler.putConnectionId(connectorTransferCtx)
+
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
         when(ConnectorTransferHandler.getOneOfTransferCtx(Mockito.anyLong())).thenReturn(connectorTransferCtx)
+
+        handler.channelActive(connectorTransferCtx)
 
         def map = new HashMap<String, Object>()
         def ctx = Mock(ChannelHandlerContext) {
@@ -103,7 +114,7 @@ class ConnectorTransferTest extends Specification {
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
                 .setDestId("456")
@@ -127,7 +138,7 @@ class ConnectorTransferTest extends Specification {
         c.pipeline()
                 .addLast("MsgDecoder", new MsgDecoder())
                 .addLast("MsgEncoder", new MsgEncoder())
-                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext)))
+                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorToClientService(clientConnContext)))
 
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
@@ -141,7 +152,7 @@ class ConnectorTransferTest extends Specification {
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
                 .setDestId("456")
@@ -164,7 +175,7 @@ class ConnectorTransferTest extends Specification {
         c.pipeline()
                 .addLast("MsgDecoder", new MsgDecoder())
                 .addLast("MsgEncoder", new MsgEncoder())
-                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext)))
+                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorToClientService(clientConnContext)))
 
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
@@ -183,7 +194,7 @@ class ConnectorTransferTest extends Specification {
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
                 .setDestId("456")
@@ -205,7 +216,7 @@ class ConnectorTransferTest extends Specification {
         c.pipeline()
                 .addLast("MsgDecoder", new MsgDecoder())
                 .addLast("MsgEncoder", new MsgEncoder())
-                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorService(clientConnContext)))
+                .addLast("ConnectorTransferHandler", new ConnectorTransferHandler(new ConnectorToClientService(clientConnContext)))
 
         def connectorTransferCtx = Mock(ChannelHandlerContext)
         PowerMockito.mockStatic(ConnectorTransferHandler.class)
@@ -219,7 +230,7 @@ class ConnectorTransferTest extends Specification {
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
                 .setDestId("456")

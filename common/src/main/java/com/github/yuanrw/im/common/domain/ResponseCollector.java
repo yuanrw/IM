@@ -35,13 +35,15 @@ public class ResponseCollector<M extends Message> {
     }
 
     public void send() {
-        this.sendTime.set(System.nanoTime());
-        try {
-            sendFunction.accept(sendMessage);
-        } catch (Exception e) {
-            logger.error("send msg send has error", e);
-        } finally {
-            this.sending.set(false);
+        if (sending.compareAndSet(false, true)) {
+            this.sendTime.set(System.nanoTime());
+            try {
+                sendFunction.accept(sendMessage);
+            } catch (Exception e) {
+                logger.error("send msg send has error", e);
+            } finally {
+                this.sending.set(false);
+            }
         }
     }
 

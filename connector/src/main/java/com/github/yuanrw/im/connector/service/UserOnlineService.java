@@ -1,5 +1,6 @@
 package com.github.yuanrw.im.connector.service;
 
+import com.github.yuanrw.im.common.domain.ack.ServerAckWindow;
 import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.connector.domain.ClientConn;
@@ -30,16 +31,16 @@ import static com.github.yuanrw.im.connector.start.ConnectorStarter.CONNECTOR_CO
 public class UserOnlineService {
 
     private ClientConnContext clientConnContext;
-    private ConnectorService connectorService;
+    private ConnectorToClientService connectorToClientService;
     private OfflineService offlineService;
     private UserStatusService userStatusService;
 
     @Inject
     public UserOnlineService(OfflineService offlineService, ClientConnContext clientConnContext,
-                             ConnectorService connectorService, UserStatusServiceFactory userStatusServiceFactory) {
+                             ConnectorToClientService connectorToClientService, UserStatusServiceFactory userStatusServiceFactory) {
         this.clientConnContext = clientConnContext;
         this.offlineService = offlineService;
-        this.connectorService = connectorService;
+        this.connectorToClientService = connectorToClientService;
 
         Properties properties = new Properties();
         properties.put("host", CONNECTOR_CONFIG.getRedisHost());
@@ -48,21 +49,21 @@ public class UserOnlineService {
         this.userStatusService = userStatusServiceFactory.createService(properties);
     }
 
-    public void userOnline(String userId, ChannelHandlerContext clientConnectorCtx) {
+    public ClientConn userOnline(ServerAckWindow serverAckWindow, String userId, ChannelHandlerContext ctx) {
         //get all offline msg and send
         List<Message> msgs = offlineService.pollOfflineMsg(userId);
         msgs.forEach(msg -> {
             try {
                 Chat.ChatMsg chatMsg = (Chat.ChatMsg) msg;
-                connectorService.doChatToClientAndFlush(chatMsg);
+                connectorToClientService.doChatToClientAndFlush(serverAckWindow, chatMsg);
             } catch (ClassCastException ex) {
                 Ack.AckMsg ackMsg = (Ack.AckMsg) msg;
-                connectorService.doSendAckToClientAndFlush(ackMsg);
+                connectorToClientService.doSendAckToClientAndFlush(ackMsg);
             }
         });
 
         //save connection
-        ClientConn conn = new ClientConn(clientConnectorCtx);
+        ClientConn conn = new ClientConn(ctx);
         conn.setUserId(userId);
         clientConnContext.addConn(conn);
 
@@ -70,13 +71,15 @@ public class UserOnlineService {
         String oldConnectorId = userStatusService.online(userId, ConnectorTransferHandler.CONNECTOR_ID);
         if (oldConnectorId != null) {
             //can't online twice
-            sendErrorToClient("already online", clientConnectorCtx);
+            sendErrorToClient("already online", ctx);
         }
+
+        return conn;
     }
 
     private void sendErrorToClient(String errorMsg, ChannelHandlerContext ctx) {
-        Internal.InternalMsg ack = Internal.InternalMsg.newBuilder()
-            .setId(IdWorker.genId())
+        Internal.InternalMsg errorAck = Internal.InternalMsg.newBuilder()
+            .setId(IdWorker.snowGenId())
             .setVersion(MsgVersion.V1.getVersion())
             .setFrom(Internal.InternalMsg.Module.CONNECTOR)
             .setDest(Internal.InternalMsg.Module.CLIENT)
@@ -85,7 +88,7 @@ public class UserOnlineService {
             .setMsgBody(errorMsg)
             .build();
 
-        ctx.writeAndFlush(ack);
+        ctx.writeAndFlush(errorAck);
     }
 
     public void userOffline(ChannelHandlerContext ctx) {

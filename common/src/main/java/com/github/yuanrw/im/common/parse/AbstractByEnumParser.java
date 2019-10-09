@@ -37,7 +37,7 @@ public abstract class AbstractByEnumParser<E extends ProtocolMessageEnum, M exte
 
     public ImBiConsumer<M, ChannelHandlerContext> generateFun() {
         return (m, ctx) -> Optional.ofNullable(parseMap.get(getType(m)))
-            .orElseThrow(() -> new IllegalArgumentException("Invalid msg enum"))
+            .orElseThrow(() -> new IllegalArgumentException("Invalid msg enum " + m.toString()))
             .accept(m, ctx);
     }
 }

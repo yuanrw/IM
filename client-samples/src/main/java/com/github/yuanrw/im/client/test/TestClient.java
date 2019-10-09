@@ -6,10 +6,7 @@ import com.github.yuanrw.im.client.api.ClientMsgListener;
 import com.github.yuanrw.im.client.api.UserApi;
 import com.github.yuanrw.im.client.domain.Friend;
 import com.github.yuanrw.im.common.domain.UserInfo;
-import com.github.yuanrw.im.common.domain.constant.MsgVersion;
-import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.protobuf.generate.Chat;
-import com.google.protobuf.ByteString;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.CharsetUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -105,19 +102,7 @@ class TestClient {
         sendMsg.getAndIncrement();
         int index = ThreadLocalRandom.current().nextInt(0, friends.size());
         String randomText = RandomStringUtils.random(20, true, true);
-        Long msgId = IdWorker.genId();
 
-        Chat.ChatMsg chat = chatApi.chatMsgBuilder()
-            .setId(msgId)
-            .setFromId(userInfo.getId())
-            .setDestId(friends.get(index).getUserId())
-            .setDestType(Chat.ChatMsg.DestType.SINGLE)
-            .setCreateTime(System.currentTimeMillis())
-            .setMsgType(Chat.ChatMsg.MsgType.TEXT)
-            .setVersion(MsgVersion.V1.getVersion())
-            .setMsgBody(ByteString.copyFrom(randomText, CharsetUtil.UTF_8))
-            .build();
-
-        chatApi.send(chat);
+        chatApi.text(friends.get(index).getUserId(), randomText);
     }
 }

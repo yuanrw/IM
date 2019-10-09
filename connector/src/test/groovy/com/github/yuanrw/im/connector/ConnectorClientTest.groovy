@@ -7,12 +7,11 @@ import com.github.yuanrw.im.common.domain.conn.Conn
 import com.github.yuanrw.im.common.domain.constant.MsgVersion
 import com.github.yuanrw.im.common.domain.po.Offline
 import com.github.yuanrw.im.common.parse.ParseService
-import com.github.yuanrw.im.common.util.IdWorker
 import com.github.yuanrw.im.connector.config.ConnectorRestServiceFactory
 import com.github.yuanrw.im.connector.domain.ClientConnContext
 import com.github.yuanrw.im.connector.handler.ConnectorClientHandler
 import com.github.yuanrw.im.connector.handler.ConnectorTransferHandler
-import com.github.yuanrw.im.connector.service.ConnectorService
+import com.github.yuanrw.im.connector.service.ConnectorToClientService
 import com.github.yuanrw.im.connector.service.OfflineService
 import com.github.yuanrw.im.connector.service.UserOnlineService
 import com.github.yuanrw.im.connector.service.rest.ConnectorRestService
@@ -74,7 +73,7 @@ class ConnectorClientTest extends Specification {
         }
         userOnlineService = new UserOnlineService(new OfflineService(
                 connectorRestServiceFactory, new ParseService()),
-                clientConnContext, new ConnectorService(), userStatusServiceFactory)
+                clientConnContext, new ConnectorToClientService(), userStatusServiceFactory)
     }
 
     def cleanup() {
@@ -83,7 +82,7 @@ class ConnectorClientTest extends Specification {
 
     def "test get internal greet"() {
         given:
-        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+        def handler = new ConnectorClientHandler(new ConnectorToClientService(clientConnContext),
                 userOnlineService, clientConnContext)
         handler.setClientAckWindow(new ClientAckWindow(5))
 
@@ -118,7 +117,7 @@ class ConnectorClientTest extends Specification {
 
     def "test get ack online"() {
         given:
-        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+        def handler = new ConnectorClientHandler(new ConnectorToClientService(clientConnContext),
                 userOnlineService, clientConnContext)
         handler.setClientAckWindow(new ClientAckWindow(5))
 
@@ -145,7 +144,7 @@ class ConnectorClientTest extends Specification {
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
                 .setDestId("456")
@@ -165,7 +164,7 @@ class ConnectorClientTest extends Specification {
 
     def "test get ack offline"() {
         given:
-        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+        def handler = new ConnectorClientHandler(new ConnectorToClientService(clientConnContext),
                 userOnlineService, clientConnContext)
         handler.setClientAckWindow(new ClientAckWindow(5))
 
@@ -181,7 +180,7 @@ class ConnectorClientTest extends Specification {
 
         Ack.AckMsg delivered = Ack.AckMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
                 .setDestId("456")
@@ -201,7 +200,7 @@ class ConnectorClientTest extends Specification {
     def "test get chat online"() {
         //online
         given:
-        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+        def handler = new ConnectorClientHandler(new ConnectorToClientService(clientConnContext),
                 userOnlineService, clientConnContext)
         handler.setClientAckWindow(new ClientAckWindow(5))
 
@@ -228,7 +227,7 @@ class ConnectorClientTest extends Specification {
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
                 .setDestId("456")
@@ -249,7 +248,7 @@ class ConnectorClientTest extends Specification {
     def "test get chat offline"() {
         //online
         given:
-        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+        def handler = new ConnectorClientHandler(new ConnectorToClientService(clientConnContext),
                 userOnlineService, clientConnContext)
         handler.setClientAckWindow(new ClientAckWindow(5))
 
@@ -271,7 +270,7 @@ class ConnectorClientTest extends Specification {
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(1)
                 .setCreateTime(System.currentTimeMillis())
                 .setFromId("123")
                 .setDestId("456")
@@ -292,7 +291,7 @@ class ConnectorClientTest extends Specification {
 
     def "test force offline"() {
         given:
-        def handler = new ConnectorClientHandler(new ConnectorService(clientConnContext),
+        def handler = new ConnectorClientHandler(new ConnectorToClientService(clientConnContext),
                 userOnlineService, clientConnContext)
         handler.setClientAckWindow(new ClientAckWindow(5))
 

@@ -19,10 +19,12 @@ import io.netty.util.CharsetUtil;
  */
 public class ChatApi {
 
+    private final String connectionId;
     private UserContext userContext;
     private ClientConnectorHandler handler;
 
-    public ChatApi(UserContext userContext, ClientConnectorHandler handler) {
+    public ChatApi(String connectionId, UserContext userContext, ClientConnectorHandler handler) {
+        this.connectionId = connectionId;
         this.userContext = userContext;
         this.handler = handler;
     }
@@ -31,19 +33,11 @@ public class ChatApi {
         return Chat.ChatMsg.newBuilder();
     }
 
-    public Long send(Chat.ChatMsg chat) {
-        checkLogin();
-
-        sendToConnector(chat, chat.getId());
-
-        return chat.getId();
-    }
-
     public Long text(String toId, String text) {
         checkLogin();
 
         Chat.ChatMsg chat = Chat.ChatMsg.newBuilder()
-            .setId(IdWorker.genId())
+            .setId(IdWorker.nextId(connectionId))
             .setFromId(userContext.getUserId())
             .setDestId(toId)
             .setDestType(Chat.ChatMsg.DestType.SINGLE)
@@ -70,7 +64,7 @@ public class ChatApi {
 
     public void confirmRead(Chat.ChatMsg msg) {
         Ack.AckMsg read = Ack.AckMsg.newBuilder()
-            .setId(IdWorker.genId())
+            .setId(IdWorker.nextId(connectionId))
             .setVersion(MsgVersion.V1.getVersion())
             .setFromId(msg.getDestId())
             .setDestId(msg.getFromId())

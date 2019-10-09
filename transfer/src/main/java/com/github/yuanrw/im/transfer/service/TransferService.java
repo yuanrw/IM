@@ -66,7 +66,7 @@ public class TransferService {
     private Internal.InternalMsg getInternalAck(Long msgId) {
         return Internal.InternalMsg.newBuilder()
             .setVersion(MsgVersion.V1.getVersion())
-            .setId(IdWorker.genId())
+            .setId(IdWorker.snowGenId())
             .setFrom(Internal.InternalMsg.Module.TRANSFER)
             .setDest(Internal.InternalMsg.Module.CONNECTOR)
             .setCreateTime(System.currentTimeMillis())

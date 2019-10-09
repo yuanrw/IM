@@ -11,6 +11,7 @@ import com.github.yuanrw.im.client.service.ClientRestService;
 import com.github.yuanrw.im.common.code.MsgDecoder;
 import com.github.yuanrw.im.common.code.MsgEncoder;
 import com.github.yuanrw.im.common.exception.ImException;
+import com.github.yuanrw.im.common.util.IdWorker;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.netty.bootstrap.Bootstrap;
@@ -35,6 +36,7 @@ public class ImClient {
     private static Logger logger = LoggerFactory.getLogger(ImClient.class);
 
     public Injector injector;
+    public final String connectionId = IdWorker.uuid();
 
     private String connectorHost;
     private Integer connectorPort;
@@ -122,7 +124,7 @@ public class ImClient {
     }
 
     public ChatApi chatApi() {
-        return new ChatApi(userContext, handler);
+        return new ChatApi(connectionId, userContext, handler);
     }
 
     public UserApi userApi() {

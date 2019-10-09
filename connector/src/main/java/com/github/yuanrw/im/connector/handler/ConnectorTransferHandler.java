@@ -1,12 +1,12 @@
 package com.github.yuanrw.im.connector.handler;
 
 import com.github.yuanrw.im.common.domain.ack.ServerAckWindow;
+import com.github.yuanrw.im.common.domain.conn.Conn;
 import com.github.yuanrw.im.common.domain.constant.MsgVersion;
 import com.github.yuanrw.im.common.parse.AbstractMsgParser;
 import com.github.yuanrw.im.common.parse.InternalParser;
 import com.github.yuanrw.im.common.util.IdWorker;
-import com.github.yuanrw.im.common.util.TokenGenerator;
-import com.github.yuanrw.im.connector.service.ConnectorService;
+import com.github.yuanrw.im.connector.service.ConnectorToClientService;
 import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.github.yuanrw.im.protobuf.generate.Internal;
@@ -33,25 +33,25 @@ import static com.github.yuanrw.im.common.parse.AbstractMsgParser.checkFrom;
  * @author yrw
  */
 public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Message> {
-    public static final String CONNECTOR_ID = TokenGenerator.generate();
+    public static final String CONNECTOR_ID = IdWorker.uuid();
     private static Logger logger = LoggerFactory.getLogger(ConnectorTransferHandler.class);
     private static List<ChannelHandlerContext> ctxList = new ArrayList<>();
 
     private ServerAckWindow serverAckWindow;
     private FromTransferParser fromTransferParser;
-    private ConnectorService connectorService;
+    private ConnectorToClientService connectorToClientService;
 
     @Inject
-    public ConnectorTransferHandler(ConnectorService connectorService) {
+    public ConnectorTransferHandler(ConnectorToClientService connectorToClientService) {
         this.fromTransferParser = new FromTransferParser();
-        this.connectorService = connectorService;
+        this.connectorToClientService = connectorToClientService;
     }
 
-    public static ChannelHandlerContext getOneOfTransferCtx(long msgId) {
+    public static ChannelHandlerContext getOneOfTransferCtx(long time) {
         if (ctxList.size() == 0) {
             logger.warn("connector is not connected to a transfer!");
         }
-        return ctxList.get((int) (msgId % ctxList.size()));
+        return ctxList.get((int) (time % ctxList.size()));
     }
 
     public static List<ChannelHandlerContext> getCtxList() {
@@ -65,7 +65,8 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("[ConnectorTransfer] connect to transfer");
 
-        serverAckWindow = new ServerAckWindow(100, Duration.ofSeconds(2));
+        putConnectionId(ctx);
+        serverAckWindow = new ServerAckWindow(IdWorker.uuid(), 10, Duration.ofSeconds(5));
         greetToTransfer(ctx);
 
         ctxList.add(ctx);
@@ -73,7 +74,7 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
 
     private void greetToTransfer(ChannelHandlerContext ctx) {
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
-            .setId(IdWorker.genId())
+            .setId(IdWorker.snowGenId())
             .setVersion(MsgVersion.V1.getVersion())
             .setMsgType(Internal.InternalMsg.MsgType.GREET)
             .setMsgBody(CONNECTOR_ID)
@@ -112,9 +113,13 @@ public class ConnectorTransferHandler extends SimpleChannelInboundHandler<Messag
             InternalParser parser = new InternalParser(3);
             parser.register(Internal.InternalMsg.MsgType.ACK, (m, ctx) -> serverAckWindow.ack(m));
 
-            register(Chat.ChatMsg.class, (m, ctx) -> connectorService.doChatToClientAndFlush(m));
-            register(Ack.AckMsg.class, (m, ctx) -> connectorService.doSendAckToClientAndFlush(m));
+            register(Chat.ChatMsg.class, (m, ctx) -> connectorToClientService.doChatToClientAndFlush(serverAckWindow, m));
+            register(Ack.AckMsg.class, (m, ctx) -> connectorToClientService.doSendAckToClientAndFlush(m));
             register(Internal.InternalMsg.class, parser.generateFun());
         }
+    }
+
+    public void putConnectionId(ChannelHandlerContext ctx) {
+        ctx.channel().attr(Conn.NET_ID).set(IdWorker.uuid());
     }
 }

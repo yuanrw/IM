@@ -49,7 +49,7 @@ public class ProcessMsgNode {
         if (ctx.channel().isOpen()) {
             Internal.InternalMsg ack = Internal.InternalMsg.newBuilder()
                 .setVersion(MsgVersion.V1.getVersion())
-                .setId(IdWorker.genId())
+                .setId(IdWorker.snowGenId())
                 .setFrom(from)
                 .setDest(dest)
                 .setCreateTime(System.currentTimeMillis())

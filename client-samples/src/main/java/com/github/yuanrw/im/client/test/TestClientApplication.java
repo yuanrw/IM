@@ -24,8 +24,8 @@ public class TestClientApplication {
 
         //login all user
         for (int i = 0; i < 17; i++) {
-            testClientList.add(new TestClient(args[0], 9081,
-                args[1], usernameForTest[i], "123abc"));
+            testClientList.add(new TestClient("127.0.0.1", 9081,
+                "http://127.0.0.1:8082", usernameForTest[i], "123abc"));
         }
 
         //print test result every 5 seconds
@@ -44,7 +44,7 @@ public class TestClientApplication {
         //start simulate send
         ScheduledExecutorService clientExecutor = Executors.newScheduledThreadPool(20);
 
-        testClientList.forEach(testClient -> doInExecutor(clientExecutor, 2, testClient::randomSendTest));
+        testClientList.forEach(testClient -> doInExecutor(clientExecutor, 3, testClient::randomSendTest));
     }
 
     private static void doInExecutor(ScheduledExecutorService executorService, int period, Runnable doFunction) {

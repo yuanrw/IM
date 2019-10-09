@@ -6,10 +6,7 @@ import com.github.yuanrw.im.client.api.ClientMsgListener;
 import com.github.yuanrw.im.client.api.UserApi;
 import com.github.yuanrw.im.client.domain.Friend;
 import com.github.yuanrw.im.common.domain.UserInfo;
-import com.github.yuanrw.im.common.domain.constant.MsgVersion;
-import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.protobuf.generate.Chat;
-import com.google.protobuf.ByteString;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.CharsetUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -108,17 +105,6 @@ public class MyClient {
             System.out.println("friend " + id + " not found!");
             return;
         }
-        Chat.ChatMsg chat = chatApi.chatMsgBuilder()
-            .setId(IdWorker.genId())
-            .setFromId(userInfo.getId())
-            .setDestId(id)
-            .setDestType(Chat.ChatMsg.DestType.SINGLE)
-            .setCreateTime(System.currentTimeMillis())
-            .setMsgType(Chat.ChatMsg.MsgType.TEXT)
-            .setVersion(MsgVersion.V1.getVersion())
-            .setMsgBody(ByteString.copyFrom(text, CharsetUtil.UTF_8))
-            .build();
-
-        chatApi.send(chat);
+        chatApi.text(id, text);
     }
 }

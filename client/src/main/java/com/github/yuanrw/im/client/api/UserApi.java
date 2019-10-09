@@ -68,7 +68,7 @@ public class UserApi {
 
     private void greetToConnector(String userId) {
         Internal.InternalMsg greet = Internal.InternalMsg.newBuilder()
-            .setId(IdWorker.genId())
+            .setId(IdWorker.snowGenId())
             .setFrom(Internal.InternalMsg.Module.CLIENT)
             .setDest(Internal.InternalMsg.Module.CONNECTOR)
             .setCreateTime(System.currentTimeMillis())

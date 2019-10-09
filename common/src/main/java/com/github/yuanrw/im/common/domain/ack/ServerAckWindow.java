@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -23,20 +24,39 @@ import java.util.function.Consumer;
  */
 public class ServerAckWindow {
     private static Logger logger = LoggerFactory.getLogger(ServerAckWindow.class);
-
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static Map<String, ServerAckWindow> windowsMap;
+    private static ExecutorService executorService;
 
     private final Duration timeout;
     private final int maxSize;
 
     private ConcurrentHashMap<Long, ResponseCollector<Internal.InternalMsg>> responseCollectorMap;
 
-    public ServerAckWindow(int maxSize, Duration timeout) {
+    static {
+        windowsMap = new ConcurrentHashMap<>();
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(ServerAckWindow::checkTimeoutAndRetry);
+    }
+
+    public ServerAckWindow(String connectionId, int maxSize, Duration timeout) {
         this.responseCollectorMap = new ConcurrentHashMap<>();
         this.timeout = timeout;
         this.maxSize = maxSize;
 
-        executor.submit(this::checkTimeoutAndRetry);
+        windowsMap.put(connectionId, this);
+    }
+
+    /**
+     * multi thread do it
+     *
+     * @param id           msg id
+     * @param sendMessage
+     * @param sendFunction
+     * @return
+     */
+    public static CompletableFuture<Internal.InternalMsg> offer(String userId, Long id, Message sendMessage, Consumer<Message> sendFunction) {
+        windowsMap.putIfAbsent(userId, new ServerAckWindow(userId, 10, Duration.ofSeconds(5)));
+        return windowsMap.get(userId).offer(id, sendMessage, sendFunction);
     }
 
     /**
@@ -60,8 +80,8 @@ public class ServerAckWindow {
         }
 
         ResponseCollector<Internal.InternalMsg> responseCollector = new ResponseCollector<>(sendMessage, sendFunction);
-        responseCollectorMap.put(id, responseCollector);
         responseCollector.send();
+        responseCollectorMap.put(id, responseCollector);
         return responseCollector.getFuture();
     }
 
@@ -77,30 +97,23 @@ public class ServerAckWindow {
     /**
      * single thread do it
      */
-    private void checkTimeoutAndRetry() {
+    private static void checkTimeoutAndRetry() {
         while (true) {
-            for (Long id : responseCollectorMap.keySet()) {
-                ResponseCollector<?> collector = responseCollectorMap.get(id);
-                if (timeout(collector)) {
-                    logger.debug("msg {} is timeout", id);
-                    retry(id, collector);
-                }
+            for (ServerAckWindow window : windowsMap.values()) {
+                window.responseCollectorMap.entrySet().stream()
+                    .filter(entry -> window.timeout(entry.getValue()))
+                    .forEach(entry -> window.retry(entry.getKey(), entry.getValue()));
             }
         }
     }
 
     private void retry(Long id, ResponseCollector<?> collector) {
-        if (canRetry(collector)) {
-            logger.debug("send msg {}", id);
-            collector.send();
-        }
+        logger.debug("retry msg: {}", id);
+        //todo: if offline
+        collector.send();
     }
 
     private boolean timeout(ResponseCollector<?> collector) {
-        return collector.getSendTime().get() != 0 && collector.timeElapse() > timeout.getNano();
-    }
-
-    private boolean canRetry(ResponseCollector<?> collector) {
-        return collector.getSending().compareAndSet(false, true);
+        return collector.getSendTime().get() != 0 && collector.timeElapse() > timeout.toNanos();
     }
 }

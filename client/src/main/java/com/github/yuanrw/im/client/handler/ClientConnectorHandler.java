@@ -6,6 +6,7 @@ import com.github.yuanrw.im.common.domain.ack.ServerAckWindow;
 import com.github.yuanrw.im.common.parse.AbstractMsgParser;
 import com.github.yuanrw.im.common.parse.AckParser;
 import com.github.yuanrw.im.common.parse.InternalParser;
+import com.github.yuanrw.im.common.util.IdWorker;
 import com.github.yuanrw.im.protobuf.generate.Ack;
 import com.github.yuanrw.im.protobuf.generate.Chat;
 import com.github.yuanrw.im.protobuf.generate.Internal;
@@ -39,6 +40,7 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
 
     public ClientConnectorHandler(ClientMsgListener clientMsgListener) {
         assert clientMsgListener != null;
+
         this.clientMsgListener = clientMsgListener;
         this.fromConnectorParser = new FromConnectorParser();
     }
@@ -46,8 +48,8 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         this.ctx = ctx;
-        serverAckWindow = new ServerAckWindow(500, Duration.ofSeconds(2));
-        clientAckWindow = new ClientAckWindow(500);
+        serverAckWindow = new ServerAckWindow(IdWorker.uuid(), 10, Duration.ofSeconds(5));
+        clientAckWindow = new ClientAckWindow(5);
         clientMsgListener.online();
     }
 
@@ -77,7 +79,7 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
         serverAckWindow.offer(id, message, m -> ctx.writeAndFlush(m))
             .thenAccept(m -> clientMsgListener.hasSent(id))
             .exceptionally(e -> {
-                logger.error("[client] waiting for connector's response failed");
+                logger.error("[client] send to connector failed", e);
                 return null;
             });
     }
@@ -96,19 +98,31 @@ public class ClientConnectorHandler extends SimpleChannelInboundHandler<Message>
         public void registerParsers() {
             InternalParser internalParser = new InternalParser(3);
             internalParser.register(Internal.InternalMsg.MsgType.ACK, (m, ctx) -> serverAckWindow.ack(m));
+            internalParser.register(Internal.InternalMsg.MsgType.ERROR, (m, ctx) ->
+                logger.error("[client] get error from connector {}", m.getMsgBody()));
 
             AckParser ackParser = new AckParser(2);
             ackParser.register(Ack.AckMsg.MsgType.DELIVERED, (m, ctx) ->
-                offer(m.getId(), m, ignore -> clientMsgListener.hasDelivered(m.getAckMsgId())));
+                offerAck(m.getId(), m, ignore -> clientMsgListener.hasDelivered(m.getAckMsgId())));
 
             ackParser.register(Ack.AckMsg.MsgType.READ, (m, ctx) ->
-                offer(m.getId(), m, ignore -> clientMsgListener.hasRead(m.getAckMsgId())));
+                offerAck(m.getId(), m, ignore -> clientMsgListener.hasRead(m.getAckMsgId())));
 
             register(Chat.ChatMsg.class, (m, ctx) ->
-                offer(m.getId(), m, ignore -> clientMsgListener.read(m)));
+                offerChat(m.getId(), m, ignore -> clientMsgListener.read(m)));
 
             register(Ack.AckMsg.class, ackParser.generateFun());
             register(Internal.InternalMsg.class, internalParser.generateFun());
+        }
+
+        private void offerChat(Long id, Chat.ChatMsg m, Consumer<Message> consumer) {
+            Chat.ChatMsg copy = Chat.ChatMsg.newBuilder().mergeFrom(m).build();
+            offer(id, copy, consumer);
+        }
+
+        private void offerAck(Long id, Ack.AckMsg m, Consumer<Message> consumer) {
+            Ack.AckMsg copy = Ack.AckMsg.newBuilder().mergeFrom(m).build();
+            offer(id, copy, consumer);
         }
 
         private void offer(Long id, Message m, Consumer<Message> consumer) {

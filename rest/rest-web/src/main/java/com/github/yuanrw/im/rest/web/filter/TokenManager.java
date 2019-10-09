@@ -1,6 +1,6 @@
 package com.github.yuanrw.im.rest.web.filter;
 
-import com.github.yuanrw.im.common.util.TokenGenerator;
+import com.github.yuanrw.im.common.util.IdWorker;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -31,7 +31,7 @@ public class TokenManager {
     }
 
     public Mono<String> createNewToken(String userId) {
-        String token = TokenGenerator.generate();
+        String token = IdWorker.uuid();
         return template.opsForValue().set(SESSION_KEY + token, userId)
             .flatMap(b -> b ? template.expire(SESSION_KEY + token, Duration.ofMinutes(30)) : Mono.just(false))
             .flatMap(b -> b ? Mono.just(token) : Mono.empty());
