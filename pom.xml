@@ -21,7 +21,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <netty.version>4.1.38.Final</netty.version>
+        <netty.version>4.1.42.Final</netty.version>
         <slf4j.api.version>1.7.7</slf4j.api.version>
         <logback.version>1.1.3</logback.version>
         <spring.boot.version>2.1.2.RELEASE</spring.boot.version>
