@@ -5,22 +5,20 @@
 [![release](https://img.shields.io/github/v/release/yuanrw/IM?include_prereleases)](https://github.com/yuanrw/IM/releases)
 [![last commit](https://img.shields.io/github/last-commit/yuanrw/IM)]()
 
-IM is a lightweight instant messaging server. It also provides a client jar,allows you to develop your own client.For example,with spring boot. It's able to login with your own login system or with ldap.
+IM 是一个轻量级的即时通信服务端。提供客户端jar包，方便集成二次开发。
 
-[中文](https://github.com/yuanrw/IM/blob/dev/README_CH.md)
+## 功能
+* 单聊：文字/文件
+* 已发送/已送达/已读回执
+* 支持集成ldap
+* 支持集成第三方登录系统
+* 方便水平扩展
+* 提供客户端jar包
 
-## Features
-* One to one text/file message
-* Sent/Delivered/Read message
-* Ldap Authentication
-* Authenticate with individual login system
-* Horizontal expansion
-* Provide client jar
+## 快速上手
 
-## Quick Start
-
-### Prepare
-We use docker to quick start IM.
+### 准备工作
+使用docker快速启动 IM 服务。
 
 ```
 # detect if the docker environment is avaliable.
@@ -31,14 +29,14 @@ docker -v
 git clone git@github.com:yuanrw/IM.git
 ```
 
-### Start
+### 启动服务
 
 ```
 cd IM/docker
 docker-compose up
 ```
 
-There is a simple sample in the container,it starts serveral clients and send messages to their friends randomly,printing logs which are similar with followed:
+容器内有demo程序，自动启动多个客户端并且随机发送消息，启动成功后输出如下日志:
 
 ```
 ......
@@ -61,56 +59,56 @@ sentMsg: 51, readMsg: 51, hasSentAck: 51, hasDeliveredAck: 51, hasReadAck: 51, h
 ......
 ```
 
-## Distributed Deploy
+## 分布式部署
 ```
 mvn clean package -DskipTests
 ```
-get $SERVICE_NAME-$VERSION-bin.zip under dir /target
+在/target目录下生成 $SERVICE_NAME-$VERSION-bin.zip
 
-### Environment Requirement
+### 环境
 * java 8+
 * mysql 5.7+
 * rabbitmq
 * redis
 
-### Start
-Start services with **the following order**:
+### 启动
+按照**如下顺序**启动服务:
 rest-web --> transfer -->connector
 
-Here are the steps for start rest-web,transfer and connector are similar with it.
+启动`rest-web`的步骤如下,`transfer`和`connector`类似.
 
 #### rest-web
-1. Unzip
+1. 解压
 
 ```
 unzip rest-web-$VERSION-bin.zip
 cd rest-web-$VERSION
 ```
 
-2. Update the config file
+2. 修改配置文件
 
 ```
 server.port=8082
 
-# your log path
+# 日志目录
 log.path=
 
-# your jdbc config
+# jdbc配置
 spring.datasource.url=
 ......
 
-# your redis config
+# redis配置
 spring.redis.host=
 ......
 
-# your rabbitmq config
+# rabbitmq配置
 spring.rabbitmq.host=
 ......
 ```
 
-3. run the sql in the file `rest.sql`
+3. 执行`rest.sql`初始化库表
 
-4. start server
+4. 启动服务
 
 ```
 java -jar rest-web-$VERSION.jar --spring.config.location=application.properties
@@ -126,9 +124,9 @@ java -jar -Dconfig=transfer.properties transfer-$VERSION.jar
 java -jar -Dconfig=connector.properties connector-$VERSION.jar
 ```
 
-## Nginx Config
-All services are available to expand horizontally,connections need to be kept alive between each client and connector server.
-A sample nginx config:
+## Nginx配置
+所有的服务都能够水平扩展，客户端和connector服务端需要保持长连接。
+nginx可以如下配置:
 
 ```
 stream {
@@ -148,12 +146,12 @@ stream {
 ```
 
 ## Login
-There is a simple usable login system in IM. 
-IM also support the following two ways to authenticate.
+IM含有一个非常简单的登录系统，可以直接使用。  
+也支持以下两种登录方式。
 
 ### ldap
-We use open ldap as an example.
-update application.properties
+这里使用open ldap来登录。  
+修改配置文件application.properties
 ```
 spi.user.impl.class=com.yrw.im.rest.web.spi.impl.LdapUserSpiImpl
 
@@ -176,8 +174,8 @@ ldap.mapping.email=mail
 ```
 java -jar rest-web-$VERSION.jar --spring.config.location=application.properties
 ```
-### individual login system
-1. Implement the spi in `com.yrw.im.rest.spi.UserSpi`
+### 自己的登录系统
+1. 需要实现`com.yrw.im.rest.spi.UserSpi`中的接口
 
 ```
 public interface UserSpi<T extends UserBase> {
@@ -204,20 +202,20 @@ public interface UserSpi<T extends UserBase> {
 }
 ```
 
-2. Update application.properties
+2. 修改配置文件application.properties
 
 ```
-# your implement class full name
+# 你的实现类的全限定类名
 spi.user.impl.class=
 ```
 
-3. Build
+3. 打包
 
 ```
 mvn clean package -DskipTests
 ```
 
-## Use client jar
-A client demo:
+## 使用客户端jar包
+一个使用样例:
 
 [MyClient.java](https://github.com/yuanrw/IM/blob/master/client-samples/src/main/java/com/github/yuanrw/im/client/sample/MyClient.java)
