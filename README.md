@@ -7,6 +7,8 @@
 
 IM is a lightweight instant messaging server. It also provides a client jar,allows you to develop your own client.For example,with spring boot. It's able to login with your own login system or with ldap.
 
+[中文](https://github.com/yuanrw/IM/blob/dev/README_CH.md)
+
 ## Features
 * One to one text/file message
 * Sent/Delivered/Read message
