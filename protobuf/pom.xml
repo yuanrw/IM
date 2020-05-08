@@ -31,26 +31,32 @@
     </dependencies>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.6.2</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
-                <version>0.5.0</version>
-                <extensions>true</extensions>
+                <version>0.6.1</version>
                 <configuration>
+                    <protocArtifact>com.google.protobuf:protoc:3.11.0:exe:${os.detected.classifier}</protocArtifact>
+                    <pluginId>grpc-java</pluginId>
+                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.29.0:exe:${os.detected.classifier}</pluginArtifact>
                     <protoSourceRoot>${project.basedir}/src/main/resources/proto</protoSourceRoot>
-                    <protocExecutable>/Users/yrw/Desktop/protoc-3.7.1/bin/protoc</protocExecutable>
                     <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
                     <clearOutputDirectory>false</clearOutputDirectory>
-                    <temporaryProtoFileDirectory>${project.build.directory}/protoc-dependencies
-                    </temporaryProtoFileDirectory>
-                    <!--配置查看https://www.xolstice.org/protobuf-maven-plugin/compile-mojo.html-->
                 </configuration>
                 <executions>
                     <execution>
-                        <!--<goals>-->
-                        <!--<goal>compile</goal>-->
-                        <!--</goals>-->
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>compile-custom</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

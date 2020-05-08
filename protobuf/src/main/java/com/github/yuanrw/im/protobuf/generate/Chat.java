@@ -24,6 +24,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return Whether the version field is set.
      */
     boolean hasVersion();
     /**
@@ -32,6 +33,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return The version.
      */
     int getVersion();
 
@@ -41,6 +43,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return Whether the id field is set.
      */
     boolean hasId();
     /**
@@ -49,6 +52,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return The id.
      */
     long getId();
 
@@ -58,6 +62,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.DestType destType = 3;</code>
+     * @return Whether the destType field is set.
      */
     boolean hasDestType();
     /**
@@ -66,6 +71,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.DestType destType = 3;</code>
+     * @return The destType.
      */
     com.github.yuanrw.im.protobuf.generate.Chat.ChatMsg.DestType getDestType();
 
@@ -75,6 +81,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return Whether the fromId field is set.
      */
     boolean hasFromId();
     /**
@@ -83,6 +90,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return The fromId.
      */
     java.lang.String getFromId();
     /**
@@ -91,6 +99,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return The bytes for fromId.
      */
     com.google.protobuf.ByteString
         getFromIdBytes();
@@ -101,6 +110,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return Whether the destId field is set.
      */
     boolean hasDestId();
     /**
@@ -109,6 +119,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return The destId.
      */
     java.lang.String getDestId();
     /**
@@ -117,6 +128,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return The bytes for destId.
      */
     com.google.protobuf.ByteString
         getDestIdBytes();
@@ -127,6 +139,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int64 createTime = 6;</code>
+     * @return Whether the createTime field is set.
      */
     boolean hasCreateTime();
     /**
@@ -135,6 +148,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int64 createTime = 6;</code>
+     * @return The createTime.
      */
     long getCreateTime();
 
@@ -144,6 +158,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.MsgType msgType = 7;</code>
+     * @return Whether the msgType field is set.
      */
     boolean hasMsgType();
     /**
@@ -152,6 +167,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.MsgType msgType = 7;</code>
+     * @return The msgType.
      */
     com.github.yuanrw.im.protobuf.generate.Chat.ChatMsg.MsgType getMsgType();
 
@@ -161,6 +177,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required bytes msgBody = 8;</code>
+     * @return Whether the msgBody field is set.
      */
     boolean hasMsgBody();
     /**
@@ -169,19 +186,23 @@ public final class Chat {
      * </pre>
      *
      * <code>required bytes msgBody = 8;</code>
+     * @return The msgBody.
      */
     com.google.protobuf.ByteString getMsgBody();
 
     /**
      * <code>optional string addition = 32;</code>
+     * @return Whether the addition field is set.
      */
     boolean hasAddition();
     /**
      * <code>optional string addition = 32;</code>
+     * @return The addition.
      */
     java.lang.String getAddition();
     /**
      * <code>optional string addition = 32;</code>
+     * @return The bytes for addition.
      */
     com.google.protobuf.ByteString
         getAdditionBytes();
@@ -205,6 +226,13 @@ public final class Chat {
       msgType_ = 0;
       msgBody_ = com.google.protobuf.ByteString.EMPTY;
       addition_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ChatMsg();
     }
 
     @java.lang.Override
@@ -355,6 +383,8 @@ public final class Chat {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -362,6 +392,10 @@ public final class Chat {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static DestType forNumber(int value) {
         switch (value) {
           case 0: return SINGLE;
@@ -445,6 +479,8 @@ public final class Chat {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -452,6 +488,10 @@ public final class Chat {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static MsgType forNumber(int value) {
         switch (value) {
           case 0: return TEXT;
@@ -514,6 +554,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return Whether the version field is set.
      */
     public boolean hasVersion() {
       return ((bitField0_ & 0x00000001) != 0);
@@ -524,6 +565,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return The version.
      */
     public int getVersion() {
       return version_;
@@ -537,6 +579,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return Whether the id field is set.
      */
     public boolean hasId() {
       return ((bitField0_ & 0x00000002) != 0);
@@ -547,6 +590,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return The id.
      */
     public long getId() {
       return id_;
@@ -560,6 +604,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.DestType destType = 3;</code>
+     * @return Whether the destType field is set.
      */
     public boolean hasDestType() {
       return ((bitField0_ & 0x00000004) != 0);
@@ -570,6 +615,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.DestType destType = 3;</code>
+     * @return The destType.
      */
     public com.github.yuanrw.im.protobuf.generate.Chat.ChatMsg.DestType getDestType() {
       @SuppressWarnings("deprecation")
@@ -585,6 +631,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return Whether the fromId field is set.
      */
     public boolean hasFromId() {
       return ((bitField0_ & 0x00000008) != 0);
@@ -595,6 +642,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return The fromId.
      */
     public java.lang.String getFromId() {
       java.lang.Object ref = fromId_;
@@ -616,6 +664,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return The bytes for fromId.
      */
     public com.google.protobuf.ByteString
         getFromIdBytes() {
@@ -639,6 +688,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return Whether the destId field is set.
      */
     public boolean hasDestId() {
       return ((bitField0_ & 0x00000010) != 0);
@@ -649,6 +699,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return The destId.
      */
     public java.lang.String getDestId() {
       java.lang.Object ref = destId_;
@@ -670,6 +721,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return The bytes for destId.
      */
     public com.google.protobuf.ByteString
         getDestIdBytes() {
@@ -693,6 +745,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int64 createTime = 6;</code>
+     * @return Whether the createTime field is set.
      */
     public boolean hasCreateTime() {
       return ((bitField0_ & 0x00000020) != 0);
@@ -703,6 +756,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int64 createTime = 6;</code>
+     * @return The createTime.
      */
     public long getCreateTime() {
       return createTime_;
@@ -716,6 +770,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.MsgType msgType = 7;</code>
+     * @return Whether the msgType field is set.
      */
     public boolean hasMsgType() {
       return ((bitField0_ & 0x00000040) != 0);
@@ -726,6 +781,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.MsgType msgType = 7;</code>
+     * @return The msgType.
      */
     public com.github.yuanrw.im.protobuf.generate.Chat.ChatMsg.MsgType getMsgType() {
       @SuppressWarnings("deprecation")
@@ -741,6 +797,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required bytes msgBody = 8;</code>
+     * @return Whether the msgBody field is set.
      */
     public boolean hasMsgBody() {
       return ((bitField0_ & 0x00000080) != 0);
@@ -751,6 +808,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required bytes msgBody = 8;</code>
+     * @return The msgBody.
      */
     public com.google.protobuf.ByteString getMsgBody() {
       return msgBody_;
@@ -760,12 +818,14 @@ public final class Chat {
     private volatile java.lang.Object addition_;
     /**
      * <code>optional string addition = 32;</code>
+     * @return Whether the addition field is set.
      */
     public boolean hasAddition() {
       return ((bitField0_ & 0x00000100) != 0);
     }
     /**
      * <code>optional string addition = 32;</code>
+     * @return The addition.
      */
     public java.lang.String getAddition() {
       java.lang.Object ref = addition_;
@@ -783,6 +843,7 @@ public final class Chat {
     }
     /**
      * <code>optional string addition = 32;</code>
+     * @return The bytes for addition.
      */
     public com.google.protobuf.ByteString
         getAdditionBytes() {
@@ -1378,6 +1439,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @return Whether the version field is set.
        */
       public boolean hasVersion() {
         return ((bitField0_ & 0x00000001) != 0);
@@ -1388,6 +1450,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @return The version.
        */
       public int getVersion() {
         return version_;
@@ -1398,6 +1461,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @param value The version to set.
+       * @return This builder for chaining.
        */
       public Builder setVersion(int value) {
         bitField0_ |= 0x00000001;
@@ -1411,6 +1476,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearVersion() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -1426,6 +1492,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @return Whether the id field is set.
        */
       public boolean hasId() {
         return ((bitField0_ & 0x00000002) != 0);
@@ -1436,6 +1503,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @return The id.
        */
       public long getId() {
         return id_;
@@ -1446,6 +1514,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
        */
       public Builder setId(long value) {
         bitField0_ |= 0x00000002;
@@ -1459,6 +1529,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearId() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -1474,6 +1545,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.DestType destType = 3;</code>
+       * @return Whether the destType field is set.
        */
       public boolean hasDestType() {
         return ((bitField0_ & 0x00000004) != 0);
@@ -1484,6 +1556,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.DestType destType = 3;</code>
+       * @return The destType.
        */
       public com.github.yuanrw.im.protobuf.generate.Chat.ChatMsg.DestType getDestType() {
         @SuppressWarnings("deprecation")
@@ -1496,6 +1569,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.DestType destType = 3;</code>
+       * @param value The destType to set.
+       * @return This builder for chaining.
        */
       public Builder setDestType(com.github.yuanrw.im.protobuf.generate.Chat.ChatMsg.DestType value) {
         if (value == null) {
@@ -1512,6 +1587,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.DestType destType = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDestType() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -1527,6 +1603,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @return Whether the fromId field is set.
        */
       public boolean hasFromId() {
         return ((bitField0_ & 0x00000008) != 0);
@@ -1537,6 +1614,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @return The fromId.
        */
       public java.lang.String getFromId() {
         java.lang.Object ref = fromId_;
@@ -1558,6 +1636,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @return The bytes for fromId.
        */
       public com.google.protobuf.ByteString
           getFromIdBytes() {
@@ -1578,6 +1657,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @param value The fromId to set.
+       * @return This builder for chaining.
        */
       public Builder setFromId(
           java.lang.String value) {
@@ -1595,6 +1676,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFromId() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -1608,6 +1690,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @param value The bytes for fromId to set.
+       * @return This builder for chaining.
        */
       public Builder setFromIdBytes(
           com.google.protobuf.ByteString value) {
@@ -1627,6 +1711,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @return Whether the destId field is set.
        */
       public boolean hasDestId() {
         return ((bitField0_ & 0x00000010) != 0);
@@ -1637,6 +1722,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @return The destId.
        */
       public java.lang.String getDestId() {
         java.lang.Object ref = destId_;
@@ -1658,6 +1744,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @return The bytes for destId.
        */
       public com.google.protobuf.ByteString
           getDestIdBytes() {
@@ -1678,6 +1765,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @param value The destId to set.
+       * @return This builder for chaining.
        */
       public Builder setDestId(
           java.lang.String value) {
@@ -1695,6 +1784,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDestId() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -1708,6 +1798,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @param value The bytes for destId to set.
+       * @return This builder for chaining.
        */
       public Builder setDestIdBytes(
           com.google.protobuf.ByteString value) {
@@ -1727,6 +1819,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int64 createTime = 6;</code>
+       * @return Whether the createTime field is set.
        */
       public boolean hasCreateTime() {
         return ((bitField0_ & 0x00000020) != 0);
@@ -1737,6 +1830,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int64 createTime = 6;</code>
+       * @return The createTime.
        */
       public long getCreateTime() {
         return createTime_;
@@ -1747,6 +1841,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required int64 createTime = 6;</code>
+       * @param value The createTime to set.
+       * @return This builder for chaining.
        */
       public Builder setCreateTime(long value) {
         bitField0_ |= 0x00000020;
@@ -1760,6 +1856,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int64 createTime = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearCreateTime() {
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -1775,6 +1872,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.MsgType msgType = 7;</code>
+       * @return Whether the msgType field is set.
        */
       public boolean hasMsgType() {
         return ((bitField0_ & 0x00000040) != 0);
@@ -1785,6 +1883,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.MsgType msgType = 7;</code>
+       * @return The msgType.
        */
       public com.github.yuanrw.im.protobuf.generate.Chat.ChatMsg.MsgType getMsgType() {
         @SuppressWarnings("deprecation")
@@ -1797,6 +1896,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.MsgType msgType = 7;</code>
+       * @param value The msgType to set.
+       * @return This builder for chaining.
        */
       public Builder setMsgType(com.github.yuanrw.im.protobuf.generate.Chat.ChatMsg.MsgType value) {
         if (value == null) {
@@ -1813,6 +1914,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.ChatMsg.MsgType msgType = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMsgType() {
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -1828,6 +1930,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required bytes msgBody = 8;</code>
+       * @return Whether the msgBody field is set.
        */
       public boolean hasMsgBody() {
         return ((bitField0_ & 0x00000080) != 0);
@@ -1838,6 +1941,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required bytes msgBody = 8;</code>
+       * @return The msgBody.
        */
       public com.google.protobuf.ByteString getMsgBody() {
         return msgBody_;
@@ -1848,6 +1952,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required bytes msgBody = 8;</code>
+       * @param value The msgBody to set.
+       * @return This builder for chaining.
        */
       public Builder setMsgBody(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -1864,6 +1970,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required bytes msgBody = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMsgBody() {
         bitField0_ = (bitField0_ & ~0x00000080);
@@ -1875,12 +1982,14 @@ public final class Chat {
       private java.lang.Object addition_ = "";
       /**
        * <code>optional string addition = 32;</code>
+       * @return Whether the addition field is set.
        */
       public boolean hasAddition() {
         return ((bitField0_ & 0x00000100) != 0);
       }
       /**
        * <code>optional string addition = 32;</code>
+       * @return The addition.
        */
       public java.lang.String getAddition() {
         java.lang.Object ref = addition_;
@@ -1898,6 +2007,7 @@ public final class Chat {
       }
       /**
        * <code>optional string addition = 32;</code>
+       * @return The bytes for addition.
        */
       public com.google.protobuf.ByteString
           getAdditionBytes() {
@@ -1914,6 +2024,8 @@ public final class Chat {
       }
       /**
        * <code>optional string addition = 32;</code>
+       * @param value The addition to set.
+       * @return This builder for chaining.
        */
       public Builder setAddition(
           java.lang.String value) {
@@ -1927,6 +2039,7 @@ public final class Chat {
       }
       /**
        * <code>optional string addition = 32;</code>
+       * @return This builder for chaining.
        */
       public Builder clearAddition() {
         bitField0_ = (bitField0_ & ~0x00000100);
@@ -1936,6 +2049,8 @@ public final class Chat {
       }
       /**
        * <code>optional string addition = 32;</code>
+       * @param value The bytes for addition to set.
+       * @return This builder for chaining.
        */
       public Builder setAdditionBytes(
           com.google.protobuf.ByteString value) {
@@ -2010,6 +2125,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string text = 1;</code>
+     * @return Whether the text field is set.
      */
     boolean hasText();
     /**
@@ -2018,6 +2134,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string text = 1;</code>
+     * @return The text.
      */
     java.lang.String getText();
     /**
@@ -2026,6 +2143,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string text = 1;</code>
+     * @return The bytes for text.
      */
     com.google.protobuf.ByteString
         getTextBytes();
@@ -2044,6 +2162,13 @@ public final class Chat {
     }
     private TextBody() {
       text_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new TextBody();
     }
 
     @java.lang.Override
@@ -2117,6 +2242,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string text = 1;</code>
+     * @return Whether the text field is set.
      */
     public boolean hasText() {
       return ((bitField0_ & 0x00000001) != 0);
@@ -2127,6 +2253,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string text = 1;</code>
+     * @return The text.
      */
     public java.lang.String getText() {
       java.lang.Object ref = text_;
@@ -2148,6 +2275,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string text = 1;</code>
+     * @return The bytes for text.
      */
     public com.google.protobuf.ByteString
         getTextBytes() {
@@ -2492,6 +2620,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string text = 1;</code>
+       * @return Whether the text field is set.
        */
       public boolean hasText() {
         return ((bitField0_ & 0x00000001) != 0);
@@ -2502,6 +2631,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string text = 1;</code>
+       * @return The text.
        */
       public java.lang.String getText() {
         java.lang.Object ref = text_;
@@ -2523,6 +2653,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string text = 1;</code>
+       * @return The bytes for text.
        */
       public com.google.protobuf.ByteString
           getTextBytes() {
@@ -2543,6 +2674,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required string text = 1;</code>
+       * @param value The text to set.
+       * @return This builder for chaining.
        */
       public Builder setText(
           java.lang.String value) {
@@ -2560,6 +2693,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string text = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearText() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -2573,6 +2707,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required string text = 1;</code>
+       * @param value The bytes for text to set.
+       * @return This builder for chaining.
        */
       public Builder setTextBytes(
           com.google.protobuf.ByteString value) {
@@ -2647,6 +2783,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fileId = 1;</code>
+     * @return Whether the fileId field is set.
      */
     boolean hasFileId();
     /**
@@ -2655,6 +2792,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fileId = 1;</code>
+     * @return The fileId.
      */
     java.lang.String getFileId();
     /**
@@ -2663,6 +2801,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fileId = 1;</code>
+     * @return The bytes for fileId.
      */
     com.google.protobuf.ByteString
         getFileIdBytes();
@@ -2673,6 +2812,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 media_crc32 = 2;</code>
+     * @return Whether the mediaCrc32 field is set.
      */
     boolean hasMediaCrc32();
     /**
@@ -2681,6 +2821,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 media_crc32 = 2;</code>
+     * @return The mediaCrc32.
      */
     int getMediaCrc32();
 
@@ -2690,6 +2831,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 fSize = 3;</code>
+     * @return Whether the fSize field is set.
      */
     boolean hasFSize();
     /**
@@ -2698,6 +2840,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 fSize = 3;</code>
+     * @return The fSize.
      */
     int getFSize();
 
@@ -2707,6 +2850,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fName = 4;</code>
+     * @return Whether the fName field is set.
      */
     boolean hasFName();
     /**
@@ -2715,6 +2859,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fName = 4;</code>
+     * @return The fName.
      */
     java.lang.String getFName();
     /**
@@ -2723,6 +2868,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fName = 4;</code>
+     * @return The bytes for fName.
      */
     com.google.protobuf.ByteString
         getFNameBytes();
@@ -2742,6 +2888,13 @@ public final class Chat {
     private FileBody() {
       fileId_ = "";
       fName_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new FileBody();
     }
 
     @java.lang.Override
@@ -2831,6 +2984,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fileId = 1;</code>
+     * @return Whether the fileId field is set.
      */
     public boolean hasFileId() {
       return ((bitField0_ & 0x00000001) != 0);
@@ -2841,6 +2995,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fileId = 1;</code>
+     * @return The fileId.
      */
     public java.lang.String getFileId() {
       java.lang.Object ref = fileId_;
@@ -2862,6 +3017,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fileId = 1;</code>
+     * @return The bytes for fileId.
      */
     public com.google.protobuf.ByteString
         getFileIdBytes() {
@@ -2885,6 +3041,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 media_crc32 = 2;</code>
+     * @return Whether the mediaCrc32 field is set.
      */
     public boolean hasMediaCrc32() {
       return ((bitField0_ & 0x00000002) != 0);
@@ -2895,6 +3052,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 media_crc32 = 2;</code>
+     * @return The mediaCrc32.
      */
     public int getMediaCrc32() {
       return mediaCrc32_;
@@ -2908,6 +3066,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 fSize = 3;</code>
+     * @return Whether the fSize field is set.
      */
     public boolean hasFSize() {
       return ((bitField0_ & 0x00000004) != 0);
@@ -2918,6 +3077,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required int32 fSize = 3;</code>
+     * @return The fSize.
      */
     public int getFSize() {
       return fSize_;
@@ -2931,6 +3091,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fName = 4;</code>
+     * @return Whether the fName field is set.
      */
     public boolean hasFName() {
       return ((bitField0_ & 0x00000008) != 0);
@@ -2941,6 +3102,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fName = 4;</code>
+     * @return The fName.
      */
     public java.lang.String getFName() {
       java.lang.Object ref = fName_;
@@ -2962,6 +3124,7 @@ public final class Chat {
      * </pre>
      *
      * <code>required string fName = 4;</code>
+     * @return The bytes for fName.
      */
     public com.google.protobuf.ByteString
         getFNameBytes() {
@@ -3403,6 +3566,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fileId = 1;</code>
+       * @return Whether the fileId field is set.
        */
       public boolean hasFileId() {
         return ((bitField0_ & 0x00000001) != 0);
@@ -3413,6 +3577,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fileId = 1;</code>
+       * @return The fileId.
        */
       public java.lang.String getFileId() {
         java.lang.Object ref = fileId_;
@@ -3434,6 +3599,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fileId = 1;</code>
+       * @return The bytes for fileId.
        */
       public com.google.protobuf.ByteString
           getFileIdBytes() {
@@ -3454,6 +3620,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fileId = 1;</code>
+       * @param value The fileId to set.
+       * @return This builder for chaining.
        */
       public Builder setFileId(
           java.lang.String value) {
@@ -3471,6 +3639,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fileId = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFileId() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -3484,6 +3653,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fileId = 1;</code>
+       * @param value The bytes for fileId to set.
+       * @return This builder for chaining.
        */
       public Builder setFileIdBytes(
           com.google.protobuf.ByteString value) {
@@ -3503,6 +3674,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 media_crc32 = 2;</code>
+       * @return Whether the mediaCrc32 field is set.
        */
       public boolean hasMediaCrc32() {
         return ((bitField0_ & 0x00000002) != 0);
@@ -3513,6 +3685,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 media_crc32 = 2;</code>
+       * @return The mediaCrc32.
        */
       public int getMediaCrc32() {
         return mediaCrc32_;
@@ -3523,6 +3696,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 media_crc32 = 2;</code>
+       * @param value The mediaCrc32 to set.
+       * @return This builder for chaining.
        */
       public Builder setMediaCrc32(int value) {
         bitField0_ |= 0x00000002;
@@ -3536,6 +3711,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 media_crc32 = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMediaCrc32() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -3551,6 +3727,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 fSize = 3;</code>
+       * @return Whether the fSize field is set.
        */
       public boolean hasFSize() {
         return ((bitField0_ & 0x00000004) != 0);
@@ -3561,6 +3738,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 fSize = 3;</code>
+       * @return The fSize.
        */
       public int getFSize() {
         return fSize_;
@@ -3571,6 +3749,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 fSize = 3;</code>
+       * @param value The fSize to set.
+       * @return This builder for chaining.
        */
       public Builder setFSize(int value) {
         bitField0_ |= 0x00000004;
@@ -3584,6 +3764,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required int32 fSize = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFSize() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -3599,6 +3780,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fName = 4;</code>
+       * @return Whether the fName field is set.
        */
       public boolean hasFName() {
         return ((bitField0_ & 0x00000008) != 0);
@@ -3609,6 +3791,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fName = 4;</code>
+       * @return The fName.
        */
       public java.lang.String getFName() {
         java.lang.Object ref = fName_;
@@ -3630,6 +3813,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fName = 4;</code>
+       * @return The bytes for fName.
        */
       public com.google.protobuf.ByteString
           getFNameBytes() {
@@ -3650,6 +3834,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fName = 4;</code>
+       * @param value The fName to set.
+       * @return This builder for chaining.
        */
       public Builder setFName(
           java.lang.String value) {
@@ -3667,6 +3853,7 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fName = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFName() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -3680,6 +3867,8 @@ public final class Chat {
        * </pre>
        *
        * <code>required string fName = 4;</code>
+       * @param value The bytes for fName to set.
+       * @return This builder for chaining.
        */
       public Builder setFNameBytes(
           com.google.protobuf.ByteString value) {
@@ -3782,18 +3971,10 @@ public final class Chat {
       "leId\030\001 \002(\t\022\023\n\013media_crc32\030\002 \002(\005\022\r\n\005fSize" +
       "\030\003 \002(\005\022\r\n\005fName\030\004 \002(\tB\006B\004Chat"
     };
-    com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
-          public com.google.protobuf.ExtensionRegistry assignDescriptors(
-              com.google.protobuf.Descriptors.FileDescriptor root) {
-            descriptor = root;
-            return null;
-          }
-        };
-    com.google.protobuf.Descriptors.FileDescriptor
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-        }, assigner);
+        });
     internal_static_com_github_yuanrw_im_protobuf_generate_ChatMsg_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_com_github_yuanrw_im_protobuf_generate_ChatMsg_fieldAccessorTable = new
