@@ -24,6 +24,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return Whether the version field is set.
      */
     boolean hasVersion();
     /**
@@ -32,6 +33,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return The version.
      */
     int getVersion();
 
@@ -41,6 +43,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return Whether the id field is set.
      */
     boolean hasId();
     /**
@@ -49,6 +52,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return The id.
      */
     long getId();
 
@@ -58,6 +62,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module from = 3;</code>
+     * @return Whether the from field is set.
      */
     boolean hasFrom();
     /**
@@ -66,6 +71,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module from = 3;</code>
+     * @return The from.
      */
     com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.Module getFrom();
 
@@ -75,6 +81,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module dest = 4;</code>
+     * @return Whether the dest field is set.
      */
     boolean hasDest();
     /**
@@ -83,6 +90,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module dest = 4;</code>
+     * @return The dest.
      */
     com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.Module getDest();
 
@@ -92,6 +100,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int64 createTime = 5;</code>
+     * @return Whether the createTime field is set.
      */
     boolean hasCreateTime();
     /**
@@ -100,6 +109,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int64 createTime = 5;</code>
+     * @return The createTime.
      */
     long getCreateTime();
 
@@ -109,6 +119,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.MsgType msgType = 6;</code>
+     * @return Whether the msgType field is set.
      */
     boolean hasMsgType();
     /**
@@ -117,6 +128,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.MsgType msgType = 6;</code>
+     * @return The msgType.
      */
     com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.MsgType getMsgType();
 
@@ -126,6 +138,7 @@ public final class Internal {
      * </pre>
      *
      * <code>optional string msgBody = 7;</code>
+     * @return Whether the msgBody field is set.
      */
     boolean hasMsgBody();
     /**
@@ -134,6 +147,7 @@ public final class Internal {
      * </pre>
      *
      * <code>optional string msgBody = 7;</code>
+     * @return The msgBody.
      */
     java.lang.String getMsgBody();
     /**
@@ -142,6 +156,7 @@ public final class Internal {
      * </pre>
      *
      * <code>optional string msgBody = 7;</code>
+     * @return The bytes for msgBody.
      */
     com.google.protobuf.ByteString
         getMsgBodyBytes();
@@ -163,6 +178,13 @@ public final class Internal {
       dest_ = 0;
       msgType_ = 0;
       msgBody_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new InternalMsg();
     }
 
     @java.lang.Override
@@ -316,6 +338,8 @@ public final class Internal {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -323,6 +347,10 @@ public final class Internal {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static Module forNumber(int value) {
         switch (value) {
           case 0: return CONNECTOR;
@@ -415,6 +443,8 @@ public final class Internal {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -422,6 +452,10 @@ public final class Internal {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static MsgType forNumber(int value) {
         switch (value) {
           case 0: return GREET;
@@ -485,6 +519,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return Whether the version field is set.
      */
     public boolean hasVersion() {
       return ((bitField0_ & 0x00000001) != 0);
@@ -495,6 +530,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return The version.
      */
     public int getVersion() {
       return version_;
@@ -508,6 +544,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return Whether the id field is set.
      */
     public boolean hasId() {
       return ((bitField0_ & 0x00000002) != 0);
@@ -518,6 +555,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return The id.
      */
     public long getId() {
       return id_;
@@ -531,6 +569,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module from = 3;</code>
+     * @return Whether the from field is set.
      */
     public boolean hasFrom() {
       return ((bitField0_ & 0x00000004) != 0);
@@ -541,6 +580,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module from = 3;</code>
+     * @return The from.
      */
     public com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.Module getFrom() {
       @SuppressWarnings("deprecation")
@@ -556,6 +596,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module dest = 4;</code>
+     * @return Whether the dest field is set.
      */
     public boolean hasDest() {
       return ((bitField0_ & 0x00000008) != 0);
@@ -566,6 +607,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module dest = 4;</code>
+     * @return The dest.
      */
     public com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.Module getDest() {
       @SuppressWarnings("deprecation")
@@ -581,6 +623,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int64 createTime = 5;</code>
+     * @return Whether the createTime field is set.
      */
     public boolean hasCreateTime() {
       return ((bitField0_ & 0x00000010) != 0);
@@ -591,6 +634,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required int64 createTime = 5;</code>
+     * @return The createTime.
      */
     public long getCreateTime() {
       return createTime_;
@@ -604,6 +648,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.MsgType msgType = 6;</code>
+     * @return Whether the msgType field is set.
      */
     public boolean hasMsgType() {
       return ((bitField0_ & 0x00000020) != 0);
@@ -614,6 +659,7 @@ public final class Internal {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.MsgType msgType = 6;</code>
+     * @return The msgType.
      */
     public com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.MsgType getMsgType() {
       @SuppressWarnings("deprecation")
@@ -629,6 +675,7 @@ public final class Internal {
      * </pre>
      *
      * <code>optional string msgBody = 7;</code>
+     * @return Whether the msgBody field is set.
      */
     public boolean hasMsgBody() {
       return ((bitField0_ & 0x00000040) != 0);
@@ -639,6 +686,7 @@ public final class Internal {
      * </pre>
      *
      * <code>optional string msgBody = 7;</code>
+     * @return The msgBody.
      */
     public java.lang.String getMsgBody() {
       java.lang.Object ref = msgBody_;
@@ -660,6 +708,7 @@ public final class Internal {
      * </pre>
      *
      * <code>optional string msgBody = 7;</code>
+     * @return The bytes for msgBody.
      */
     public com.google.protobuf.ByteString
         getMsgBodyBytes() {
@@ -1188,6 +1237,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @return Whether the version field is set.
        */
       public boolean hasVersion() {
         return ((bitField0_ & 0x00000001) != 0);
@@ -1198,6 +1248,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @return The version.
        */
       public int getVersion() {
         return version_;
@@ -1208,6 +1259,8 @@ public final class Internal {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @param value The version to set.
+       * @return This builder for chaining.
        */
       public Builder setVersion(int value) {
         bitField0_ |= 0x00000001;
@@ -1221,6 +1274,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearVersion() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -1236,6 +1290,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @return Whether the id field is set.
        */
       public boolean hasId() {
         return ((bitField0_ & 0x00000002) != 0);
@@ -1246,6 +1301,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @return The id.
        */
       public long getId() {
         return id_;
@@ -1256,6 +1312,8 @@ public final class Internal {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
        */
       public Builder setId(long value) {
         bitField0_ |= 0x00000002;
@@ -1269,6 +1327,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearId() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -1284,6 +1343,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module from = 3;</code>
+       * @return Whether the from field is set.
        */
       public boolean hasFrom() {
         return ((bitField0_ & 0x00000004) != 0);
@@ -1294,6 +1354,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module from = 3;</code>
+       * @return The from.
        */
       public com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.Module getFrom() {
         @SuppressWarnings("deprecation")
@@ -1306,6 +1367,8 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module from = 3;</code>
+       * @param value The from to set.
+       * @return This builder for chaining.
        */
       public Builder setFrom(com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.Module value) {
         if (value == null) {
@@ -1322,6 +1385,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module from = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFrom() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -1337,6 +1401,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module dest = 4;</code>
+       * @return Whether the dest field is set.
        */
       public boolean hasDest() {
         return ((bitField0_ & 0x00000008) != 0);
@@ -1347,6 +1412,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module dest = 4;</code>
+       * @return The dest.
        */
       public com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.Module getDest() {
         @SuppressWarnings("deprecation")
@@ -1359,6 +1425,8 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module dest = 4;</code>
+       * @param value The dest to set.
+       * @return This builder for chaining.
        */
       public Builder setDest(com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.Module value) {
         if (value == null) {
@@ -1375,6 +1443,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.Module dest = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDest() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -1390,6 +1459,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required int64 createTime = 5;</code>
+       * @return Whether the createTime field is set.
        */
       public boolean hasCreateTime() {
         return ((bitField0_ & 0x00000010) != 0);
@@ -1400,6 +1470,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required int64 createTime = 5;</code>
+       * @return The createTime.
        */
       public long getCreateTime() {
         return createTime_;
@@ -1410,6 +1481,8 @@ public final class Internal {
        * </pre>
        *
        * <code>required int64 createTime = 5;</code>
+       * @param value The createTime to set.
+       * @return This builder for chaining.
        */
       public Builder setCreateTime(long value) {
         bitField0_ |= 0x00000010;
@@ -1423,6 +1496,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required int64 createTime = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearCreateTime() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -1438,6 +1512,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.MsgType msgType = 6;</code>
+       * @return Whether the msgType field is set.
        */
       public boolean hasMsgType() {
         return ((bitField0_ & 0x00000020) != 0);
@@ -1448,6 +1523,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.MsgType msgType = 6;</code>
+       * @return The msgType.
        */
       public com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.MsgType getMsgType() {
         @SuppressWarnings("deprecation")
@@ -1460,6 +1536,8 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.MsgType msgType = 6;</code>
+       * @param value The msgType to set.
+       * @return This builder for chaining.
        */
       public Builder setMsgType(com.github.yuanrw.im.protobuf.generate.Internal.InternalMsg.MsgType value) {
         if (value == null) {
@@ -1476,6 +1554,7 @@ public final class Internal {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.InternalMsg.MsgType msgType = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMsgType() {
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -1491,6 +1570,7 @@ public final class Internal {
        * </pre>
        *
        * <code>optional string msgBody = 7;</code>
+       * @return Whether the msgBody field is set.
        */
       public boolean hasMsgBody() {
         return ((bitField0_ & 0x00000040) != 0);
@@ -1501,6 +1581,7 @@ public final class Internal {
        * </pre>
        *
        * <code>optional string msgBody = 7;</code>
+       * @return The msgBody.
        */
       public java.lang.String getMsgBody() {
         java.lang.Object ref = msgBody_;
@@ -1522,6 +1603,7 @@ public final class Internal {
        * </pre>
        *
        * <code>optional string msgBody = 7;</code>
+       * @return The bytes for msgBody.
        */
       public com.google.protobuf.ByteString
           getMsgBodyBytes() {
@@ -1542,6 +1624,8 @@ public final class Internal {
        * </pre>
        *
        * <code>optional string msgBody = 7;</code>
+       * @param value The msgBody to set.
+       * @return This builder for chaining.
        */
       public Builder setMsgBody(
           java.lang.String value) {
@@ -1559,6 +1643,7 @@ public final class Internal {
        * </pre>
        *
        * <code>optional string msgBody = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMsgBody() {
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -1572,6 +1657,8 @@ public final class Internal {
        * </pre>
        *
        * <code>optional string msgBody = 7;</code>
+       * @param value The bytes for msgBody to set.
+       * @return This builder for chaining.
        */
       public Builder setMsgBodyBytes(
           com.google.protobuf.ByteString value) {
@@ -1663,18 +1750,10 @@ public final class Internal {
       "R\020\001\022\n\n\006CLIENT\020\002\"(\n\007MsgType\022\t\n\005GREET\020\000\022\007\n" +
       "\003ACK\020\001\022\t\n\005ERROR\020\002B\nB\010Internal"
     };
-    com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
-          public com.google.protobuf.ExtensionRegistry assignDescriptors(
-              com.google.protobuf.Descriptors.FileDescriptor root) {
-            descriptor = root;
-            return null;
-          }
-        };
-    com.google.protobuf.Descriptors.FileDescriptor
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-        }, assigner);
+        });
     internal_static_com_github_yuanrw_im_protobuf_generate_InternalMsg_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_com_github_yuanrw_im_protobuf_generate_InternalMsg_fieldAccessorTable = new

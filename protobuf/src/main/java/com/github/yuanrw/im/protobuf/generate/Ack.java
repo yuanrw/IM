@@ -24,6 +24,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return Whether the version field is set.
      */
     boolean hasVersion();
     /**
@@ -32,6 +33,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return The version.
      */
     int getVersion();
 
@@ -41,6 +43,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return Whether the id field is set.
      */
     boolean hasId();
     /**
@@ -49,6 +52,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return The id.
      */
     long getId();
 
@@ -58,6 +62,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.DestType destType = 3;</code>
+     * @return Whether the destType field is set.
      */
     boolean hasDestType();
     /**
@@ -66,6 +71,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.DestType destType = 3;</code>
+     * @return The destType.
      */
     com.github.yuanrw.im.protobuf.generate.Ack.AckMsg.DestType getDestType();
 
@@ -75,6 +81,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return Whether the fromId field is set.
      */
     boolean hasFromId();
     /**
@@ -83,6 +90,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return The fromId.
      */
     java.lang.String getFromId();
     /**
@@ -91,6 +99,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return The bytes for fromId.
      */
     com.google.protobuf.ByteString
         getFromIdBytes();
@@ -101,6 +110,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return Whether the destId field is set.
      */
     boolean hasDestId();
     /**
@@ -109,6 +119,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return The destId.
      */
     java.lang.String getDestId();
     /**
@@ -117,6 +128,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return The bytes for destId.
      */
     com.google.protobuf.ByteString
         getDestIdBytes();
@@ -127,6 +139,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 createTime = 6;</code>
+     * @return Whether the createTime field is set.
      */
     boolean hasCreateTime();
     /**
@@ -135,6 +148,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 createTime = 6;</code>
+     * @return The createTime.
      */
     long getCreateTime();
 
@@ -144,6 +158,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.MsgType msgType = 7;</code>
+     * @return Whether the msgType field is set.
      */
     boolean hasMsgType();
     /**
@@ -152,6 +167,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.MsgType msgType = 7;</code>
+     * @return The msgType.
      */
     com.github.yuanrw.im.protobuf.generate.Ack.AckMsg.MsgType getMsgType();
 
@@ -161,6 +177,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 ackMsgId = 8;</code>
+     * @return Whether the ackMsgId field is set.
      */
     boolean hasAckMsgId();
     /**
@@ -169,6 +186,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 ackMsgId = 8;</code>
+     * @return The ackMsgId.
      */
     long getAckMsgId();
   }
@@ -189,6 +207,13 @@ public final class Ack {
       fromId_ = "";
       destId_ = "";
       msgType_ = 0;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new AckMsg();
     }
 
     @java.lang.Override
@@ -333,6 +358,8 @@ public final class Ack {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -340,6 +367,10 @@ public final class Ack {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static DestType forNumber(int value) {
         switch (value) {
           case 0: return SINGLE;
@@ -423,6 +454,8 @@ public final class Ack {
       }
 
       /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
       @java.lang.Deprecated
@@ -430,6 +463,10 @@ public final class Ack {
         return forNumber(value);
       }
 
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
       public static MsgType forNumber(int value) {
         switch (value) {
           case 0: return DELIVERED;
@@ -492,6 +529,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return Whether the version field is set.
      */
     public boolean hasVersion() {
       return ((bitField0_ & 0x00000001) != 0);
@@ -502,6 +540,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int32 version = 1;</code>
+     * @return The version.
      */
     public int getVersion() {
       return version_;
@@ -515,6 +554,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return Whether the id field is set.
      */
     public boolean hasId() {
       return ((bitField0_ & 0x00000002) != 0);
@@ -525,6 +565,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 id = 2;</code>
+     * @return The id.
      */
     public long getId() {
       return id_;
@@ -538,6 +579,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.DestType destType = 3;</code>
+     * @return Whether the destType field is set.
      */
     public boolean hasDestType() {
       return ((bitField0_ & 0x00000004) != 0);
@@ -548,6 +590,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.DestType destType = 3;</code>
+     * @return The destType.
      */
     public com.github.yuanrw.im.protobuf.generate.Ack.AckMsg.DestType getDestType() {
       @SuppressWarnings("deprecation")
@@ -563,6 +606,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return Whether the fromId field is set.
      */
     public boolean hasFromId() {
       return ((bitField0_ & 0x00000008) != 0);
@@ -573,6 +617,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return The fromId.
      */
     public java.lang.String getFromId() {
       java.lang.Object ref = fromId_;
@@ -594,6 +639,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string fromId = 4;</code>
+     * @return The bytes for fromId.
      */
     public com.google.protobuf.ByteString
         getFromIdBytes() {
@@ -617,6 +663,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return Whether the destId field is set.
      */
     public boolean hasDestId() {
       return ((bitField0_ & 0x00000010) != 0);
@@ -627,6 +674,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return The destId.
      */
     public java.lang.String getDestId() {
       java.lang.Object ref = destId_;
@@ -648,6 +696,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required string destId = 5;</code>
+     * @return The bytes for destId.
      */
     public com.google.protobuf.ByteString
         getDestIdBytes() {
@@ -671,6 +720,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 createTime = 6;</code>
+     * @return Whether the createTime field is set.
      */
     public boolean hasCreateTime() {
       return ((bitField0_ & 0x00000020) != 0);
@@ -681,6 +731,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 createTime = 6;</code>
+     * @return The createTime.
      */
     public long getCreateTime() {
       return createTime_;
@@ -694,6 +745,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.MsgType msgType = 7;</code>
+     * @return Whether the msgType field is set.
      */
     public boolean hasMsgType() {
       return ((bitField0_ & 0x00000040) != 0);
@@ -704,6 +756,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.MsgType msgType = 7;</code>
+     * @return The msgType.
      */
     public com.github.yuanrw.im.protobuf.generate.Ack.AckMsg.MsgType getMsgType() {
       @SuppressWarnings("deprecation")
@@ -719,6 +772,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 ackMsgId = 8;</code>
+     * @return Whether the ackMsgId field is set.
      */
     public boolean hasAckMsgId() {
       return ((bitField0_ & 0x00000080) != 0);
@@ -729,6 +783,7 @@ public final class Ack {
      * </pre>
      *
      * <code>required int64 ackMsgId = 8;</code>
+     * @return The ackMsgId.
      */
     public long getAckMsgId() {
       return ackMsgId_;
@@ -1289,6 +1344,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @return Whether the version field is set.
        */
       public boolean hasVersion() {
         return ((bitField0_ & 0x00000001) != 0);
@@ -1299,6 +1355,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @return The version.
        */
       public int getVersion() {
         return version_;
@@ -1309,6 +1366,8 @@ public final class Ack {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @param value The version to set.
+       * @return This builder for chaining.
        */
       public Builder setVersion(int value) {
         bitField0_ |= 0x00000001;
@@ -1322,6 +1381,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int32 version = 1;</code>
+       * @return This builder for chaining.
        */
       public Builder clearVersion() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -1337,6 +1397,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @return Whether the id field is set.
        */
       public boolean hasId() {
         return ((bitField0_ & 0x00000002) != 0);
@@ -1347,6 +1408,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @return The id.
        */
       public long getId() {
         return id_;
@@ -1357,6 +1419,8 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
        */
       public Builder setId(long value) {
         bitField0_ |= 0x00000002;
@@ -1370,6 +1434,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 id = 2;</code>
+       * @return This builder for chaining.
        */
       public Builder clearId() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -1385,6 +1450,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.DestType destType = 3;</code>
+       * @return Whether the destType field is set.
        */
       public boolean hasDestType() {
         return ((bitField0_ & 0x00000004) != 0);
@@ -1395,6 +1461,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.DestType destType = 3;</code>
+       * @return The destType.
        */
       public com.github.yuanrw.im.protobuf.generate.Ack.AckMsg.DestType getDestType() {
         @SuppressWarnings("deprecation")
@@ -1407,6 +1474,8 @@ public final class Ack {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.DestType destType = 3;</code>
+       * @param value The destType to set.
+       * @return This builder for chaining.
        */
       public Builder setDestType(com.github.yuanrw.im.protobuf.generate.Ack.AckMsg.DestType value) {
         if (value == null) {
@@ -1423,6 +1492,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.DestType destType = 3;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDestType() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -1438,6 +1508,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @return Whether the fromId field is set.
        */
       public boolean hasFromId() {
         return ((bitField0_ & 0x00000008) != 0);
@@ -1448,6 +1519,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @return The fromId.
        */
       public java.lang.String getFromId() {
         java.lang.Object ref = fromId_;
@@ -1469,6 +1541,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @return The bytes for fromId.
        */
       public com.google.protobuf.ByteString
           getFromIdBytes() {
@@ -1489,6 +1562,8 @@ public final class Ack {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @param value The fromId to set.
+       * @return This builder for chaining.
        */
       public Builder setFromId(
           java.lang.String value) {
@@ -1506,6 +1581,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearFromId() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -1519,6 +1595,8 @@ public final class Ack {
        * </pre>
        *
        * <code>required string fromId = 4;</code>
+       * @param value The bytes for fromId to set.
+       * @return This builder for chaining.
        */
       public Builder setFromIdBytes(
           com.google.protobuf.ByteString value) {
@@ -1538,6 +1616,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @return Whether the destId field is set.
        */
       public boolean hasDestId() {
         return ((bitField0_ & 0x00000010) != 0);
@@ -1548,6 +1627,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @return The destId.
        */
       public java.lang.String getDestId() {
         java.lang.Object ref = destId_;
@@ -1569,6 +1649,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @return The bytes for destId.
        */
       public com.google.protobuf.ByteString
           getDestIdBytes() {
@@ -1589,6 +1670,8 @@ public final class Ack {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @param value The destId to set.
+       * @return This builder for chaining.
        */
       public Builder setDestId(
           java.lang.String value) {
@@ -1606,6 +1689,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @return This builder for chaining.
        */
       public Builder clearDestId() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -1619,6 +1703,8 @@ public final class Ack {
        * </pre>
        *
        * <code>required string destId = 5;</code>
+       * @param value The bytes for destId to set.
+       * @return This builder for chaining.
        */
       public Builder setDestIdBytes(
           com.google.protobuf.ByteString value) {
@@ -1638,6 +1724,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 createTime = 6;</code>
+       * @return Whether the createTime field is set.
        */
       public boolean hasCreateTime() {
         return ((bitField0_ & 0x00000020) != 0);
@@ -1648,6 +1735,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 createTime = 6;</code>
+       * @return The createTime.
        */
       public long getCreateTime() {
         return createTime_;
@@ -1658,6 +1746,8 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 createTime = 6;</code>
+       * @param value The createTime to set.
+       * @return This builder for chaining.
        */
       public Builder setCreateTime(long value) {
         bitField0_ |= 0x00000020;
@@ -1671,6 +1761,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 createTime = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearCreateTime() {
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -1686,6 +1777,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.MsgType msgType = 7;</code>
+       * @return Whether the msgType field is set.
        */
       public boolean hasMsgType() {
         return ((bitField0_ & 0x00000040) != 0);
@@ -1696,6 +1788,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.MsgType msgType = 7;</code>
+       * @return The msgType.
        */
       public com.github.yuanrw.im.protobuf.generate.Ack.AckMsg.MsgType getMsgType() {
         @SuppressWarnings("deprecation")
@@ -1708,6 +1801,8 @@ public final class Ack {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.MsgType msgType = 7;</code>
+       * @param value The msgType to set.
+       * @return This builder for chaining.
        */
       public Builder setMsgType(com.github.yuanrw.im.protobuf.generate.Ack.AckMsg.MsgType value) {
         if (value == null) {
@@ -1724,6 +1819,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required .com.github.yuanrw.im.protobuf.generate.AckMsg.MsgType msgType = 7;</code>
+       * @return This builder for chaining.
        */
       public Builder clearMsgType() {
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -1739,6 +1835,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 ackMsgId = 8;</code>
+       * @return Whether the ackMsgId field is set.
        */
       public boolean hasAckMsgId() {
         return ((bitField0_ & 0x00000080) != 0);
@@ -1749,6 +1846,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 ackMsgId = 8;</code>
+       * @return The ackMsgId.
        */
       public long getAckMsgId() {
         return ackMsgId_;
@@ -1759,6 +1857,8 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 ackMsgId = 8;</code>
+       * @param value The ackMsgId to set.
+       * @return This builder for chaining.
        */
       public Builder setAckMsgId(long value) {
         bitField0_ |= 0x00000080;
@@ -1772,6 +1872,7 @@ public final class Ack {
        * </pre>
        *
        * <code>required int64 ackMsgId = 8;</code>
+       * @return This builder for chaining.
        */
       public Builder clearAckMsgId() {
         bitField0_ = (bitField0_ & ~0x00000080);
@@ -1857,18 +1958,10 @@ public final class Ack {
       "e\022\n\n\006SINGLE\020\000\022\t\n\005GROUP\020\001\"\"\n\007MsgType\022\r\n\tD" +
       "ELIVERED\020\000\022\010\n\004READ\020\001B\005B\003Ack"
     };
-    com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
-          public com.google.protobuf.ExtensionRegistry assignDescriptors(
-              com.google.protobuf.Descriptors.FileDescriptor root) {
-            descriptor = root;
-            return null;
-          }
-        };
-    com.google.protobuf.Descriptors.FileDescriptor
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-        }, assigner);
+        });
     internal_static_com_github_yuanrw_im_protobuf_generate_AckMsg_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_com_github_yuanrw_im_protobuf_generate_AckMsg_fieldAccessorTable = new
