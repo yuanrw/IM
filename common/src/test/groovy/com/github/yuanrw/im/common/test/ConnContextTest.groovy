@@ -38,7 +38,7 @@ class ConnContextTest extends Specification {
 
     def "test memory conn context"() {
         given:
-        def netId = "987986892353";
+        def netId = "987986892353"
         def ctx = Mock(ChannelHandlerContext) {
             channel() >> Mock(Channel) {
                 attr(Conn.NET_ID) >> Mock(Attribute) {
